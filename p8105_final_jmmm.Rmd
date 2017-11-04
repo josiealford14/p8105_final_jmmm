@@ -8,3 +8,23 @@ output: html_document
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
 ```
 
+```{r load_packages, message = FALSE}
+library(tidyverse)
+library(dplyr)
+library(rvest)
+library(httr)
+library(janitor)
+library(stringr)
+library(forcats)
+library(tidytext)
+library(viridis)
+library(broom)
+```
+
+* Looking at the National Drug Acquisition Cost dataset
+
+```{r tidy_drug_price}
+url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
+```
+
+
