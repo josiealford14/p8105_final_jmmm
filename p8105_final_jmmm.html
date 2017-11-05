@@ -187,24 +187,26 @@ drug_price =
          drug_name = ndc_description,
          drug_type = classification_for_rate_setting,
          unit_price = nadac_per_unit) %&gt;%
-  select(date, ndc, drug_name, drug_type, otc, pricing_unit, unit_price, everything()) %&gt;%
-  separate(date, into = c(&quot;year&quot;, &quot;month&quot;, &quot;date&quot;))
+  separate(date, into = c(&quot;year&quot;, &quot;month&quot;, &quot;date&quot;)) %&gt;%
+  mutate(grams = drug_name,
+         grams = str_replace_all(grams,&quot;[A-Z]&quot;, &quot;&quot;)) %&gt;%
+  select(year, month, date, ndc, drug_name, grams, pricing_unit, unit_price, drug_type, otc, everything())
 drug_price</code></pre>
-<pre><code>## # A tibble: 4,878,070 x 14
-##     year month  date         ndc                    drug_name drug_type
-##  * &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;                        &lt;chr&gt;     &lt;chr&gt;
-##  1  2015    03    18 00536741551                        ENEMA         G
-##  2  2015    03    18 00536196297                SEBEX SHAMPOO         G
-##  3  2016    02    17 24658030410     SIMVASTATIN 80 MG TABLET         G
-##  4  2016    01    01 00071101768        LYRICA 200 MG CAPSULE         B
-##  5  2016    02    17 65162072409 RABEPRAZOLE SOD DR 20 MG TAB         G
-##  6  2016    02    17 51079098220      LISINOPRIL 10 MG TABLET         G
-##  7  2016    02    17 24385012576                   FIBER TABS         G
-##  8  2016    02    17 65862012460      RISPERIDONE 4 MG TABLET         G
-##  9  2015    10    06 64764055030       BRINTELLIX 5 MG TABLET         B
-## 10  2016    02    17 68001021300      LOVASTATIN 10 MG TABLET         G
-## # ... with 4,878,060 more rows, and 8 more variables: otc &lt;chr&gt;,
-## #   pricing_unit &lt;chr&gt;, unit_price &lt;dbl&gt;, as_of_date &lt;dttm&gt;,
+<pre><code>## # A tibble: 4,878,070 x 15
+##     year month  date         ndc                    drug_name   grams
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;                        &lt;chr&gt;   &lt;chr&gt;
+##  1  2015    03    18 00536741551                        ENEMA        
+##  2  2015    03    18 00536196297                SEBEX SHAMPOO        
+##  3  2016    02    17 24658030410     SIMVASTATIN 80 MG TABLET    80  
+##  4  2016    01    01 00071101768        LYRICA 200 MG CAPSULE   200  
+##  5  2016    02    17 65162072409 RABEPRAZOLE SOD DR 20 MG TAB    20  
+##  6  2016    02    17 51079098220      LISINOPRIL 10 MG TABLET    10  
+##  7  2016    02    17 24385012576                   FIBER TABS        
+##  8  2016    02    17 65862012460      RISPERIDONE 4 MG TABLET     4  
+##  9  2015    10    06 64764055030       BRINTELLIX 5 MG TABLET     5  
+## 10  2016    02    17 68001021300      LOVASTATIN 10 MG TABLET    10  
+## # ... with 4,878,060 more rows, and 9 more variables: pricing_unit &lt;chr&gt;,
+## #   unit_price &lt;dbl&gt;, drug_type &lt;chr&gt;, otc &lt;chr&gt;, as_of_date &lt;dttm&gt;,
 ## #   corresponding_generic_drug_effective_date &lt;chr&gt;,
 ## #   corresponding_generic_drug_nadac_per_unit &lt;chr&gt;,
 ## #   explanation_code &lt;chr&gt;, pharmacy_type_indicator &lt;chr&gt;</code></pre>
@@ -221,6 +223,28 @@ drug_price</code></pre>
 <li>Some unit prices are listed as price per grams or price per milliliters or price per tablet We need to create a price variable with the appropriate unit price if we want to compare drug prices. One way to do this is to convert all unit prices to price per grams by dividing the price of each tablet by the tablet weight and by using the approximate relationship 1ml = 1gm.</li>
 </ul></li>
 </ul>
+<pre class="r"><code>drug_price %&gt;%
+  filter(pricing_unit == &quot;EA&quot;) #%&gt;%</code></pre>
+<pre><code>## # A tibble: 4,065,511 x 15
+##     year month  date         ndc                    drug_name   grams
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;                        &lt;chr&gt;   &lt;chr&gt;
+##  1  2016    02    17 24658030410     SIMVASTATIN 80 MG TABLET    80  
+##  2  2016    01    01 00071101768        LYRICA 200 MG CAPSULE   200  
+##  3  2016    02    17 65162072409 RABEPRAZOLE SOD DR 20 MG TAB    20  
+##  4  2016    02    17 51079098220      LISINOPRIL 10 MG TABLET    10  
+##  5  2016    02    17 24385012576                   FIBER TABS        
+##  6  2016    02    17 65862012460      RISPERIDONE 4 MG TABLET     4  
+##  7  2015    10    06 64764055030       BRINTELLIX 5 MG TABLET     5  
+##  8  2016    02    17 68001021300      LOVASTATIN 10 MG TABLET    10  
+##  9  2016    02    17 68084011911     MIRTAZAPINE 15 MG TABLET    15  
+## 10  2016    02    17 63739057010      SIMVASTATIN 5 MG TABLET     5  
+## # ... with 4,065,501 more rows, and 9 more variables: pricing_unit &lt;chr&gt;,
+## #   unit_price &lt;dbl&gt;, drug_type &lt;chr&gt;, otc &lt;chr&gt;, as_of_date &lt;dttm&gt;,
+## #   corresponding_generic_drug_effective_date &lt;chr&gt;,
+## #   corresponding_generic_drug_nadac_per_unit &lt;chr&gt;,
+## #   explanation_code &lt;chr&gt;, pharmacy_type_indicator &lt;chr&gt;</code></pre>
+<pre class="r"><code>  # mutate(grams = as.numeric(grams)) %&gt;%
+  # filter(is.na(grams))</code></pre>
 
 
 
