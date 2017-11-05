@@ -21,10 +21,61 @@ library(viridis)
 library(broom)
 ```
 
-* Looking at the National Drug Acquisition Cost dataset
+* Looking at the National Drug Acquisition Cost dataset:
 
 ```{r tidy_drug_price}
 url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
+drug_price =
+  GET(url, query = list("$limit" = 9999999)) %>%
+  content("parsed") %>%
+  clean_names() 
 ```
 
+* The raw `drug_price` dataset is huge and takes a while to load.
+* It contains weekly drug prices from november 2013 to october 2017 recorded. There are `r drug_price %>% nrow()` observations and `r drug_price %>% ncol()` variables in the dataset:
+    + `as_of_date`: date of data posting
+    + `classification_for_rate_setting`: indicates whether, for NADAC calculation, the NDC was considered brand (‘B’) or generic (‘G’) or brand (‘B’) approved under an Abbreviated New Drug Application (ANDA) (‘B-ANDA’).
+    + `corresponding_generic_drug_effecitve_date`:  effective date of when the Corresponding Generic Drug NADAC Per Unit is assigned to a multiple source brand drug NDC
+    + `corresponding_generic_drug_nadac_per_unit`: NADAC for the corresponding generic drug
+    + `effective_date`: effective date of the NADAC Per Unit cost
+    + `explanation_code`: codes that pertain to how the NADAC was calculated. see explanation code
+descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/by-topics/prescription-drugs/ful-nadac-downloads/nadacdatadefinitions.pdf)
+    + `nadac_per_unit`: National Average Drug Acquisition Cost per unit
+    + `ndc`:  11-digit FDA code that includes the labeler code, product code, and package code
+    + `ndc_description`: drug name, strength, and dosage form of the drug 
+    + `otc`: over-the-counter (OTC) product (‘Y’ or ‘N’)
+    + `pharmacy_type_indicator`: source of pharmacy survey data used to calculate the NADAC. ‘ C/I’ indicates data was collected from surveys of Chain/Independent pharmacies. Other pharmacy type indicators are not used at this time.
+    + `pricing_unit`:  pricing unit for the associated NDC (‘ML’, ‘GM’ or ‘EA’)
+* We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rare_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
 
+```{r rename_split_date}
+drug_price = 
+  drug_price %>%
+  rename(date = effective_date,
+         drug_name = ndc_description,
+         drug_type = classification_for_rate_setting,
+         unit_price = nadac_per_unit) %>%
+  separate(date, into = c("year", "month", "date")) %>%
+  mutate(grams = drug_name,
+         grams = str_replace_all(grams,"[A-Z]", "")) %>%
+  select(year, month, date, ndc, drug_name, grams, pricing_unit, unit_price, drug_type, otc, everything())
+drug_price
+```
+
+* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median instead of the mean price might be the better measure to use in the analyses.
+
+```{r drug_price_distr}
+drug_price %>%
+  filter(drug_name == "AMLODIPINE-BENAZEPRIL 5-20 MG") %>%
+  ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
+```
+
+* **Points to consider:**
+    + Some unit prices are listed as price per grams or price per milliliters or price per tablet We need to create a price variable with the appropriate unit price if we want to compare drug prices. One way to do this is to convert all unit prices to price per grams by dividing the price of each tablet by the tablet weight and by using the approximate relationship 1ml = 1gm.
+    
+```{r}
+drug_price %>%
+  filter(pricing_unit == "EA") #%>%
+  # mutate(grams = as.numeric(grams)) %>%
+  # filter(is.na(grams))
+```
