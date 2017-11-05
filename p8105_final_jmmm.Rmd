@@ -115,5 +115,20 @@ NIH_funding$US_mortality_2015 = as.numeric(NIH_funding$US_mortality_2015)
   
 NIH_funding = NIH_funding %>%
   select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted)) 
+
+final_nih_funding = NIH_funding %>%
+  clean_names %>%
+  filter(!is.na(fy_2017)) %>% #eliminate entries with many missing values
+  rename(disease = research_disease_areas_dollars_in_millions_and_rounded, 
+         '2013' = fy_2013,
+         '2014' = fy_2014,
+         '2015' = fy_2015,
+         '2016' = fy_2016,
+         '2017' = fy_2017,
+         "2018_estimated" = fy_2018estimated) %>%
+  select(disease, prevalence, us_mortality_2015, "2013", "2014", "2015", "2016", "2017", "2018_estimated")
+
+
+
   
 
