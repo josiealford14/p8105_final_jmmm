@@ -139,19 +139,33 @@ patents = patents %>%
   clean_names() %>%
   mutate(drug_application_type = factor(appl_type, labels = c("NDA_or_innovator"))) %>%
   separate(patexp, into = c("month_pat_expires", "day_pat_expires", "year_pat_expires"), sep = "/") %>%
-  separate(patent_no, into = c("patent_num", "pediatric_exclusivity_granted"), sep = "\\*") %>%
-  #pediatric_exclusivity_granted = 
-  #is.na(pediatric_exclusivity_granted) = 0
-  #mutate(pediatric_exclusivity_granted = as.character(pediatric_exclusivity_granted)) %>% 
-  
-  mutate(pediatric_exclusivity_granted = (pediatric_exclusivity_granted[is.na[pediatric_exclusivity_granted] = 0))
-  recode(pediatric_exclusivity_granted, "NA" = "no")
-  mutate(pediatric_exclusivity_granted = factor(pediatric_exclusivity_granted, levels = c("NA", "PED"), labels = c("No", "Yes")))
-  
+  separate(patent_no, into = c("patent_num", "pediatric_exclusivity_granted"), sep = "\\*")
 
 patents$pediatric_exclusivity_granted[is.na(patents$pediatric_exclusivity_granted)] = "no"
+patents$drugsub[is.na(patents$drugsub)] = "no"
+patents$drugprod[is.na(patents$drugprod)] = "no"
+patents$delist[is.na(patents$delist)] = "no"
 
-(is.na(patents$pediatric_exclusivity_granted) = TRUE) = "no"
-if (patents$pediatric_exclusivity_granted !="PED") {patents$pediatric_exclusivity_granted = 0}
-  
+
+patents = patents %>%
+  mutate(pediatric_exclusivity_granted = factor(pediatric_exclusivity_granted, levels = c("no", "PED"), labels = c("No", "Yes"))) %>%
+  mutate(drug_substance_flag = factor(drugsub, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
+  mutate(drug_prod_flag = factor(drugprod, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
+  mutate(patent_delisted = factor(delist, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
+  select(-drugsub, -drugprod, -patexpstr, -appl_type) %>%
+  rename(pat_use_code = patuse)
+```
+
+*The Products dataset from the FDA Orange Book
+```{r}
+products = read_csv("./products.csv")
+products = products %>%
+  mutate(drug_application_type = factor(appl_type, levels = c("A", "N"), labels = c("ANDA_or_generic","NDA_or_innovator"))) %>%
+  separate(appdate, into = c("approval_month", "approval_day", "approval_year"), sep = "/") %>%
+  #separate(doseform, into = c("form", "release_type"), sep = ",")
+  mutate(type = factor(type)) %>%
+  mutate(ref_listed_drug = factor(rld)) %>%
+  mutate(ref_std = factor(rs)) %>%
+  select(-appl_type, -appdatestr, -rld, -rs, -dfroute)
+                       
 
