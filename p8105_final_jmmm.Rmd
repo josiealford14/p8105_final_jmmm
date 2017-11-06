@@ -129,6 +129,29 @@ final_nih_funding = NIH_funding %>%
   select(disease, prevalence, us_mortality_2015, "2013", "2014", "2015", "2016", "2017", "2018_estimated")
 
 
+```
 
+*The Patents dataset from the FDA Orange Book
+
+```{r}
+patents = read_csv("./patent.csv")
+patents = patents %>% 
+  clean_names() %>%
+  mutate(drug_application_type = factor(appl_type, labels = c("NDA_or_innovator"))) %>%
+  separate(patexp, into = c("month_pat_expires", "day_pat_expires", "year_pat_expires"), sep = "/") %>%
+  separate(patent_no, into = c("patent_num", "pediatric_exclusivity_granted"), sep = "\\*") %>%
+  #pediatric_exclusivity_granted = 
+  #is.na(pediatric_exclusivity_granted) = 0
+  #mutate(pediatric_exclusivity_granted = as.character(pediatric_exclusivity_granted)) %>% 
+  
+  mutate(pediatric_exclusivity_granted = (pediatric_exclusivity_granted[is.na[pediatric_exclusivity_granted] = 0))
+  recode(pediatric_exclusivity_granted, "NA" = "no")
+  mutate(pediatric_exclusivity_granted = factor(pediatric_exclusivity_granted, levels = c("NA", "PED"), labels = c("No", "Yes")))
+  
+
+patents$pediatric_exclusivity_granted[is.na(patents$pediatric_exclusivity_granted)] = "no"
+
+(is.na(patents$pediatric_exclusivity_granted) = TRUE) = "no"
+if (patents$pediatric_exclusivity_granted !="PED") {patents$pediatric_exclusivity_granted = 0}
   
 
