@@ -4,6 +4,7 @@ author: "MeOak/Muhire/Manali/Josie"
 date: "10/31/2017"
 output: html_document
 ---
+
 ```{r}
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
 ```
@@ -20,6 +21,8 @@ library(tidytext)
 library(viridis)
 library(broom)
 ```
+
+### **Dataset 1: Drug Prices**
 
 * Looking at the National Drug Acquisition Cost dataset:
 
@@ -46,7 +49,7 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
     + `otc`: over-the-counter (OTC) product (‘Y’ or ‘N’)
     + `pharmacy_type_indicator`: source of pharmacy survey data used to calculate the NADAC. ‘ C/I’ indicates data was collected from surveys of Chain/Independent pharmacies. Other pharmacy type indicators are not used at this time.
     + `pricing_unit`:  pricing unit for the associated NDC (‘ML’, ‘GM’ or ‘EA’)
-* We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rare_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
+* We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rate_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
 
 ```{r rename_split_date}
 drug_price = 
@@ -72,36 +75,8 @@ drug_price %>%
 
 * **Points to consider:**
     + Some unit prices are listed as price per grams or price per milliliters or price per tablet We need to create a price variable with the appropriate unit price if we want to compare drug prices. One way to do this is to convert all unit prices to price per grams by dividing the price of each tablet by the tablet weight and by using the approximate relationship 1ml = 1gm.
-    
-```{r}
-drug_price %>%
-  filter(pricing_unit == "EA") #%>%
-  # mutate(grams = as.numeric(grams)) %>%
-  # filter(is.na(grams))
-```
 
-We load and tidy the `exclusivity` dataset
-
-```{r tidy_exclusivity}
-exclusivity = read_csv("./data/exclusivity.csv") %>%
-  clean_names() %>%
-  separate(excldate, into = c("month", "date", "year")) %>%
-  select(year, month, date, appl_type, everything())
-exclusivity
-```
-
-We load the `ingredient` dataset
-
-```{r tidy_ingredients}
-ingredient = read_csv("./data/ingredient.csv") %>%
-  clean_names() %>%
-  separate(ingredient, into = c("ing1", "ing2", "ing3", "ing4", "ing5", "ing6", "ing7", "ing8", "ing9", "ing10", "ing11", "ing12", "ing13"), sep = ";") %>%
-  gather(key = remove, value = ingredient, ing1:ing13) %>%
-  select(-remove) %>%
-  select(ingredient, everything())
-ingredient
-```
-
+### **Dataset 2: Funding for Research**
 
 *The NIH RCDC Report
 *This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
@@ -154,6 +129,8 @@ final_nih_funding = NIH_funding %>%
 
 ```
 
+### **Dataset 3: Patents**
+
 *The Patents dataset from the FDA Orange Book
 
 ```{r}
@@ -177,7 +154,10 @@ patents = patents %>%
   mutate(patent_delisted = factor(delist, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
   select(-drugsub, -drugprod, -patexpstr, -appl_type) %>%
   rename(pat_use_code = patuse)
+patents
 ```
+
+### **Dataset 4: Products**
 
 *The Products dataset from the FDA Orange Book
 ```{r}
@@ -190,4 +170,43 @@ products = products %>%
   mutate(ref_listed_drug = factor(rld)) %>%
   mutate(ref_std = factor(rs)) %>%
   select(-appl_type, -appdatestr, -rld, -rs, -dfroute)
+products
 ```
+
+### **Dataset 5: Exclusivity**
+
+We load and tidy the `exclusivity` dataset
+
+```{r tidy_exclusivity}
+exclusivity = read_csv("./data/exclusivity.csv") %>%
+  clean_names() %>%
+  separate(excldate, into = c("month", "date", "year")) %>%
+  select(year, month, date, appl_type, everything())
+exclusivity
+```
+
+The tidied `exclusivity` dataset has `r exclusivity %>% nrow` observations and `r exclusivity %>% ncol` variables:
+
+* `year`, `month`, and `date` the exclusivity expires
+* `appl_type`: type of new drug application approval. New Drug Applications (NDA or innovator) are "N". Abbreviated New Drug Applications (ANDA or generic) are “A”.
+* `appl_no`: FDA assigned number to the application.  Format is nnnnnn.
+* `product_no`: FDA assigned number to identify the application products. Each strength is a separate product. May repeat for multiple part products.  Format is nnn.
+* `exclcode`: Code to designate exclusivity granted by the FDA to a drug product.  Format is nnnnnnnnnn.
+* `excldatestr`: The date the exclusivity expires. Format is MMM DD, YYYY.
+
+### **Dataset 6: Ingredient**
+
+We load the `ingredient` dataset. 
+
+```{r tidy_ingredients}
+ingredient = read_csv("./data/ingredient.csv") %>%
+  clean_names() %>%
+  select(singnum, singredient, everything())
+ingredient
+```
+
+The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r ingredient %>% ncol` variables:
+
+* `singnum`: The number assigned to the single ingredient for each product.
+* `singredient`: each single ingredient in the product.
+* `ingredient`: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
