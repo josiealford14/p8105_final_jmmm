@@ -26,12 +26,16 @@ library(broom)
 
 * Looking at the National Drug Acquisition Cost dataset:
 
-```{r tidy_drug_price}
-url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
+```{r tidy_drug_price, cache = TRUE}
+# url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
+# drug_price =
+#   GET(url, query = list("$limit" = 9999999)) %>%
+#   content("parsed") %>%
+#   clean_names()
+#   
 drug_price =
-  GET(url, query = list("$limit" = 9999999)) %>%
-  content("parsed") %>%
-  clean_names() 
+  read_csv("./data/drug_price.csv") %>%
+  clean_names()
 ```
 
 * The raw `drug_price` dataset is huge and takes a while to load.
@@ -69,7 +73,7 @@ drug_price
 
 ```{r drug_price_distr}
 drug_price %>%
-  filter(drug_name == "AMLODIPINE-BENAZEPRIL 5-20 MG") %>%
+  filter(drug_name == "RISPERIDONE 4 MG TABLET") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
 ```
 
