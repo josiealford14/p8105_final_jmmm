@@ -245,6 +245,66 @@ drug_price</code></pre>
 ## #   explanation_code &lt;chr&gt;, pharmacy_type_indicator &lt;chr&gt;</code></pre>
 <pre class="r"><code>  # mutate(grams = as.numeric(grams)) %&gt;%
   # filter(is.na(grams))</code></pre>
+<p><em>The NIH RCDC Report </em>This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH). Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control &amp; Prevention (CDC).</p>
+<pre class="r"><code>url = &quot;https://report.nih.gov/categorical_spending.aspx&quot;
+NIH_xml = read_html(url)
+NIH_funding = (NIH_xml %&gt;% html_nodes(css = &quot;table&quot;))[[3]] %&gt;% html_table() %&gt;% as_tibble()
+NIH_funding = NIH_funding %&gt;%
+  clean_names() %&gt;%
+  mutate(US_mortality_2015 = x2015_us_mortality_19)
+
+NIH_funding$x2015_us_prevalence_standard_error_19  = recode(NIH_funding$x2015_us_prevalence_standard_error_19 , &quot;-&quot; = &quot;NA&quot;)
+NIH_funding$US_mortality_2015 = recode(NIH_funding$US_mortality_2015, &quot;-&quot; = &quot;NA&quot;)
+
+NIH_funding = NIH_funding %&gt;%
+  separate(x2015_us_prevalence_standard_error_19, into = c(&quot;prevalence&quot;, &quot;remove&quot;), sep = &quot;\\%&quot;) %&gt;%
+  select(-x2015_us_mortality_19, -remove)</code></pre>
+<pre><code>## Warning: Too many values at 36 locations: 7, 19, 21, 24, 25, 35, 37, 40,
+## 46, 48, 54, 59, 74, 80, 81, 89, 93, 114, 115, 117, ...</code></pre>
+<pre><code>## Warning: Too few values at 246 locations: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11,
+## 12, 13, 14, 15, 16, 17, 18, 20, 22, 23, ...</code></pre>
+<pre class="r"><code>NIH_funding$fy_2013actual = recode(NIH_funding$fy_2013actual, &quot;+&quot; = &quot;NNA&quot;)
+NIH_funding$fy_2014actual = recode(NIH_funding$fy_2014actual, &quot;+&quot; = &quot;NNA&quot;)
+NIH_funding$fy_2015actual = recode(NIH_funding$fy_2015actual, &quot;+&quot; = &quot;NNA&quot;)
+NIH_funding$fy_2016actual = recode(NIH_funding$fy_2016actual, &quot;+&quot; = &quot;NNA&quot;)
+
+NIH_funding = NIH_funding %&gt;%
+  mutate(fy_2013 = as.numeric(substring(fy_2013actual, 2))) %&gt;%
+  mutate(fy_2014 = as.numeric(substring(fy_2014actual, 2))) %&gt;%
+  mutate(fy_2015 = as.numeric(substring(fy_2015actual, 2))) %&gt;%
+  mutate(fy_2016 = as.numeric(substring(fy_2016actual, 2))) %&gt;%
+  mutate(fy_2017 = as.numeric(substring(fy_2017estimated_enacted, 2))) %&gt;%
+  mutate(fy_2018estimated = as.numeric(substring(fy_2018estimated, 2))) </code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2013actual, 2)), &lt;environment&gt;):
+## NAs introduced by coercion</code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2014actual, 2)), &lt;environment&gt;):
+## NAs introduced by coercion</code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2015actual, 2)), &lt;environment&gt;):
+## NAs introduced by coercion</code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2016actual, 2)), &lt;environment&gt;):
+## NAs introduced by coercion</code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2017estimated_enacted, 2)),
+## &lt;environment&gt;): NAs introduced by coercion</code></pre>
+<pre><code>## Warning in evalq(as.numeric(substring(fy_2018estimated, 2)),
+## &lt;environment&gt;): NAs introduced by coercion</code></pre>
+<pre class="r"><code>NIH_funding$prevalence = as.numeric(NIH_funding$prevalence)</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>NIH_funding$US_mortality_2015 = as.numeric(NIH_funding$US_mortality_2015)</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>NIH_funding = NIH_funding %&gt;%
+  select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted)) 
+
+final_nih_funding = NIH_funding %&gt;%
+  clean_names %&gt;%
+  filter(!is.na(fy_2017)) %&gt;% #eliminate entries with many missing values
+  rename(disease = research_disease_areas_dollars_in_millions_and_rounded, 
+         '2013' = fy_2013,
+         '2014' = fy_2014,
+         '2015' = fy_2015,
+         '2016' = fy_2016,
+         '2017' = fy_2017,
+         &quot;2018_estimated&quot; = fy_2018estimated) %&gt;%
+  select(disease, prevalence, us_mortality_2015, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018_estimated&quot;)</code></pre>
 
 
 

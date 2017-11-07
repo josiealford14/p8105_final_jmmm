@@ -134,7 +134,7 @@ final_nih_funding = NIH_funding %>%
 *The Patents dataset from the FDA Orange Book
 
 ```{r}
-patents = read_csv("./patent.csv")
+patents = read_csv("./data/patent.csv")
 patents = patents %>% 
   clean_names() %>%
   mutate(drug_application_type = factor(appl_type, labels = c("NDA_or_innovator"))) %>%
@@ -158,7 +158,7 @@ patents = patents %>%
 
 *The Products dataset from the FDA Orange Book
 ```{r}
-products = read_csv("./products.csv")
+products = read_csv("./data/products.csv")
 products = products %>%
   mutate(drug_application_type = factor(appl_type, levels = c("A", "N"), labels = c("ANDA_or_generic","NDA_or_innovator"))) %>%
   separate(appdate, into = c("approval_month", "approval_day", "approval_year"), sep = "/") %>%
