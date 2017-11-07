@@ -62,7 +62,7 @@ drug_price =
 drug_price
 ```
 
-* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median instead of the mean price might be the better measure to use in the analyses.
+* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
 
 ```{r drug_price_distr}
 drug_price %>%
@@ -79,6 +79,29 @@ drug_price %>%
   # mutate(grams = as.numeric(grams)) %>%
   # filter(is.na(grams))
 ```
+
+We load and tidy the `exclusivity` dataset
+
+```{r tidy_exclusivity}
+exclusivity = read_csv("./data/exclusivity.csv") %>%
+  clean_names() %>%
+  separate(excldate, into = c("month", "date", "year")) %>%
+  select(year, month, date, appl_type, everything())
+exclusivity
+```
+
+We load the `ingredient` dataset
+
+```{r tidy_ingredients}
+ingredient = read_csv("./data/ingredient.csv") %>%
+  clean_names() %>%
+  separate(ingredient, into = c("ing1", "ing2", "ing3", "ing4", "ing5", "ing6", "ing7", "ing8", "ing9", "ing10", "ing11", "ing12", "ing13"), sep = ";") %>%
+  gather(key = remove, value = ingredient, ing1:ing13) %>%
+  select(-remove) %>%
+  select(ingredient, everything())
+ingredient
+```
+
 
 *The NIH RCDC Report
 *This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
@@ -167,5 +190,4 @@ products = products %>%
   mutate(ref_listed_drug = factor(rld)) %>%
   mutate(ref_std = factor(rs)) %>%
   select(-appl_type, -appdatestr, -rld, -rs, -dfroute)
-                       
-
+```
