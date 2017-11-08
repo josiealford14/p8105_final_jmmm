@@ -1,4 +1,13 @@
 base
+<<<<<<< HEAD
+=======
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+>>>>>>> 672a0242a678e71045b4abf51027bb4960f0fbab
 tidyverse
 ggplot2
 tibble
@@ -16,4 +25,7 @@ tidytext
 viridisLite
 viridis
 broom
+<<<<<<< HEAD
 bindrcpp
+=======
+>>>>>>> 672a0242a678e71045b4abf51027bb4960f0fbab
