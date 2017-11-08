@@ -26,7 +26,7 @@ library(broom)
 
 * Looking at the National Drug Acquisition Cost dataset:
 
-```{r tidy_drug_price}
+```{r tidy_drug_price, cache = TRUE}
 url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 drug_price =
   GET(url, query = list("$limit" = 9999999)) %>%
@@ -51,7 +51,7 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
     + `pricing_unit`:  pricing unit for the associated NDC (‘ML’, ‘GM’ or ‘EA’)
 * We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rate_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
 
-```{r rename_split_date}
+```{r rename_split_date, cache = TRUE}
 drug_price = 
   drug_price %>%
   rename(date = effective_date,
@@ -67,7 +67,7 @@ drug_price
 
 * We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
 
-```{r drug_price_distr}
+```{r drug_price_distr, cache = TRUE}
 drug_price %>%
   filter(drug_name == "AMLODIPINE-BENAZEPRIL 5-20 MG") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
@@ -210,3 +210,38 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 * `singnum`: The number assigned to the single ingredient for each product.
 * `singredient`: each single ingredient in the product.
 * `ingredient`: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
+
+###Combine Datasets into one 
+```{r}
+#products, exclusivity, patents
+products = products %>%
+  select(appl_no, ingredient, everything())
+exclusivity = exclusivity %>%
+  select(appl_no, year, everything())
+
+#A: join datasets by ingredient for ingridient and products (left join)
+#products = longer dataset + ingridient
+product_ingredient = left_join(products, ingredient, by.products = "ingredient")
+product_ingredient
+
+#B: exlcusivity and patent left join (more~less)
+patent_exclusivity = left_join(patents, exclusivity, by.patents = "appl_no")
+patent_exclusivity
+
+#C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
+orange_book = inner_join(product_ingredient, patent_exclusivity)
+orange_book = orange_book %>%
+  mutate(ingredient = str_to_title(ingredient),
+         doseform = str_to_title(doseform),
+         route = str_to_title(route),
+         trade_name = str_to_title(trade_name),
+         applicant = str_to_title(applicant),
+         type = str_to_title(type),
+         appfull = str_to_title(appfull),
+         singredient = str_to_title(singredient),
+         strength = str_to_title(strength))
+orange_book
+#final goal: disease, funding, drug prices, and Orange Book
+
+```
+
