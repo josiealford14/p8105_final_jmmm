@@ -136,7 +136,27 @@ final_nih_funding = NIH_funding %>%
 ### **Dataset 3: Patents**
 
 *The Patents dataset from the FDA Orange Book
+* Below is a description of the dataset and variables from https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm
 
+*New Drug Application Type: The type of new drug application approval, either New Drug Applications(NDA or innovator) or Abbreviated New Drug Applications(ANDA or generic)
+
+*New Drug Application (NDA) Number (appl_no) : The FDA assigned number to the application. 
+
+*Product Number: The FDA assigned number to identify the application products.  Each strength is a separate product.  May repeat for multiple part products. 
+
+*Patent Number (patent_num): Patent numbers as submitted by the applicant holder for patents covered by the statutory provisions.  May repeat for multiple applications and multiple products. 
+
+*Pediatric Exclusivity Granted: Yes or No.  Was pediatric exclusivity granted by the agency?
+
+*Patent Expire Date: The date the patent expires as submitted by the applicant holder including applicable extensions.  This was split into Year, Month, and Day variables
+
+*Drug Substance Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug substance flag indicating the sponsor submitted the patent as claiming the drug substance.   
+
+*Drug Product Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug product flag indicating the sponsor submitted the patent as claiming the drug product.   
+
+*Patent Use Code: Code to designate a use patent that covers the approved indication or use of a drug product.  May repeat for multiple applications, multiple products and multiple patents.
+
+*Patent Delist Request Flag: Sponsor has requested patent be delisted.  This patent has remained listed because, under Section 505(j)(5)(D)(i) of the Act, a first applicant may retain eligibility for 180-day exclusivity based on a paragraph IV certification to this patent for a certain period.  Applicants under Section 505(b)(2) are not required to certify to patents where this flag is set to Y.
 ```{r}
 patents = read_csv("./data/patent.csv")
 patents = patents %>% 
@@ -164,6 +184,38 @@ patents
 ### **Dataset 4: Products**
 
 *The Products dataset from the FDA Orange Book
+
+* Below is a description of the dataset and variables from https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm
+
+Ingredient: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
+
+Dose form;The product dosage form
+
+Route:  Product dosage route 
+
+Trade_Name: The trade name of the product as shown on the labeling.
+
+Applicant: The firm name holding legal responsibility for the new drug application.  The firm name is condensed to a maximum twenty character unique string.
+
+Strength: The potency of the active ingredient.  May repeat for multiple part products.
+
+Drug Application Type: The type of new drug application approval. NDA orANDA as for patents dataset.
+
+New Drug Application (NDA) Number: The FDA assigned number to the application.
+
+Product Number: The FDA assigned number to identify the application products. Each strength is a separate product.  May repeat for multiple part products.
+
+Therapeutic Equivalence (TE) Code: The TE Code indicates the therapeutic equivalence rating of generic to innovator Rx products.
+
+Approval Date: The date the product was approved as stated in the FDA approval letter to the applicant. Products approved prior to the January 1, 1982 contain the phrase: "Approved prior to Jan 1, 1982".  This separated into Year, Month, and Day variables.
+
+Reference Listed Drug (RLD) Updated: The RLD is a drug product approved under section 505(c) of the FD&C Act for which FDA has made a finding of safety and effectiveness. In the electronic Orange Book, an RLD is identified by “RLD” in the RLD column.
+
+Reference Standard (RS) New! :A “reference standard” is the drug product selected by FDA that an applicant seeking approval of an ANDA must use in conducting an in vivo bioequivalence study required for approval of an ANDA.  In the electronic Orange Book, a reference standard is identified by “RS” in the RS column.
+
+Type: The group or category of approved drugs.  RX, OTC, or DISCN.
+
+Applicant Full Name: The full name of the firm holding legal responsibility for the new drug application. 
 ```{r}
 products = read_csv("./data/products.csv")
 products = products %>%
