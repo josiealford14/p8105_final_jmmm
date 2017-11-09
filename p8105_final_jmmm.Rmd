@@ -26,7 +26,7 @@ library(broom)
 
 * Looking at the National Drug Acquisition Cost dataset:
 
-```{r tidy_drug_price, cache = TRUE}
+```{r tidy_drug_price}
 # url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 # drug_price =
 #   GET(url, query = list("$limit" = 9999999)) %>%
@@ -55,7 +55,7 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
     + `pricing_unit`:  pricing unit for the associated NDC (‘ML’, ‘GM’ or ‘EA’)
 * We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rate_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
 
-```{r rename_split_date, cache = TRUE}
+```{r rename_split_date}
 drug_price = 
   drug_price %>%
   rename(date = effective_date,
@@ -71,7 +71,7 @@ drug_price
 
 * We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
 
-```{r drug_price_distr, cache = TRUE}
+```{r drug_price_distr}
 drug_price %>%
   filter(drug_name == "ENEMA") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
