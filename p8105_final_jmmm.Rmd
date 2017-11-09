@@ -27,15 +27,15 @@ library(broom)
 * Looking at the National Drug Acquisition Cost dataset:
 
 ```{r tidy_drug_price}
-# url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
-# drug_price =
-#   GET(url, query = list("$limit" = 9999999)) %>%
-#   content("parsed") %>%
-#   clean_names()
-#   
+url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 drug_price =
-  read_csv("./data/drug_price.csv") %>%
+  GET(url, query = list("$limit" = 9999999)) %>%
+  content("parsed") %>%
   clean_names()
+
+# drug_price =
+#   read_csv("./data/drug_price.csv") %>%
+#   clean_names()
 ```
 
 * The raw `drug_price` dataset is huge and takes a while to load.
