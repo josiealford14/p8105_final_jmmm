@@ -34,7 +34,7 @@ drug_price =
   clean_names()
 
 # drug_price =
-#   read_csv("./data/drug_price.csv") %>%
+#   read_csv("../data/drug_price.csv") %>%
 #   clean_names()
 ```
 
