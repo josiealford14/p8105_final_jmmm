@@ -58,14 +58,16 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
 ```{r rename_split_date}
 drug_price = 
   drug_price %>%
-  rename(date = effective_date,
-         drug_name = ndc_description,
+  rename(drug_name = ndc_description,
          drug_type = classification_for_rate_setting,
          unit_price = nadac_per_unit) %>%
-  separate(date, into = c("year", "month", "date")) %>%
-  mutate(grams = drug_name,
-         grams = str_replace_all(grams,"[A-Z]", "")) %>%
-  select(year, month, date, ndc, drug_name, grams, pricing_unit, unit_price, drug_type, otc, everything())
+  separate(effective_date, into = c("year", "month", "date")) %>%
+  mutate(grams = str_replace_all(drug_name,"[A-Z]", ""),
+         drug_name = str_replace(drug_name, "[0-9]", "_")) %>% 
+  separate(drug_name, into = c("drug_name", "remove"), sep = "_") %>% 
+  mutate(drug_name = tolower(drug_name),
+         otc = as.factor(otc)) %>% 
+  select(-c(remove, date))
 drug_price
 ```
 
@@ -73,7 +75,7 @@ drug_price
 
 ```{r drug_price_distr}
 drug_price %>%
-  filter(drug_name == "ENEMA") %>%
+  filter(drug_name == "enema") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
 ```
 
