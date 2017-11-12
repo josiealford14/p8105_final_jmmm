@@ -86,7 +86,7 @@ drug_price %>%
 
 *The NIH RCDC Report
 *This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
-
+*Funding for 2018 are estimated figures.
 ```{r}
 url = "https://report.nih.gov/categorical_spending.aspx"
 NIH_xml = read_html(url)
@@ -118,20 +118,18 @@ NIH_funding$prevalence = as.numeric(NIH_funding$prevalence)
 NIH_funding$US_mortality_2015 = as.numeric(NIH_funding$US_mortality_2015)
   
 NIH_funding = NIH_funding %>%
-  select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted)) 
+  select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted))
 
-final_nih_funding = NIH_funding %>%
-  clean_names %>%
-  filter(!is.na(fy_2017)) %>% #eliminate entries with many missing values
+final_NIH_funding = NIH_funding %>%
   rename(disease = research_disease_areas_dollars_in_millions_and_rounded, 
          '2013' = fy_2013,
          '2014' = fy_2014,
          '2015' = fy_2015,
          '2016' = fy_2016,
          '2017' = fy_2017,
-         "2018_estimated" = fy_2018estimated) %>%
-  select(disease, prevalence, us_mortality_2015, "2013", "2014", "2015", "2016", "2017", "2018_estimated")
-
+         '2018' = fy_2018estimated) %>%
+  gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018"))
+rm(NIH_funding)
 
 ```
 
@@ -314,5 +312,7 @@ orange_book_clean = orange_book %>%
   select(application_no, trade_name, applicant, active_ingredient, dose_form, route, type, strength, patent_num, pediatric_exclusivity_granted, month_pat_expires,year_pat_expires, drug_application_type, drug_substance_flag, drug_prod_flag, patent_delisted, year_exclusivity, month_exclusivity, everything())
 orange_book_clean #latest Orange Book dataset
 
+orange_book_clean = orange_book_clean %>%
+  mutate(drug_application_type = factor(drug_application_type, levels = c("NDA_or_innovator", "ANDA_or_generic"), labels = c("B", "G")))
 ```
 
