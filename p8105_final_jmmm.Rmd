@@ -320,10 +320,6 @@ Josie
 #merge orange book with funding and drug price
 orange_book_clean = 
 ```
-Questions to ask!
-1. 
-
-
 
 Manali
 ```{r}
@@ -333,6 +329,7 @@ Manali
 Muhire
 ```{r}
 #scrape drugs info with iteration
+
 ```
 
 MeOak
