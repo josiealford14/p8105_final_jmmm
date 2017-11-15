@@ -342,7 +342,8 @@ patent_exclusivity = left_join(patents, exclusivity, by.patents = "appl_no")
 patent_exclusivity
 
 #C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
-orange_book = inner_join(product_ingredient, patent_exclusivity)
+orange_book = left_join(product_ingredient, patent_exclusivity, by.product_ingredient = "appl_no")
+
 orange_book = orange_book %>%
   mutate(ingredient = str_to_title(ingredient),
          doseform = str_to_title(doseform),
@@ -374,8 +375,46 @@ orange_book_clean = orange_book_clean %>%
 ```
 Josie
 ```{r}
-#merge orange book with funding and drug price
-orange_book_clean = 
+#further cleaning of drug_price
+drug_price_new = drug_price %>%
+  mutate(drug_name = as.character(drug_name)) %>%
+  mutate(active_ingredient = str_to_title(drug_name)) %>%
+  select(-drug_name)
+#inner join of disease drug and orange book =y by trade_name
+orange_book_clean_new = inner_join(drug_disease_data_new, orange_book_clean, by = "trade_name")
+#left join of y and nih funding by disease_name
+final_dataset = left_join(orange_book_clean_new, final_NIH_funding, by = "disease")
+final_dataset
+```
+
+
+```{r}
+#inner join drug disease and orange book by drug name
+#drug_disease_data_new = drug_disease_data %>%
+  #separate(drug, into = c("trade_name", "active_ingredient"), sep = "\\(") %>%
+  #mutate(trade_name = str_to_title(trade_name))
+#partial matching for joining
+#drug_disease_data_new_unique = drug_disease_data_new %>%
+  #distinct(trade_name) %>%
+  #pull()
+#orange_book_clean_unique = orange_book_clean %>%
+  #distinct(trade_name) %>%
+  #pull()
+#loop for partial matching
+#x = vector("list")
+#orange_book_matches = as.data.frame("")
+#for (i in 1:length(drug_disease_data_new_unique)) {
+ # orange_book_matches = agrep(drug_disease_data_new_unique[i], orange_book_clean$trade_name, ignore.case = TRUE)
+#x = paste0(x, "")
+#}
+
+
+#partial_match = agrep(drug_disease_data_new$trade_name, orange_book_clean$trade_name)
+
+#left join of drug_price and orange book by disease name
+
+
+#final_dataset = inner_join(orange_book_clean, drug_price_new by = "active_ingredient")
 ```
 
 Manali
@@ -393,6 +432,3 @@ MeOak
 ```{r}
 
 ```
-
-
-
