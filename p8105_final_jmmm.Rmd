@@ -267,54 +267,7 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 * `singredient`: each single ingredient in the product.
 * `ingredient`: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
 
-###Combine Datasets into one 
-```{r}
-#products, exclusivity, patents
-products = products %>%
-  select(appl_no, ingredient, everything())
-exclusivity = exclusivity %>%
-  select(appl_no, year, everything())
-
-#A: join datasets by ingredient for ingridient and products (left join)
-#products = longer dataset + ingridient
-product_ingredient = left_join(products, ingredient, by.products = "ingredient")
-product_ingredient
-
-#B: exlcusivity and patent left join (more~less)
-patent_exclusivity = left_join(patents, exclusivity, by.patents = "appl_no")
-patent_exclusivity
-
-#C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
-orange_book = inner_join(product_ingredient, patent_exclusivity)
-orange_book = orange_book %>%
-  mutate(ingredient = str_to_title(ingredient),
-         doseform = str_to_title(doseform),
-         route = str_to_title(route),
-         trade_name = str_to_title(trade_name),
-         applicant = str_to_title(applicant),
-         type = str_to_title(type),
-         appfull = str_to_title(appfull),
-         singredient = str_to_title(singredient),
-         strength = str_to_title(strength))
-orange_book
-#final goal: disease, funding, drug prices, and Orange Book
-
-#eliminate unnecessary variables from orange book dataset
-orange_book_clean = orange_book %>%
-  rename(application_no = appl_no, 
-         active_ingredient = singredient, 
-         dose_form = doseform,
-         year_exclusivity = year,
-         month_exclusivity =  month,
-         application_type = appl_type
-         ) %>%
-  select(-c(product_no, tecode, tecodestr, approval_day, appfull,      ref_std, singnum, day_pat_expires, pat_use_code, delist, date,       exclcode, excldatestr, ingredient)) %>%
-  select(application_no, trade_name, applicant, active_ingredient, dose_form, route, type, strength, patent_num, pediatric_exclusivity_granted, month_pat_expires,year_pat_expires, drug_application_type, drug_substance_flag, drug_prod_flag, patent_delisted, year_exclusivity, month_exclusivity, everything())
-orange_book_clean #latest Orange Book dataset
-
-orange_book_clean = orange_book_clean %>%
-  mutate(drug_application_type = factor(drug_application_type, levels = c("NDA_or_innovator", "ANDA_or_generic"), labels = c("B", "G")))
-```
+### **Dataset 7: Drug by Condition**
 
 Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
 
@@ -364,5 +317,59 @@ drug_disease_data = map_df(urls, get_drug_disease) %>%
   mutate(disease = tolower(disease),
          drug = tolower(drug))
 drug_disease_data
+```
+
+The `drug_disease_data` contains `r drug_disease_data %>% nrow` observations and `r drug_disease_data %>%  ncol` variables:
+
+* `drug`: the drug name
+* `disease`: the disease name
+
+###Combine Datasets into one 
+```{r}
+#products, exclusivity, patents
+products = products %>%
+  select(appl_no, ingredient, everything())
+exclusivity = exclusivity %>%
+  select(appl_no, year, everything())
+
+#A: join datasets by ingredient for ingridient and products (left join)
+#products = longer dataset + ingridient
+product_ingredient = left_join(products, ingredient, by.products = "ingredient")
+product_ingredient
+
+#B: exlcusivity and patent left join (more~less)
+patent_exclusivity = left_join(patents, exclusivity, by.patents = "appl_no")
+patent_exclusivity
+
+#C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
+orange_book = inner_join(product_ingredient, patent_exclusivity)
+orange_book = orange_book %>%
+  mutate(ingredient = str_to_title(ingredient),
+         doseform = str_to_title(doseform),
+         route = str_to_title(route),
+         trade_name = str_to_title(trade_name),
+         applicant = str_to_title(applicant),
+         type = str_to_title(type),
+         appfull = str_to_title(appfull),
+         singredient = str_to_title(singredient),
+         strength = str_to_title(strength))
+orange_book
+#final goal: disease, funding, drug prices, and Orange Book
+
+#eliminate unnecessary variables from orange book dataset
+orange_book_clean = orange_book %>%
+  rename(application_no = appl_no, 
+         active_ingredient = singredient, 
+         dose_form = doseform,
+         year_exclusivity = year,
+         month_exclusivity =  month,
+         application_type = appl_type
+         ) %>%
+  select(-c(product_no, tecode, tecodestr, approval_day, appfull,      ref_std, singnum, day_pat_expires, pat_use_code, delist, date,       exclcode, excldatestr, ingredient)) %>%
+  select(application_no, trade_name, applicant, active_ingredient, dose_form, route, type, strength, patent_num, pediatric_exclusivity_granted, month_pat_expires,year_pat_expires, drug_application_type, drug_substance_flag, drug_prod_flag, patent_delisted, year_exclusivity, month_exclusivity, everything())
+orange_book_clean #latest Orange Book dataset
+
+orange_book_clean = orange_book_clean %>%
+  mutate(drug_application_type = factor(drug_application_type, levels = c("NDA_or_innovator", "ANDA_or_generic"), labels = c("B", "G")))
 ```
 

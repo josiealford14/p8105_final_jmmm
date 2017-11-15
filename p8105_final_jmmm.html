@@ -513,6 +513,73 @@ products</code></pre>
 <li><code>ingredient</code>: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.</li>
 </ul>
 </div>
+<div id="dataset-7-drug-by-condition" class="section level3">
+<h3><strong>Dataset 7: Drug by Condition</strong></h3>
+<p>Scraping data on drugs per condition from <a href="https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A">this website</a></p>
+<pre class="r"><code>urls = paste(&quot;https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/&quot;, toupper(letters), sep = &quot;&quot;)
+
+get_drug_disease = function(url) {
+  
+  disease_data = read_html(url) %&gt;% 
+  html_nodes(css = &quot;.ToggleDrugCategory&quot;) %&gt;%
+  html_text() %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(key = value) %&gt;% 
+  rename(disease = value)
+  
+  drug_data = read_html(url) %&gt;% 
+  html_nodes(css = &quot;.CategoryListSection a:nth-child(1)&quot;) %&gt;%
+  html_text() %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(key = value) %&gt;% 
+  rename(drug = value)
+  
+  drug_disease_data = read_html(url) %&gt;% 
+  html_nodes(css = &quot;#MainColumn a:nth-child(1)&quot;) %&gt;%
+  html_text() %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(key = value) %&gt;% 
+  rename(drug_disease = value)
+  
+  drug_disease_joined = left_join(drug_disease_data, drug_data, disease_data, by = &quot;key&quot;) %&gt;% 
+  left_join(., disease_data, by = &quot;key&quot;) %&gt;%
+  fill(disease) %&gt;%
+  select(-c(drug,drug_disease))
+  
+  toremove = drug_disease_joined %&gt;% distinct(disease) %&gt;% pull()
+  
+  drug_disease_joined = drug_disease_joined %&gt;% 
+  filter(!key %in% toremove) %&gt;% 
+  rename(drug = key) %&gt;% 
+  .[-c(1:29),]
+  
+  drug_disease_joined
+}
+
+drug_disease_data = map_df(urls, get_drug_disease) %&gt;% 
+  mutate(disease = tolower(disease),
+         drug = tolower(drug))
+drug_disease_data</code></pre>
+<pre><code>## # A tibble: 1,879 x 2
+##                                                            drug disease
+##                                                           &lt;chr&gt;   &lt;chr&gt;
+##  1                                                    avita gel    acne
+##  2 benzamycin (erythromycin 3%-benzoyl peroxide 5% topical gel)    acne
+##  3                            clindamycin phosphate topical gel    acne
+##  4                clindamycin phosphate topical solution usp 1%    acne
+##  5                           differin (adapalene gel) gel, 0.1%    acne
+##  6      estrostep (norethindrone acetate and ethinyl estradiol)    acne
+##  7                                                      finevin    acne
+##  8           klaron (sodium sulfacet amide lotion ) lotion, 10%    acne
+##  9    ortho tri-cyclen tablets (norgestimate/ethinyl estradiol)    acne
+## 10              retin-a micro (tretinoin gel) microsphere, 0.1%    acne
+## # ... with 1,869 more rows</code></pre>
+<p>The <code>drug_disease_data</code> contains 1879 observations and 2 variables:</p>
+<ul>
+<li><code>drug</code>: the drug name</li>
+<li><code>disease</code>: the disease</li>
+</ul>
+</div>
 <div id="combine-datasets-into-one" class="section level3">
 <h3>Combine Datasets into one</h3>
 <pre class="r"><code>#products, exclusivity, patents
@@ -646,65 +713,6 @@ orange_book_clean #latest Orange Book dataset</code></pre>
 ## #   ref_listed_drug &lt;fctr&gt;, application_type &lt;chr&gt;</code></pre>
 <pre class="r"><code>orange_book_clean = orange_book_clean %&gt;%
   mutate(drug_application_type = factor(drug_application_type, levels = c(&quot;NDA_or_innovator&quot;, &quot;ANDA_or_generic&quot;), labels = c(&quot;B&quot;, &quot;G&quot;)))</code></pre>
-<p>Scraping data on drugs per condition from <a href="https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A">this website</a></p>
-<pre class="r"><code>urls = paste(&quot;https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/&quot;, toupper(letters), sep = &quot;&quot;)
-
-get_drug_disease = function(url) {
-  
-  disease_data = read_html(url) %&gt;% 
-  html_nodes(css = &quot;.ToggleDrugCategory&quot;) %&gt;%
-  html_text() %&gt;% 
-  as_tibble() %&gt;% 
-  mutate(key = value) %&gt;% 
-  rename(disease = value)
-  
-  drug_data = read_html(url) %&gt;% 
-  html_nodes(css = &quot;.CategoryListSection a:nth-child(1)&quot;) %&gt;%
-  html_text() %&gt;% 
-  as_tibble() %&gt;% 
-  mutate(key = value) %&gt;% 
-  rename(drug = value)
-  
-  drug_disease_data = read_html(url) %&gt;% 
-  html_nodes(css = &quot;#MainColumn a:nth-child(1)&quot;) %&gt;%
-  html_text() %&gt;% 
-  as_tibble() %&gt;% 
-  mutate(key = value) %&gt;% 
-  rename(drug_disease = value)
-  
-  drug_disease_joined = left_join(drug_disease_data, drug_data, disease_data, by = &quot;key&quot;) %&gt;% 
-  left_join(., disease_data, by = &quot;key&quot;) %&gt;%
-  fill(disease) %&gt;%
-  select(-c(drug,drug_disease))
-  
-  toremove = drug_disease_joined %&gt;% distinct(disease) %&gt;% pull()
-  
-  drug_disease_joined = drug_disease_joined %&gt;% 
-  filter(!key %in% toremove) %&gt;% 
-  rename(drug = key) %&gt;% 
-  .[-c(1:29),]
-  
-  drug_disease_joined
-}
-
-drug_disease_data = map_df(urls, get_drug_disease) %&gt;% 
-  mutate(disease = tolower(disease),
-         drug = tolower(drug))
-drug_disease_data</code></pre>
-<pre><code>## # A tibble: 1,879 x 2
-##                                                            drug disease
-##                                                           &lt;chr&gt;   &lt;chr&gt;
-##  1                                                    avita gel    acne
-##  2 benzamycin (erythromycin 3%-benzoyl peroxide 5% topical gel)    acne
-##  3                            clindamycin phosphate topical gel    acne
-##  4                clindamycin phosphate topical solution usp 1%    acne
-##  5                           differin (adapalene gel) gel, 0.1%    acne
-##  6      estrostep (norethindrone acetate and ethinyl estradiol)    acne
-##  7                                                      finevin    acne
-##  8           klaron (sodium sulfacet amide lotion ) lotion, 10%    acne
-##  9    ortho tri-cyclen tablets (norgestimate/ethinyl estradiol)    acne
-## 10              retin-a micro (tretinoin gel) microsphere, 0.1%    acne
-## # ... with 1,869 more rows</code></pre>
 </div>
 
 
