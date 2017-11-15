@@ -27,15 +27,15 @@ library(broom)
 * Looking at the National Drug Acquisition Cost dataset:
 
 ```{r tidy_drug_price}
-url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
-drug_price =
-  GET(url, query = list("$limit" = 9999999)) %>%
-  content("parsed") %>%
-  clean_names()
-
+# url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 # drug_price =
-#   read_csv("../data/drug_price.csv") %>%
+#   GET(url, query = list("$limit" = 9999999)) %>%
+#   content("parsed") %>%
 #   clean_names()
+
+drug_price =
+  read_csv("../data/drug_price.csv") %>%
+  clean_names()
 ```
 
 * The raw `drug_price` dataset is huge and takes a while to load.
@@ -266,6 +266,63 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 * `singnum`: The number assigned to the single ingredient for each product.
 * `singredient`: each single ingredient in the product.
 * `ingredient`: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
+
+### **Dataset 7: Drug by Condition**
+
+Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
+
+```{r}
+
+urls = paste("https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/", toupper(letters), sep = "")
+
+get_drug_disease = function(url) {
+  
+  disease_data = read_html(url) %>% 
+  html_nodes(css = ".ToggleDrugCategory") %>%
+  html_text() %>% 
+  as_tibble() %>% 
+  mutate(key = value) %>% 
+  rename(disease = value)
+  
+  drug_data = read_html(url) %>% 
+  html_nodes(css = ".CategoryListSection a:nth-child(1)") %>%
+  html_text() %>% 
+  as_tibble() %>% 
+  mutate(key = value) %>% 
+  rename(drug = value)
+  
+  drug_disease_data = read_html(url) %>% 
+  html_nodes(css = "#MainColumn a:nth-child(1)") %>%
+  html_text() %>% 
+  as_tibble() %>% 
+  mutate(key = value) %>% 
+  rename(drug_disease = value)
+  
+  drug_disease_joined = left_join(drug_disease_data, drug_data, disease_data, by = "key") %>% 
+  left_join(., disease_data, by = "key") %>%
+  fill(disease) %>%
+  select(-c(drug,drug_disease))
+  
+  toremove = drug_disease_joined %>% distinct(disease) %>% pull()
+  
+  drug_disease_joined = drug_disease_joined %>% 
+  filter(!key %in% toremove) %>% 
+  rename(drug = key) %>% 
+  .[-c(1:29),]
+  
+  drug_disease_joined
+}
+
+drug_disease_data = map_df(urls, get_drug_disease) %>% 
+  mutate(disease = tolower(disease),
+         drug = tolower(drug))
+drug_disease_data
+```
+
+The `drug_disease_data` contains `r drug_disease_data %>% nrow` observations and `r drug_disease_data %>%  ncol` variables:
+
+* `drug`: the drug name
+* `disease`: the disease name
 
 ###Combine Datasets into one 
 ```{r}
