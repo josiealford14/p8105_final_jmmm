@@ -315,4 +315,30 @@ orange_book_clean #latest Orange Book dataset
 orange_book_clean = orange_book_clean %>%
   mutate(drug_application_type = factor(drug_application_type, levels = c("NDA_or_innovator", "ANDA_or_generic"), labels = c("B", "G")))
 ```
+Josie
+```{r}
+#merge orange book with funding and drug price
+orange_book_clean = 
+```
+Questions to ask!
+1. 
+
+
+
+Manali
+```{r}
+
+```
+
+Muhire
+```{r}
+#scrape drugs info with iteration
+```
+
+MeOak
+```{r}
+
+```
+
+
 
