@@ -20,6 +20,7 @@ library(forcats)
 library(tidytext)
 library(viridis)
 library(broom)
+library(plotly)
 ```
 
 ### **Dataset 1: Drug Prices**
@@ -419,6 +420,18 @@ final_dataset
 
 Manali
 ```{r}
+#do rare diseases recieve less funding?
+#set.seed(1)
+#final_dataset %>%
+#  sample_n(50)%>%
+#plot_ly(x~funding, y~prevalence, type = "scatter")
+
+#does funding correlate with drug prices?
+
+#final_dataset %>%
+#  sample_n(50)%>%
+#  plot_ly(x ~ price, y ~ funding, type = "scatter")
+
 
 ```
 
