@@ -399,7 +399,6 @@ final_dataset = orange_book_clean %>%
   rename(trade_name = trade_name.x) %>% 
   distinct()
 
-
 # # inner join of disease drug and orange book =y by trade_name
 # final_dataset =
 #   drug_price %>%
