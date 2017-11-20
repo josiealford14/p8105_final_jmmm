@@ -67,7 +67,9 @@ drug_price =
          unit_price = nadac_per_unit) %>%
   separate(effective_date, into = c("year", "month", "date")) %>%
   mutate(grams = str_replace_all(trade_name,"[A-Z]", ""),
-         trade_name = str_replace(trade_name, "[0-9]", "_")) %>% 
+         trade_name = str_replace(trade_name, "[0-9]", "_"),
+         otc = recode(otc, "Y" = "yes", "N" = "no"),
+         otc = str_to_title(otc)) %>% 
   separate(trade_name, into = c("trade_name", "remove"), sep = "_") %>%
   mutate(trade_name = str_to_title(trade_name),
          otc = as.factor(otc)) %>% 
@@ -224,18 +226,20 @@ patents
 
 * Reference Standard (RS) New! :A “reference standard” is the drug product selected by FDA that an applicant seeking approval of an ANDA must use in conducting an in vivo bioequivalence study required for approval of an ANDA.  In the electronic Orange Book, a reference standard is identified by “RS” in the RS column.
 
-*Type: The group or category of approved drugs.  RX, OTC, or DISCN.
+*Type: The group or category of approved drugs. RX (prescription), OTC (over the counter), or DISCN (discontinued).
 
 *Applicant Full Name: The full name of the firm holding legal responsibility for the new drug application. 
 
 ```{r load_products}
 products = read_csv("./data/products.csv")
 products = products %>%
-  rename(drug_type = appl_type) %>% 
-  mutate(drug_type = recode(drug_type, "A" = "G", "N" = "B")) %>%
+  rename(drug_type = appl_type,
+         otc = type) %>% 
+  mutate(drug_type = recode(drug_type, "A" = "G", "N" = "B"),
+         otc = recode(otc, "OTC" = "yes", "RX" = "no", "DISCN" = "no")) %>%
   separate(appdate, into = c("approval_month", "approval_day", "approval_year"), sep = "/") %>%
   #separate(doseform, into = c("form", "release_type"), sep = ",")
-  mutate(type = factor(type)) %>%
+  mutate(otc = factor(otc)) %>%
   mutate(ref_listed_drug = factor(rld)) %>%
   mutate(ref_std = factor(rs)) %>%
   select(-appdatestr, -rld, -rs, -dfroute)
@@ -365,7 +369,7 @@ orange_book = orange_book %>%
          route = str_to_title(route),
          trade_name = str_to_title(trade_name),
          applicant = str_to_title(applicant),
-         type = str_to_title(type),
+         otc = str_to_title(otc),
          appfull = str_to_title(appfull),
          singredient = str_to_title(singredient),
          strength = str_to_title(strength))
@@ -389,11 +393,11 @@ final_dataset = orange_book_clean %>%
   inner_join(., drug_disease_data, by = "dupl_drug_name") %>% 
   select(-trade_name.y) %>% 
   rename(trade_name = trade_name.x) %>%
+  distinct() %>%
+  inner_join(., sample_n(drug_price, 100000), by = c("dupl_drug_name", "drug_type", "otc")) %>%
+  select(-c(trade_name.y)) %>% 
+  rename(trade_name = trade_name.x) %>% 
   distinct()
-# %>%
-#   inner_join(., drug_price, by = c("dupl_drug_name", "drug_type")) %>%
-#   select(-c(trade_name.y)) %>%
-#   distinct()
 
 
 # # inner join of disease drug and orange book =y by trade_name
