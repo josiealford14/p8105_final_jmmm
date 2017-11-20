@@ -76,7 +76,9 @@ drug_price =
   mutate(dupl_drug_name = trade_name) %>%
   separate(dupl_drug_name, into = c("dupl_drug_name", "remove1")) %>% 
   select(-c(remove, remove1, date, x1)) %>% 
-  select(trade_name, everything())
+  select(trade_name, everything()) %>% 
+  filter(pricing_unit == "GM" | pricing_unit == "EA") %>% 
+  mutate(trade_name = trimws(trade_name, which = c("both")))
 
 drug_price
 ```
@@ -88,6 +90,14 @@ drug_price %>%
   filter(trade_name == "Enema") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
 ```
+
+```{r}
+new_drug_price = drug_price %>% 
+  group_by(trade_name, drug_type, otc, pricing_unit, dupl_drug_name, year) %>% 
+  summarize(avg_price = mean(unit_price, na.rm = TRUE))
+```
+
+
 
 * **Points to consider:**
     + Some unit prices are listed as price per grams or price per milliliters or price per tablet We need to create a price variable with the appropriate unit price if we want to compare drug prices. One way to do this is to convert all unit prices to price per grams by dividing the price of each tablet by the tablet weight and by using the approximate relationship 1ml = 1gm.
@@ -386,30 +396,36 @@ orange_book_clean = orange_book %>%
   mutate(dupl_drug_name = trade_name) %>% 
   separate(dupl_drug_name, into = c("dupl_drug_name", "remove")) %>% 
   select(-remove) %>% 
-  select(trade_name, everything())
+  select(trade_name, everything()) %>% 
+  filter(str_detect(dose_form, regex("Tablet", ignore_case = TRUE))) %>% 
+  mutate(trade_name = trimws(trade_name, which = c("both")))
 
 
-final_dataset = orange_book_clean %>% 
-  inner_join(., drug_disease_data, by = "dupl_drug_name") %>% 
-  select(-trade_name.y) %>% 
-  rename(trade_name = trade_name.x) %>%
-  distinct() %>%
-  inner_join(., sample_n(drug_price, 100000), by = c("dupl_drug_name", "drug_type", "otc")) %>%
-  select(-c(trade_name.y)) %>% 
-  rename(trade_name = trade_name.x) %>% 
-  distinct()
+# final_dataset = orange_book_clean %>% 
+#   inner_join(., drug_disease_data, by = "dupl_drug_name") %>% 
+#   select(-trade_name.y) %>% 
+#   rename(trade_name = trade_name.x) %>%
+#   distinct() %>%
+#   inner_join(., sample_n(drug_price, 100000), by = c("dupl_drug_name", "drug_type", "otc")) %>%
+#   select(-c(trade_name.y)) %>% 
+#   rename(trade_name = trade_name.x) %>% 
+#   distinct()
+#   
+#   
+#   
 
-# # inner join of disease drug and orange book =y by trade_name
-# final_dataset =
-#   drug_price %>%
-#   inner_join(., orange_book_clean, by = c("dupl_drug_name", "drug_type")) %>%
-#   full_join(., drug_disease_data, by = "trade_name") %>%
-#   full_join(., final_NIH_funding, by = "disease") %>%
-#   arrange(trade_name) %>%
-#   mutate(duplicates = trade_name) %>%
-#   separate(duplicates, into = c("duplicates", "remove")) %>%
-#   arrange(duplicates) %>%
-#   select(trade_name, duplicates, everything())
+# inner join of disease drug and orange book =y by trade_name
+final_dataset =
+  new_drug_price %>%
+  inner_join(., orange_book_clean, by = "trade_name") 
+# %>%
+  # full_join(., drug_disease_data, by = "trade_name") %>%
+  # full_join(., final_NIH_funding, by = "disease") %>%
+  # arrange(trade_name) %>%
+  # mutate(duplicates = trade_name) %>%
+  # separate(duplicates, into = c("duplicates", "remove")) %>%
+  # arrange(duplicates) %>%
+  # select(trade_name, duplicates, everything())
 
 # dpl = temp_joined_dataset %>%
 #   pull(duplicates) %>%
