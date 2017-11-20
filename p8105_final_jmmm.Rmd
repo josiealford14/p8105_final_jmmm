@@ -5,7 +5,7 @@ date: "10/31/2017"
 output: html_document
 ---
 
-```{r}
+```{r project_website}
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
 ```
 
@@ -28,12 +28,15 @@ library(plotly)
 * Looking at the National Drug Acquisition Cost dataset:
 
 ```{r tidy_drug_price}
+
+# # API code
 # url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 # drug_price =
 #   GET(url, query = list("$limit" = 9999999)) %>%
 #   content("parsed") %>%
 #   clean_names()
 
+# # CSV code
 drug_price =
   read_csv("../data/drug_price.csv") %>%
   clean_names()
@@ -59,16 +62,20 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
 ```{r rename_split_date}
 drug_price = 
   drug_price %>%
-  rename(drug_name = ndc_description,
+  rename(trade_name = ndc_description,
          drug_type = classification_for_rate_setting,
          unit_price = nadac_per_unit) %>%
   separate(effective_date, into = c("year", "month", "date")) %>%
-  mutate(grams = str_replace_all(drug_name,"[A-Z]", ""),
-         drug_name = str_replace(drug_name, "[0-9]", "_")) %>% 
-  separate(drug_name, into = c("drug_name", "remove"), sep = "_") %>% 
-  mutate(drug_name = tolower(drug_name),
+  mutate(grams = str_replace_all(trade_name,"[A-Z]", ""),
+         trade_name = str_replace(trade_name, "[0-9]", "_")) %>% 
+  separate(trade_name, into = c("trade_name", "remove"), sep = "_") %>%
+  mutate(trade_name = str_to_title(trade_name),
          otc = as.factor(otc)) %>% 
-  select(-c(remove, date))
+  mutate(dupl_drug_name = trade_name) %>%
+  separate(dupl_drug_name, into = c("dupl_drug_name", "remove1")) %>% 
+  select(-c(remove, remove1, date, x1)) %>% 
+  select(trade_name, everything())
+
 drug_price
 ```
 
@@ -76,7 +83,7 @@ drug_price
 
 ```{r drug_price_distr}
 drug_price %>%
-  filter(drug_name == "enema") %>%
+  filter(trade_name == "Enema") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
 ```
 
@@ -85,10 +92,10 @@ drug_price %>%
 
 ### **Dataset 2: Funding for Research**
 
-*The NIH RCDC Report
-*This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
+* The NIH RCDC Report
+* This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
 *Funding for 2018 are estimated figures.
-```{r}
+```{r load_funding}
 url = "https://report.nih.gov/categorical_spending.aspx"
 NIH_xml = read_html(url)
 NIH_funding = (NIH_xml %>% html_nodes(css = "table"))[[3]] %>% html_table() %>% as_tibble()
@@ -130,39 +137,43 @@ final_NIH_funding = NIH_funding %>%
          '2017' = fy_2017,
          '2018' = fy_2018estimated) %>%
   gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018"))
+
 rm(NIH_funding)
 
+final_NIH_funding
 ```
 
 ### **Dataset 3: Patents**
 
-*The Patents dataset from the FDA Orange Book
+* The Patents dataset from the FDA Orange Book
 * Below is a description of the dataset and variables from https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm
 
-*New Drug Application Type: The type of new drug application approval, either New Drug Applications(NDA or innovator) or Abbreviated New Drug Applications(ANDA or generic)
+* New Drug Application Type: The type of new drug application approval, either New Drug Applications(NDA or innovator) or Abbreviated New Drug Applications(ANDA or generic)
 
-*New Drug Application (NDA) Number (appl_no) : The FDA assigned number to the application. 
+* New Drug Application (NDA) Number (appl_no) : The FDA assigned number to the application. 
 
-*Product Number: The FDA assigned number to identify the application products.  Each strength is a separate product.  May repeat for multiple part products. 
+* Product Number: The FDA assigned number to identify the application products.  Each strength is a separate product.  May repeat for multiple part products. 
 
-*Patent Number (patent_num): Patent numbers as submitted by the applicant holder for patents covered by the statutory provisions.  May repeat for multiple applications and multiple products. 
+* Patent Number (patent_num): Patent numbers as submitted by the applicant holder for patents covered by the statutory provisions.  May repeat for multiple applications and multiple products. 
 
-*Pediatric Exclusivity Granted: Yes or No.  Was pediatric exclusivity granted by the agency?
+* Pediatric Exclusivity Granted: Yes or No.  Was pediatric exclusivity granted by the agency?
 
-*Patent Expire Date: The date the patent expires as submitted by the applicant holder including applicable extensions.  This was split into Year, Month, and Day variables
+* Patent Expire Date: The date the patent expires as submitted by the applicant holder including applicable extensions.  This was split into Year, Month, and Day variables
 
-*Drug Substance Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug substance flag indicating the sponsor submitted the patent as claiming the drug substance.   
+* Drug Substance Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug substance flag indicating the sponsor submitted the patent as claiming the drug substance.   
 
-*Drug Product Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug product flag indicating the sponsor submitted the patent as claiming the drug product.   
+* Drug Product Flag: Patents submitted on FDA Form 3542 and listed after August 18, 2003 may have a drug product flag indicating the sponsor submitted the patent as claiming the drug product.   
 
-*Patent Use Code: Code to designate a use patent that covers the approved indication or use of a drug product.  May repeat for multiple applications, multiple products and multiple patents.
+* Patent Use Code: Code to designate a use patent that covers the approved indication or use of a drug product.  May repeat for multiple applications, multiple products and multiple patents.
 
-*Patent Delist Request Flag: Sponsor has requested patent be delisted.  This patent has remained listed because, under Section 505(j)(5)(D)(i) of the Act, a first applicant may retain eligibility for 180-day exclusivity based on a paragraph IV certification to this patent for a certain period.  Applicants under Section 505(b)(2) are not required to certify to patents where this flag is set to Y.
-```{r}
+* Patent Delist Request Flag: Sponsor has requested patent be delisted.  This patent has remained listed because, under Section 505(j)(5)(D)(i) of the Act, a first applicant may retain eligibility for 180-day exclusivity based on a paragraph IV certification to this patent for a certain period.  Applicants under Section 505(b)(2) are not required to certify to patents where this flag is set to Y.
+
+```{r load_patents}
 patents = read_csv("./data/patent.csv")
 patents = patents %>% 
   clean_names() %>%
-  mutate(drug_application_type = factor(appl_type, labels = c("NDA_or_innovator"))) %>%
+  rename(drug_type = appl_type) %>% 
+  mutate(drug_type = recode(drug_type, "N" = "B")) %>%
   separate(patexp, into = c("month_pat_expires", "day_pat_expires", "year_pat_expires"), sep = "/") %>%
   separate(patent_no, into = c("patent_num", "pediatric_exclusivity_granted"), sep = "\\*")
 
@@ -171,13 +182,12 @@ patents$drugsub[is.na(patents$drugsub)] = "no"
 patents$drugprod[is.na(patents$drugprod)] = "no"
 patents$delist[is.na(patents$delist)] = "no"
 
-
 patents = patents %>%
   mutate(pediatric_exclusivity_granted = factor(pediatric_exclusivity_granted, levels = c("no", "PED"), labels = c("No", "Yes"))) %>%
   mutate(drug_substance_flag = factor(drugsub, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
   mutate(drug_prod_flag = factor(drugprod, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
   mutate(patent_delisted = factor(delist, levels = c("no", "Y"), labels = c("no", "yes"))) %>%
-  select(-drugsub, -drugprod, -patexpstr, -appl_type) %>%
+  select(-drugsub, -drugprod, -patexpstr) %>%
   rename(pat_use_code = patuse)
 patents
 ```
@@ -188,45 +198,47 @@ patents
 
 * Below is a description of the dataset and variables from https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm
 
-Ingredient: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
+* Ingredient: The active ingredient(s) for the product. Multiple ingredients are in alphabetical order, separated by a semicolon.
 
-Dose form;The product dosage form
+* Dose form;The product dosage form
 
-Route:  Product dosage route 
+* Route:  Product dosage route 
 
-Trade_Name: The trade name of the product as shown on the labeling.
+* Trade_Name: The trade name of the product as shown on the labeling.
 
-Applicant: The firm name holding legal responsibility for the new drug application.  The firm name is condensed to a maximum twenty character unique string.
+* Applicant: The firm name holding legal responsibility for the new drug application.  The firm name is condensed to a maximum twenty character unique string.
 
-Strength: The potency of the active ingredient.  May repeat for multiple part products.
+* Strength: The potency of the active ingredient.  May repeat for multiple part products.
 
-Drug Application Type: The type of new drug application approval. NDA orANDA as for patents dataset.
+* Drug Application Type: The type of new drug application approval. NDA orANDA as for patents dataset.
 
-New Drug Application (NDA) Number: The FDA assigned number to the application.
+* New Drug Application (NDA) Number: The FDA assigned number to the application.
 
-Product Number: The FDA assigned number to identify the application products. Each strength is a separate product.  May repeat for multiple part products.
+* Product Number: The FDA assigned number to identify the application products. Each strength is a separate product.  May repeat for multiple part products.
 
-Therapeutic Equivalence (TE) Code: The TE Code indicates the therapeutic equivalence rating of generic to innovator Rx products.
+* Therapeutic Equivalence (TE) Code: The TE Code indicates the therapeutic equivalence rating of generic to innovator Rx products.
 
-Approval Date: The date the product was approved as stated in the FDA approval letter to the applicant. Products approved prior to the January 1, 1982 contain the phrase: "Approved prior to Jan 1, 1982".  This separated into Year, Month, and Day variables.
+* Approval Date: The date the product was approved as stated in the FDA approval letter to the applicant. Products approved prior to the January 1, 1982 contain the phrase: "Approved prior to Jan 1, 1982".  This separated into Year, Month, and Day variables.
 
-Reference Listed Drug (RLD) Updated: The RLD is a drug product approved under section 505(c) of the FD&C Act for which FDA has made a finding of safety and effectiveness. In the electronic Orange Book, an RLD is identified by “RLD” in the RLD column.
+* Reference Listed Drug (RLD) Updated: The RLD is a drug product approved under section 505(c) of the FD&C Act for which FDA has made a finding of safety and effectiveness. In the electronic Orange Book, an RLD is identified by “RLD” in the RLD column.
 
-Reference Standard (RS) New! :A “reference standard” is the drug product selected by FDA that an applicant seeking approval of an ANDA must use in conducting an in vivo bioequivalence study required for approval of an ANDA.  In the electronic Orange Book, a reference standard is identified by “RS” in the RS column.
+* Reference Standard (RS) New! :A “reference standard” is the drug product selected by FDA that an applicant seeking approval of an ANDA must use in conducting an in vivo bioequivalence study required for approval of an ANDA.  In the electronic Orange Book, a reference standard is identified by “RS” in the RS column.
 
-Type: The group or category of approved drugs.  RX, OTC, or DISCN.
+*Type: The group or category of approved drugs.  RX, OTC, or DISCN.
 
-Applicant Full Name: The full name of the firm holding legal responsibility for the new drug application. 
-```{r}
+*Applicant Full Name: The full name of the firm holding legal responsibility for the new drug application. 
+
+```{r load_products}
 products = read_csv("./data/products.csv")
 products = products %>%
-  mutate(drug_application_type = factor(appl_type, levels = c("A", "N"), labels = c("ANDA_or_generic","NDA_or_innovator"))) %>%
+  rename(drug_type = appl_type) %>% 
+  mutate(drug_type = recode(drug_type, "A" = "G", "N" = "B")) %>%
   separate(appdate, into = c("approval_month", "approval_day", "approval_year"), sep = "/") %>%
   #separate(doseform, into = c("form", "release_type"), sep = ",")
   mutate(type = factor(type)) %>%
   mutate(ref_listed_drug = factor(rld)) %>%
   mutate(ref_std = factor(rs)) %>%
-  select(-appl_type, -appdatestr, -rld, -rs, -dfroute)
+  select(-appdatestr, -rld, -rs, -dfroute)
 products
 ```
 
@@ -237,8 +249,9 @@ We load and tidy the `exclusivity` dataset
 ```{r tidy_exclusivity}
 exclusivity = read_csv("./data/exclusivity.csv") %>%
   clean_names() %>%
-  separate(excldate, into = c("month", "date", "year")) %>%
-  select(year, month, date, appl_type, everything())
+  rename(drug_type = appl_type) %>% 
+  mutate(drug_type = recode(drug_type, "A" = "G", "N" = "B")) %>% 
+  separate(excldate, into = c("month_excl_expires", "date_excl_expires", "year_excl_expires"))
 exclusivity
 ```
 
@@ -272,7 +285,7 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 
 Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
 
-```{r}
+```{r scape_drug_disease}
 
 urls = paste("https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/", toupper(letters), sep = "")
 
@@ -315,8 +328,13 @@ get_drug_disease = function(url) {
 }
 
 drug_disease_data = map_df(urls, get_drug_disease) %>% 
-  mutate(disease = tolower(disease),
-         drug = tolower(drug))
+  mutate(disease = str_to_title(disease),
+         drug = str_to_title(drug)) %>% 
+  rename(trade_name = drug) %>% 
+  mutate(dupl_drug_name = trade_name) %>% 
+  separate(dupl_drug_name, into = c("dupl_drug_name", "remove")) %>% 
+  select(-remove)
+
 drug_disease_data
 ```
 
@@ -325,25 +343,21 @@ The `drug_disease_data` contains `r drug_disease_data %>% nrow` observations and
 * `drug`: the drug name
 * `disease`: the disease name
 
-###Combine Datasets into one 
-```{r}
-#products, exclusivity, patents
-products = products %>%
-  select(appl_no, ingredient, everything())
-exclusivity = exclusivity %>%
-  select(appl_no, year, everything())
+### Combine Datasets into one 
 
-#A: join datasets by ingredient for ingridient and products (left join)
-#products = longer dataset + ingridient
-product_ingredient = left_join(products, ingredient, by.products = "ingredient")
+```{r join_dataset}
+
+#A: join datasets by ingredient for ingredient and products (left join)
+#products = longer dataset + ingredient
+product_ingredient = left_join(products, ingredient, by = "ingredient")
 product_ingredient
 
-#B: exlcusivity and patent left join (more~less)
-patent_exclusivity = left_join(patents, exclusivity, by.patents = "appl_no")
+#B: exclusivity and patents left join (more~less)
+patent_exclusivity = left_join(patents, exclusivity, by = c("appl_no", "product_no", "drug_type"))
 patent_exclusivity
 
 #C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
-orange_book = left_join(product_ingredient, patent_exclusivity, by.product_ingredient = "appl_no")
+orange_book = left_join(product_ingredient, patent_exclusivity, by = c("appl_no", "product_no", "drug_type"))
 
 orange_book = orange_book %>%
   mutate(ingredient = str_to_title(ingredient),
@@ -356,36 +370,60 @@ orange_book = orange_book %>%
          singredient = str_to_title(singredient),
          strength = str_to_title(strength))
 orange_book
-#final goal: disease, funding, drug prices, and Orange Book
 
-#eliminate unnecessary variables from orange book dataset
+# final goal: disease, funding, drug prices, and Orange Book
+
+# eliminate unnecessary variables from orange book dataset
 orange_book_clean = orange_book %>%
   rename(application_no = appl_no, 
          active_ingredient = singredient, 
-         dose_form = doseform,
-         year_exclusivity = year,
-         month_exclusivity =  month,
-         application_type = appl_type
-         ) %>%
-  select(-c(product_no, tecode, tecodestr, approval_day, appfull,      ref_std, singnum, day_pat_expires, pat_use_code, delist, date,       exclcode, excldatestr, ingredient)) %>%
-  select(application_no, trade_name, applicant, active_ingredient, dose_form, route, type, strength, patent_num, pediatric_exclusivity_granted, month_pat_expires,year_pat_expires, drug_application_type, drug_substance_flag, drug_prod_flag, patent_delisted, year_exclusivity, month_exclusivity, everything())
-orange_book_clean #latest Orange Book dataset
+         dose_form = doseform) %>%
+  select(-c(ingredient, applicant, product_no, tecodestr, tecode, approval_day, ref_std, singnum, day_pat_expires, pat_use_code, drug_substance_flag, drug_prod_flag, exclcode, excldatestr, date_excl_expires)) %>% 
+  mutate(dupl_drug_name = trade_name) %>% 
+  separate(dupl_drug_name, into = c("dupl_drug_name", "remove")) %>% 
+  select(-remove) %>% 
+  select(trade_name, everything())
 
-orange_book_clean = orange_book_clean %>%
-  mutate(drug_application_type = factor(drug_application_type, levels = c("NDA_or_innovator", "ANDA_or_generic"), labels = c("B", "G")))
+
+final_dataset = orange_book_clean %>% 
+  inner_join(., drug_disease_data, by = "dupl_drug_name") %>% 
+  select(-trade_name.y) %>% 
+  rename(trade_name = trade_name.x) %>%
+  distinct()
+# %>%
+#   inner_join(., drug_price, by = c("dupl_drug_name", "drug_type")) %>%
+#   select(-c(trade_name.y)) %>%
+#   distinct()
+
+
+# # inner join of disease drug and orange book =y by trade_name
+# final_dataset =
+#   drug_price %>%
+#   inner_join(., orange_book_clean, by = c("dupl_drug_name", "drug_type")) %>%
+#   full_join(., drug_disease_data, by = "trade_name") %>%
+#   full_join(., final_NIH_funding, by = "disease") %>%
+#   arrange(trade_name) %>%
+#   mutate(duplicates = trade_name) %>%
+#   separate(duplicates, into = c("duplicates", "remove")) %>%
+#   arrange(duplicates) %>%
+#   select(trade_name, duplicates, everything())
+
+# dpl = temp_joined_dataset %>%
+#   pull(duplicates) %>%
+#   unique()
+# 
+# trade_names = final_dataset %>% 
+#   distinct(trade_name)
 ```
+
 Josie
 ```{r}
-#further cleaning of drug_price
-drug_price_new = drug_price %>%
-  mutate(drug_name = as.character(drug_name)) %>%
-  mutate(active_ingredient = str_to_title(drug_name)) %>%
-  select(-drug_name)
-#inner join of disease drug and orange book =y by trade_name
-orange_book_clean_new = inner_join(drug_disease_data_new, orange_book_clean, by = "trade_name")
-#left join of y and nih funding by disease_name
-final_dataset = left_join(orange_book_clean_new, final_NIH_funding, by = "disease")
-final_dataset
+
+```
+
+```{r remove_var}
+# Remomve some unecessary datasets
+# rm(patent_exclusivity, product_ingredient)
 ```
 
 
@@ -435,9 +473,13 @@ Manali
 
 ```
 
-Muhire
+### **Muhire**
+
+* How do the prices compare for each drug based on what they treat?  Possible case studies on most popular (perceived) drugs: Lipitor, Xanax, Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft
+
 ```{r}
-#scrape drugs info with iteration
+# final_dataset
+
 
 ```
 
