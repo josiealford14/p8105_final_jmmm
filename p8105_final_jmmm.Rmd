@@ -65,36 +65,36 @@ drug_price =
   rename(trade_name = ndc_description,
          drug_type = classification_for_rate_setting,
          unit_price = nadac_per_unit) %>%
-  separate(effective_date, into = c("year", "month", "date")) %>%
-  mutate(grams = str_replace_all(trade_name,"[A-Z]", ""),
-         trade_name = str_replace(trade_name, "[0-9]", "_"),
+  mutate(trade_name = str_replace(trade_name, "[0-9]", "_"),
+         trade_name = str_to_title(trade_name),
          otc = recode(otc, "Y" = "yes", "N" = "no"),
-         otc = str_to_title(otc)) %>% 
-  separate(trade_name, into = c("trade_name", "remove"), sep = "_") %>%
-  mutate(trade_name = str_to_title(trade_name),
+         otc = str_to_title(otc),
          otc = as.factor(otc)) %>% 
-  mutate(dupl_drug_name = trade_name) %>%
-  separate(dupl_drug_name, into = c("dupl_drug_name", "remove1")) %>% 
-  select(-c(remove, remove1, date, x1)) %>% 
-  select(trade_name, everything()) %>% 
+  separate(trade_name, into = c("trade_name", "remove"), sep = "_") %>% 
+  separate(effective_date, into = c("year", "month", "date")) %>%
+  select(-c(date, x1, remove)) %>%
+  mutate(trade_name = trimws(trade_name, which = c("both"))) %>% 
+  separate(trade_name, into = c("trade_name", "remove"), sep = " ") %>% 
+  filter(is.na(remove)) %>%
+  select(-remove) %>% 
   filter(pricing_unit == "GM" | pricing_unit == "EA") %>% 
-  mutate(trade_name = trimws(trade_name, which = c("both")))
-
-drug_price
+  select(trade_name, everything()) 
 ```
 
 * We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the median (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
 
 ```{r drug_price_distr}
 drug_price %>%
-  filter(trade_name == "Enema") %>%
+  filter(trade_name == "Abacavir") %>%
   ggplot(aes(x = year, y = unit_price)) + geom_violin(aes(fill = year), color = "blue", alpha = .5)
 ```
 
 ```{r}
 new_drug_price = drug_price %>% 
-  group_by(trade_name, drug_type, otc, pricing_unit, dupl_drug_name, year) %>% 
+  group_by(trade_name, drug_type, otc, pricing_unit, year) %>% 
   summarize(avg_price = mean(unit_price, na.rm = TRUE))
+
+new_drug_price
 ```
 
 
@@ -148,7 +148,9 @@ final_NIH_funding = NIH_funding %>%
          '2016' = fy_2016,
          '2017' = fy_2017,
          '2018' = fy_2018estimated) %>%
-  gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018"))
+  gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018")) %>% 
+  separate(disease, into = c("disease", "remove"), sep = " ") %>% 
+  select(-remove)
 
 rm(NIH_funding)
 
@@ -344,10 +346,9 @@ get_drug_disease = function(url) {
 drug_disease_data = map_df(urls, get_drug_disease) %>% 
   mutate(disease = str_to_title(disease),
          drug = str_to_title(drug)) %>% 
-  rename(trade_name = drug) %>% 
-  mutate(dupl_drug_name = trade_name) %>% 
-  separate(dupl_drug_name, into = c("dupl_drug_name", "remove")) %>% 
-  select(-remove)
+  rename(trade_name = drug) %>%
+  mutate(trade_name = trimws(trade_name, which = c("both"))) %>% 
+  separate(trade_name, into = c("trade_name", "remove"), sep = " ")
 
 drug_disease_data
 ```
@@ -393,46 +394,27 @@ orange_book_clean = orange_book %>%
          active_ingredient = singredient, 
          dose_form = doseform) %>%
   select(-c(ingredient, applicant, product_no, tecodestr, tecode, approval_day, ref_std, singnum, day_pat_expires, pat_use_code, drug_substance_flag, drug_prod_flag, exclcode, excldatestr, date_excl_expires)) %>% 
-  mutate(dupl_drug_name = trade_name) %>% 
-  separate(dupl_drug_name, into = c("dupl_drug_name", "remove")) %>% 
-  select(-remove) %>% 
   select(trade_name, everything()) %>% 
-  filter(str_detect(dose_form, regex("Tablet", ignore_case = TRUE))) %>% 
-  mutate(trade_name = trimws(trade_name, which = c("both")))
-
-
-# final_dataset = orange_book_clean %>% 
-#   inner_join(., drug_disease_data, by = "dupl_drug_name") %>% 
-#   select(-trade_name.y) %>% 
-#   rename(trade_name = trade_name.x) %>%
-#   distinct() %>%
-#   inner_join(., sample_n(drug_price, 100000), by = c("dupl_drug_name", "drug_type", "otc")) %>%
-#   select(-c(trade_name.y)) %>% 
-#   rename(trade_name = trade_name.x) %>% 
-#   distinct()
-#   
-#   
-#   
+  separate(dose_form, into = c("dose_form", "remove")) %>%
+  filter(is.na(remove)) %>% 
+  select(-remove) %>% 
+  filter(str_detect(dose_form, regex("Tablet", ignore_case = TRUE))) %>%
+  mutate(trade_name = trimws(trade_name, which = c("both")),
+         trade_name = str_replace_all(trade_name, ", ", "-"),
+         trade_name = str_replace_all(trade_name, " And ", "-"))
 
 # inner join of disease drug and orange book =y by trade_name
 final_dataset =
   new_drug_price %>%
-  inner_join(., orange_book_clean, by = "trade_name") 
-# %>%
-  # full_join(., drug_disease_data, by = "trade_name") %>%
-  # full_join(., final_NIH_funding, by = "disease") %>%
-  # arrange(trade_name) %>%
-  # mutate(duplicates = trade_name) %>%
-  # separate(duplicates, into = c("duplicates", "remove")) %>%
-  # arrange(duplicates) %>%
-  # select(trade_name, duplicates, everything())
-
-# dpl = temp_joined_dataset %>%
-#   pull(duplicates) %>%
-#   unique()
-# 
-# trade_names = final_dataset %>% 
-#   distinct(trade_name)
+  inner_join(., orange_book_clean, by = c("trade_name", "drug_type", "otc")) %>% 
+  distinct() %>% 
+  left_join(., drug_disease_data, by = "trade_name") %>% 
+  distinct() %>% 
+  separate(disease, into = c("disease", "remove"), sep = " ") %>% 
+  left_join(., final_NIH_funding, by = c("disease", "year")) %>% 
+  as_tibble() %>% 
+  select(-c(remove, remove.x)) %>% 
+  distinct()
 ```
 
 Josie
@@ -442,7 +424,7 @@ Josie
 
 ```{r remove_var}
 # Remomve some unecessary datasets
-# rm(patent_exclusivity, product_ingredient)
+rm(patent_exclusivity, product_ingredient)
 ```
 
 
