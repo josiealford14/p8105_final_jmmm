@@ -413,7 +413,7 @@ final_dataset =
   separate(disease, into = c("disease", "remove"), sep = " ") %>% 
   left_join(., final_NIH_funding, by = c("disease", "year")) %>% 
   as_tibble() %>% 
-  select(-c(remove, remove.x)) %>% 
+  select(-c(remove, remove.x)) %>%
   distinct()
 ```
 
@@ -425,36 +425,6 @@ Josie
 ```{r remove_var}
 # Remomve some unecessary datasets
 rm(patent_exclusivity, product_ingredient)
-```
-
-
-```{r}
-#inner join drug disease and orange book by drug name
-#drug_disease_data_new = drug_disease_data %>%
-  #separate(drug, into = c("trade_name", "active_ingredient"), sep = "\\(") %>%
-  #mutate(trade_name = str_to_title(trade_name))
-#partial matching for joining
-#drug_disease_data_new_unique = drug_disease_data_new %>%
-  #distinct(trade_name) %>%
-  #pull()
-#orange_book_clean_unique = orange_book_clean %>%
-  #distinct(trade_name) %>%
-  #pull()
-#loop for partial matching
-#x = vector("list")
-#orange_book_matches = as.data.frame("")
-#for (i in 1:length(drug_disease_data_new_unique)) {
- # orange_book_matches = agrep(drug_disease_data_new_unique[i], orange_book_clean$trade_name, ignore.case = TRUE)
-#x = paste0(x, "")
-#}
-
-
-#partial_match = agrep(drug_disease_data_new$trade_name, orange_book_clean$trade_name)
-
-#left join of drug_price and orange book by disease name
-
-
-#final_dataset = inner_join(orange_book_clean, drug_price_new by = "active_ingredient")
 ```
 
 Manali
@@ -476,12 +446,26 @@ Manali
 
 ### **Muhire**
 
-* How do the prices compare for each drug based on what they treat?  Possible case studies on most popular (perceived) drugs: Lipitor, Xanax, Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft
+We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis seem to have the highest cost. Unfortunately we cannot tell which kind of hepatitis these drugs treat.
 
-```{r}
-# final_dataset
+**Possible case studies on most popular (perceived) drugs: Lipitor, Xanax, Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft**
 
+```{r price_drug_disease}
+final_dataset %>% 
+  filter(pricing_unit == "EA" & !is.na(disease)) %>% 
+  plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name) %>% 
+  layout(showlegend = FALSE)
+```
 
+We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence) colored by disease. Among drugs with available information on price per unit drug, obesity seems to have received the most funding on average and to have the highest 2015 prevalence.
+
+```{r funding_demand}
+final_dataset %>% 
+  filter(pricing_unit == "EA" & !is.na(funding) & !is.na(prevalence)) %>% 
+  group_by(trade_name, disease, prevalence) %>% 
+  summarize(mean_fund = mean(funding)) %>% 
+  plot_ly(x = ~prevalence, y = ~mean_fund, type = "scatter", alpha = 1, text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~disease) %>%
+  layout(showlegend = FALSE)
 ```
 
 MeOak
