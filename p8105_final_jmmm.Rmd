@@ -431,13 +431,13 @@ Manali
 ```{r}
 #do rare diseases recieve less funding?
 #set.seed(1)
-# final_dataset %>%
-#   #sample_n(50)%>%
-#   group_by(disease, prevalence) %>%
-#   #filter(!is.na(disease)) %>%
-#   filter(!is.na(prevalence)) %>%
-#   summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
-#   plot_ly(x~ total_funding, y~ prevalence, type = "scatter", color = ~disease)
+final_dataset %>%
+  #sample_n(50)%>%
+  group_by(disease, prevalence) %>%
+  #filter(!is.na(disease)) %>%
+  #filter(!is.na(prevalence)) %>%
+  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ prevalence, y = ~ total_funding, type = "scatter", color = ~disease)
 
 #does funding correlate with drug prices?
 
@@ -445,7 +445,8 @@ final_dataset %>%
   #sample_n(50)%>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
-  plot_ly(x ~ avg_price, y ~ avg_funding, type = "scatter")
+  #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
 
 
 ```
