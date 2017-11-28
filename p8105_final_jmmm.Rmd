@@ -576,11 +576,11 @@ final_dataset %>%
 
 We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis C seem to have the highest cost.
 
-**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
+**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex (arthritis; not in dataset), Prozac (Depression; present in data. Price increased), Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
 
 ```{r price_drug_disease}
 final_dataset %>% 
-  filter(disease %in% c("Panic Disorders")) %>% 
+  filter(disease %in% c("Heart Failure")) %>% 
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
   plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
   layout(showlegend = FALSE)
