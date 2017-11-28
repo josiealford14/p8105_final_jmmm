@@ -419,6 +419,96 @@ final_dataset =
 
 Josie
 ```{r}
+library(tidyverse)
+library(rvest)
+library(httr)
+```
+
+### Do drugs that treat chronic illnesses (diabetes, heart disease, high blood pressure, etc) receive more or less funding, and pricing  compared to acute illnesses? 
+```{r}
+###chronic diseases
+
+#first dataset
+chronic_diseases_1_html = read_html("https://www.medicalschemes.com/medical_schemes_pmb/chronic_disease_list.htm")
+chronic_diseases_1 = chronic_diseases_1_html %>%
+  html_nodes("td td td .maintext") %>%
+  html_text() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#second dataset
+chronic_diseases_2_html = read_html("http://www.health24.com/Medical-schemes/PMB-and-chronic-disease/List-of-chronic-diseases-20120721")
+chronic_diseases_2 = chronic_diseases_2_html %>%
+  html_nodes("ul:nth-child(10) li , ul:nth-child(10) a") %>%
+  html_text() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#third dataset
+chronic_diseases_3_html = read_html("https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Chronic-Conditions/CC_Main.html")
+chronic_diseases_3 = chronic_diseases_3_html %>%
+  html_nodes("td") %>%
+  html_text() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#final chronic disease dataset
+chronic_diseases = rbind(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) %>%
+  distinct()
+
+rm(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) #clean up workspace
+
+#recode diseases
+chronic_diseases$disease[62] = "Cancer"
+chronic_diseases$disease[67] = "High Blood Pressure"
+chronic_diseases$disease[43] = "High cholesterol"
+chronic_diseases$disease[60] = "Austism"
+chronic_diseases$disease[55] = "Arthritis"
+chronic_diseases$disease[46] = "Hypothyroidism"
+chronic_diseases$disease[38] = "Dysrhythmia"
+chronic_diseases$disease[66] = "inactive thyroid gland"
+chronic_diseases$disease[53] = "Alzheimer’s Disease"
+chronic_diseases$disease[26] = "Dementia"  
+chronic_diseases$disease[56] = "Hepatitis"
+
+#indicator of chronic disease
+indicator_chronic_disease = vector()
+indicator_chronic_disease[1:nrow(chronic_diseases)] = c("yes")
+indicator_chronic_disease = as.tibble(indicator_chronic_disease)
+
+#final chronic disease dataset with indicator column (y/n)
+chronic_diseases_final = cbind(chronic_diseases, indicator_chronic_disease) %>%
+  rename(chronic_disease = value) %>%
+  mutate(disease = str_to_title(disease))
+
+chronic_diseases_final$disease[71] = "COPD"
+
+# Recode the 15 or so unique "disease" entries from the final_dataset 
+
+# Join final dataset and chronic disease dataset to complete analysis.
+
+# #join final_dataset to chronic_diseases to highlight chronic illnesses
+# final_dataset_chronic_match = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease", distance_col = NULL) %>%
+#    as_tibble() %>%
+#   filter(!is.na(value))
+#    rename()
+# final_dataset = fuzzy_left_join(final_dataset, chronic_diseases_final, by = "disease")
+# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+# #join final_dataset to chronic_diseases to highlight chronic illnesses
+# # final_dataset_chronic_match = pmatch(final_dataset$disease, chronic_diseases_final$disease) %>%
+# #   as_tibble()
+# final_dataset_chronic_match = stringdist_left_join(final_dataset$disease, chronic_diseases_final$disease)
+# final_dataset = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease")
+# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+```
+
+### Is  trade name and condition related? (Pseudo Sentiment analysis)
+```{r}
+
+```
+
+### For 2016,  for a given drug is how much money is spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
+```{r}
 
 ```
 
