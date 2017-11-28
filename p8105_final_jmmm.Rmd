@@ -149,7 +149,14 @@ final_NIH_funding = NIH_funding %>%
          '2017' = fy_2017,
          '2018' = fy_2018estimated) %>%
   gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018")) %>% 
-  separate(disease, into = c("disease", "remove"), sep = " ") %>% 
+  mutate(disease = str_replace(disease, "[0-9]", "_"),
+         disease = str_replace(disease, "\\-", ""),
+         disease = str_replace(disease, "ALS", "Amyotrophic Lateral Sclerosis"),
+         disease = str_replace(disease, "Sleep Research", "Sleep Disorders"),
+         disease = str_replace(disease, "Smoking and Health", "Smoking Cessation")) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\_") %>% 
+  select(-remove) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\(") %>% 
   select(-remove)
 
 rm(NIH_funding)
@@ -301,7 +308,7 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 
 Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
 
-```{r scape_drug_disease}
+```{r scrape_drug_disease}
 
 urls = paste("https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/", toupper(letters), sep = "")
 
@@ -348,7 +355,8 @@ drug_disease_data = map_df(urls, get_drug_disease) %>%
          drug = str_to_title(drug)) %>% 
   rename(trade_name = drug) %>%
   mutate(trade_name = trimws(trade_name, which = c("both"))) %>% 
-  separate(trade_name, into = c("trade_name", "remove"), sep = " ")
+  separate(trade_name, into = c("trade_name", "remove"), sep = " ") %>% 
+  select(-remove)
 
 drug_disease_data
 ```
@@ -403,18 +411,41 @@ orange_book_clean = orange_book %>%
          trade_name = str_replace_all(trade_name, ", ", "-"),
          trade_name = str_replace_all(trade_name, " And ", "-"))
 
-# inner join of disease drug and orange book =y by trade_name
+# inner join of disease drug and orange book by trade_name
 final_dataset =
   new_drug_price %>%
   inner_join(., orange_book_clean, by = c("trade_name", "drug_type", "otc")) %>% 
   distinct() %>% 
   left_join(., drug_disease_data, by = "trade_name") %>% 
   distinct() %>% 
-  separate(disease, into = c("disease", "remove"), sep = " ") %>% 
-  left_join(., final_NIH_funding, by = c("disease", "year")) %>% 
-  as_tibble() %>% 
-  select(-c(remove, remove.x)) %>%
-  distinct()
+  mutate(disease = str_replace(disease, " And ", "_"),
+         disease = str_replace(disease, "High Blood Pressure \\(", ""),
+         disease = str_replace(disease, "Copd \\(", ""),
+         disease = str_replace(disease, "\\/Hyperactivity", ""),
+         disease = str_replace(disease, "\\)", ""),
+         disease = str_replace(disease, " Mellitus, Type 2", ""),
+         disease = str_replace(disease, " Mellitus Types I", ""),
+         disease = str_replace(disease, "Hepatitis", "Hepatitis C"),
+         disease = str_replace(disease, "Hepatitis C B", "Hepatitis B"),
+         disease = str_replace(disease, "Hepatitis C C", "Hepatitis C"),
+         disease = str_replace(disease, "Hiv/Aids", "HIV/AIDS"),
+         disease = str_replace(disease, " \\- ", "_"),
+         disease = str_replace(disease, "Migraine", "Migraines")
+         ) %>%
+  separate(disease, into = c("disease", "remove"), sep = "\\_") %>% 
+  select(-remove) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\(") %>% 
+  select(-remove) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\;") %>%
+  select(-remove) %>% 
+  left_join(., final_NIH_funding, by = c("disease", "year")) %>%
+  as_tibble() %>%
+  distinct() %>% 
+  mutate(disease = str_replace(disease, "Chronic Obstructive Pulmonary Disease", "Chronic Obstructive Pulmonary Disorder"),
+         disease = str_replace(disease, "Kidney Disease", "Chronic Kidney Disease"),
+         disease = str_replace(disease, "Cardiac Ischemia", "Coronary Artery Disease"),
+         disease = str_replace(disease, "Diabetes", "Diabetes Mellitus Types 1 & 2"),
+         disease = str_replace(disease, "Bipolar Disorder", "Bipolar Mood Disorder"))
 ```
 
 Josie
@@ -543,14 +574,15 @@ final_dataset %>%
 
 ### **Muhire**
 
-We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis seem to have the highest cost. Unfortunately we cannot tell which kind of hepatitis these drugs treat.
+We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis C seem to have the highest cost.
 
-**Possible case studies on most popular (perceived) drugs: Lipitor, Xanax, Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft**
+**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
 
 ```{r price_drug_disease}
 final_dataset %>% 
+  filter(disease %in% c("Panic Disorders")) %>% 
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
-  plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name) %>% 
+  plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
   layout(showlegend = FALSE)
 ```
 
