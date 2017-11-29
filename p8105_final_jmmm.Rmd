@@ -881,19 +881,61 @@ final_dataset %>%
   plot_ly(x = ~prevalence, y = ~median_avg_price, type = "scatter", color = ~disease_type, colors = "Set1")
 ```
 
-### For 2016, for a given drug, is how much money spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
+### For 2016, and among top 10 drugs for advertising, is how much money spent on advertising correlated with unit price? Funding?
 ```{r}
 #read in advertising dataset
-advertising_cost = read_excel("./data/advertising_cost.xlsx", 
+top_advertising_cost = read_excel("./data/advertising_cost.xlsx", 
     sheet = "Data", skip = 3) %>%
   clean_names() %>%
   rename(trade_name = leading_pharmaceutical_brands_in_the_united_states_in_2016_by_national_tv_ad_spend_in_million_u_s_dollars, spending_million_dollars = spending_in_million_u_s_dollars)
 
+# pricing
+summary_advertising_pricing = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  summarize(median_avg_price = median(avg_price))
+
+# pricing with disease and disease type (more detailed)
+summary_advertising_pricing = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  summarize(median_avg_price = median(avg_price))
+
+# boxplot comparing most advertising drugs
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3")
+
+### IS there a way for me to have the disease/disease_type AND have name of drug displayed????
+# derivation of the above boxplot (categorical data as the disease they treat)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  plot_ly(y = ~avg_price, type = "box", color = ~disease, colors = "Set3")
+
+# by disease type they treat
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+
+# pricing and advertising 
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, spending_million_dollars) %>%
+  summarize(median_avg_price = median(avg_price)) %>%
+  plot_ly(x = ~median_avg_price, y = ~spending_million_dollars, color = ~trade_name, type = "scatter", colors = "Set2")
 ```
 
 ###What about drug sales?
 ```{r}
-top_prescribed_drugs_sales_2016 = read_excel("./data/top_prescribed-drugs-sales-2016.xlsx", 
+top_prescribed_drugs_sales = read_excel("./data/top_prescribed-drugs-sales-2016.xlsx",
     sheet = "Data", skip = 3) %>%
   clean_names() %>%
   rename(trade_name = top_20_prescription_drugs_based_on_u_s_sales_in_2016_in_billion_u_s_dollars, sales_billion_dollars = sales_in_billion_u_s_dollars)
