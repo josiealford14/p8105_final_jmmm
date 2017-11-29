@@ -456,7 +456,8 @@ library(httr)
 ```
 
 ### Do drugs that treat chronic illnesses (diabetes, heart disease, high blood pressure, etc) receive more or less funding, and pricing  compared to acute illnesses? 
-```{r}
+## How does pricing and funding compare across diseases (27 unique diseases in our "orange book") regardless of disease type?
+```{r Clean Chronic Disease Dataset}
 ###chronic diseases
 
 #first dataset
@@ -487,8 +488,6 @@ chronic_diseases_3 = chronic_diseases_3_html %>%
 chronic_diseases = rbind(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) %>%
   distinct()
 
-rm(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) #clean up workspace
-
 #recode diseases
 chronic_diseases$disease[62] = "Cancer"
 chronic_diseases$disease[67] = "High Blood Pressure"
@@ -499,8 +498,38 @@ chronic_diseases$disease[46] = "Hypothyroidism"
 chronic_diseases$disease[38] = "Dysrhythmia"
 chronic_diseases$disease[66] = "inactive thyroid gland"
 chronic_diseases$disease[53] = "Alzheimer’s Disease"
-chronic_diseases$disease[26] = "Dementia"  
+chronic_diseases$disease[26] = "Dementia"
 chronic_diseases$disease[56] = "Hepatitis"
+chronic_diseases$disease[71] = "COPD"
+
+#need to include breast cancer, hepatitis b, hepatitis c, lung cancer, prostate cancer bc chronic disease set does not specify
+#hepatitis
+hepatitis_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("hepatitis", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#cancer
+cancer_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("cancer", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+hiv_aids_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("hiv", ignore_case = TRUE)) | str_detect(disease, regex("aids", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#combine hepatitis, cancer and hiv/aids with chronic diseases
+chronic_diseases = rbind(chronic_diseases, hepatitis_chronic, cancer_chronic, hiv_aids_chronic)
+chronic_diseases = chronic_diseases %>%
+  unique()
 
 #indicator of chronic disease
 indicator_chronic_disease = vector()
@@ -509,36 +538,95 @@ indicator_chronic_disease = as.tibble(indicator_chronic_disease)
 
 #final chronic disease dataset with indicator column (y/n)
 chronic_diseases_final = cbind(chronic_diseases, indicator_chronic_disease) %>%
-  rename(chronic_disease = value) %>%
-  mutate(disease = str_to_title(disease))
+  rename(chronic_disease = value) 
 
-chronic_diseases_final$disease[71] = "COPD"
-
-# Recode the 15 or so unique "disease" entries from the final_dataset 
+#formatting for exact matching
+final_dataset$disease = trimws(final_dataset$disease, which = "right")
+chronic_diseases_final$disease = trimws(chronic_diseases_final$disease, which = "both")
+final_dataset$disease = tolower(final_dataset$disease)
+chronic_diseases_final$disease = tolower(chronic_diseases_final$disease)
 
 # Join final dataset and chronic disease dataset to complete analysis.
+final_dataset = left_join(final_dataset,chronic_diseases_final, by = "disease")
+final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+final_dataset = final_dataset %>%
+  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic", ))
 
-# #join final_dataset to chronic_diseases to highlight chronic illnesses
-# final_dataset_chronic_match = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease", distance_col = NULL) %>%
-#    as_tibble() %>%
-#   filter(!is.na(value))
-#    rename()
-# final_dataset = fuzzy_left_join(final_dataset, chronic_diseases_final, by = "disease")
-# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
-# #join final_dataset to chronic_diseases to highlight chronic illnesses
-# # final_dataset_chronic_match = pmatch(final_dataset$disease, chronic_diseases_final$disease) %>%
-# #   as_tibble()
-# final_dataset_chronic_match = stringdist_left_join(final_dataset$disease, chronic_diseases_final$disease)
-# final_dataset = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease")
-# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final) #clean up workspace
 ```
 
-### Is  trade name and condition related? (Pseudo Sentiment analysis)
+### FUNDING
+```{r Chronic Disease Analysis: Funding}
+#Let's examine funding based on whether or not a disease is chronic or acute
+
+### EXPLORATORY ANALYSIS
+#Summary Statistics for Funding: Chronic Disease vs. Acute Disease (by disease-->we have 27 unique diseases)
+summary_funding_individual_diseases = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease_type, disease) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Which disease (top 3) has the highest median funding (by disease type)? 
+max_funding_individual_diseases = summary_funding_individual_diseases %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Which disease (bottom 3) has the lowest median funding (by disease type)? 
+min_funding_individual_diseases = summary_funding_individual_diseases %>%
+  filter(min_rank(median) < 4)
+
+#Summary Statistics for Funding: Chronic Disease vs. Acute Disease (by disease type)
+summary_funding_disease_type = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease_type) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Summary Statistics for Funding: Disease in General
+summary_funding_by_disease = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Which disease (top 3) has the highest median funding? 
+max_funding = summary_funding_by_disease %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Lowest funding (lowest 3)?
+min_funding = summary_funding_by_disease %>%
+  filter(min_rank(median) < 4)
+
+#Graphs for Funding (PLOT_LY!)
+# 1. Diseases with higest median funding (top 10) (bar chart)
+
+# 2. Diseases withlowest median funding (bottom 10) (bar chart)
+
+# 3. Funding by disease status (boxplot)
+
+# 4. Funding by disease status & disease (boxplot)
+
+# 5. Prevalence vs. Median Funding based on Disease Type. Do more prevalent Chronic or Acute Disease receive more funding?
+
+# 6. US Mortality vs. Median Funding based on Disease Type. Do more deadly Chronic or Acute Disease receive more funding?
+
+#Graph of Funding 
+funding_chronic_disease = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(chronic_disease) %>% 
+```
+
+```{r Chronic Disease Analysis: Pricing of Drugs}
+
+```
+
+### Is trade name and condition related? (Pseudo Sentiment analysis)
+
 ```{r}
-
+#there is no method to this madness! somewhat repitive of the chronic disease analysis. i think i'll skip
 ```
 
-### For 2016,  for a given drug is how much money is spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
+### For 2016, for a given drug is how much money is spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
 ```{r}
 
 ```
