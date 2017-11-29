@@ -733,20 +733,47 @@ final_dataset %>%
 
 ###PRICING
 ```{r Chronic Disease Analysis: Pricing of Drugs}
+summary_pricing_individual_diseases = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease_type, disease) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price)) 
 
+#Which disease (top 3) has the highest median pricing (by disease type)? 
+max_price_individual_diseases = summary_pricing_individual_diseases %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Which disease (bottom 3) has the lowest median pricing (by disease type)? 
+min_price_individual_diseases = summary_pricing_individual_diseases %>%
+  filter(min_rank(median) < 4)
+
+#Summary Statistics for Pricing: Chronic Disease vs. Acute Disease (by disease type)
+summary_pricing_disease_type = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease_type) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price))  
+
+#Summary Statistics for Pricing: Disease in General
+summary_pricing_by_disease = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price)) 
+
+#Which disease (top 3) has the highest median pricing? 
+max_pricing = summary_pricing_by_disease %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Lowest pricing (lowest 3)?
+min_pricing = summary_pricing_by_disease %>%
+  filter(min_rank(median) < 4)
 ```
 
 ### For 2016, for a given drug, is how much money spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
 ```{r}
 #read in advertising dataset
 
-
-```
-
-### Is trade name and condition related? (Pseudo Sentiment analysis)
-
-```{r}
-#there is no method to this madness! I will skip. What do others think?
 ```
 
 ```{r remove_var}
