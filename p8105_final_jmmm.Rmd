@@ -462,6 +462,8 @@ library(viridis)
 library(ggplot2)
 library(dplyr)
 library(flexdashboard)
+library(readxl)
+library(janitor)
 ```
 
 ### Do drugs that treat chronic illnesses (diabetes, heart disease, high blood pressure, etc) receive more or less funding, and pricing  compared to acute illnesses? 
@@ -882,6 +884,19 @@ final_dataset %>%
 ### For 2016, for a given drug, is how much money spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
 ```{r}
 #read in advertising dataset
+advertising_cost = read_excel("./data/advertising_cost.xlsx", 
+    sheet = "Data", skip = 3) %>%
+  clean_names() %>%
+  rename(trade_name = leading_pharmaceutical_brands_in_the_united_states_in_2016_by_national_tv_ad_spend_in_million_u_s_dollars, spending_million_dollars = spending_in_million_u_s_dollars)
+
+```
+
+###What about drug sales?
+```{r}
+top_prescribed_drugs_sales_2016 = read_excel("./data/top_prescribed-drugs-sales-2016.xlsx", 
+    sheet = "Data", skip = 3) %>%
+  clean_names() %>%
+  rename(trade_name = top_20_prescription_drugs_based_on_u_s_sales_in_2016_in_billion_u_s_dollars, sales_billion_dollars = sales_in_billion_u_s_dollars)
 
 ```
 
