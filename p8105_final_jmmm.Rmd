@@ -453,9 +453,19 @@ Josie
 library(tidyverse)
 library(rvest)
 library(httr)
+library(jsonlite)
+library(plotly)
+library(lubridate)
+library(forcats)
+library(stringr)
+library(viridis)
+library(ggplot2)
+library(dplyr)
+library(flexdashboard)
 ```
 
 ### Do drugs that treat chronic illnesses (diabetes, heart disease, high blood pressure, etc) receive more or less funding, and pricing  compared to acute illnesses? 
+
 ## How does pricing and funding compare across diseases (27 unique diseases in our "orange book") regardless of disease type?
 ```{r Clean Chronic Disease Dataset}
 ###chronic diseases
@@ -497,7 +507,7 @@ chronic_diseases$disease[55] = "Arthritis"
 chronic_diseases$disease[46] = "Hypothyroidism"
 chronic_diseases$disease[38] = "Dysrhythmia"
 chronic_diseases$disease[66] = "inactive thyroid gland"
-chronic_diseases$disease[53] = "Alzheimer’s Disease"
+chronic_diseases$disease[53] = "alzheimer's disease"
 chronic_diseases$disease[26] = "Dementia"
 chronic_diseases$disease[56] = "Hepatitis"
 chronic_diseases$disease[71] = "COPD"
@@ -519,6 +529,7 @@ cancer_chronic = final_dataset %>%
   as_tibble() %>%
   rename(disease = value)
 
+#hiv/aids
 hiv_aids_chronic = final_dataset %>%
   filter(str_detect(disease, regex("hiv", ignore_case = TRUE)) | str_detect(disease, regex("aids", ignore_case = TRUE))) %>%
   pull(disease) %>%
@@ -550,7 +561,8 @@ chronic_diseases_final$disease = tolower(chronic_diseases_final$disease)
 final_dataset = left_join(final_dataset,chronic_diseases_final, by = "disease")
 final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
 final_dataset = final_dataset %>%
-  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic", ))
+  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic")) #%>%
+  #select(everything(), -chronic_disease.x, -chronic_disease.y)
 
 rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final) #clean up workspace
 ```
@@ -598,37 +610,143 @@ min_funding = summary_funding_by_disease %>%
   filter(min_rank(median) < 4)
 
 #Graphs for Funding (PLOT_LY!)
-# 1. Diseases with higest median funding (top 10) (bar chart)
+# 1. Diseases with higest median funding (grouped by disease_type) (top 3) (bar chart) NEED HELP REARRANGING FROM SMALLEST TO LARGEST
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  # mutate(disease = fct_infreq(disease),
+  #        disease_type = fct_infreq(disease_type)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar")
+  
+  #possible help?
+  # mutate(cuisine_description = fct_reorder(cuisine_description, score)) %>%
+  # group_by(cuisine_description, grade) %>%
+  # summarize(mean_score = mean(score)) %>%
+  # plot_ly(x = ~cuisine_description, y = ~mean_score, color = ~grade, type = "bar")
+  
+# 2. Diseases with lowest median funding (bottom 3) (bar chart)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar", color = ~disease, colors = "Set2")
 
-# 2. Diseases withlowest median funding (bottom 10) (bar chart)
+# 1A. Overall: Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  # mutate(disease = fct_infreq(disease)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2A. Overall: Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1B. Acute Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1C. Chronic Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2B. Acute Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set1")
+
+# 2C. Chronic Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set3")
 
 # 3. Funding by disease status (boxplot)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease_type = fct_reorder(disease_type, funding)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3")
 
 # 4. Funding by disease status & disease (boxplot)
 
-# 5. Prevalence vs. Median Funding based on Disease Type. Do more prevalent Chronic or Acute Disease receive more funding?
+#by most orange book entries (Could try by prevalence)
+most_entries_diseases = final_dataset %>%
+  group_by(disease_type) %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  count(disease, sort = TRUE) %>%
+  top_n(3) %>%
+  select(disease)
 
-# 6. US Mortality vs. Median Funding based on Disease Type. Do more deadly Chronic or Acute Disease receive more funding?
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  inner_join(most_entries_diseases) %>%
+  # mutate(disease_type = fct_reorder(disease_type, funding), 
+  #        disease = fct_reorder(disease)) %>%
+  group_by(disease) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease, colors = "Set3")
 
-#Graph of Funding 
-funding_chronic_disease = final_dataset %>%
-  filter(!is.na(disease)) %>% 
-  group_by(chronic_disease) %>% 
+#by prevalence NOT WORKING!
+# most_prevalent_diseases = final_dataset %>%
+#   group_by(disease, disease_type) %>%
+#   filter(!is.na(disease) & !is.na(funding) & !is.na(funding)) %>%
+#   filter(min_rank(desc(prevalence)) < 4) %>%
+#   select(disease)
+  
+# 5. Prevalence vs. Median Funding based on Disease Type. Do more prevalent Chronic or Acute Diseases receive more funding?
+#line graph
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, prevalence) %>% 
+  summarize(median_funding = median(funding)) %>%
+  plot_ly(x = ~prevalence, y = ~median_funding, type = "scatter", mode = "lines", color = ~disease_type, colors = "Set1")
+  
+#scatter plot
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, disease, prevalence) %>% 
+  summarize(median_funding = median(funding)) %>%
+  plot_ly(x = ~prevalence, y = ~median_funding, type = "scatter", color = ~disease_type, colors = "Set1")
 ```
 
+###PRICING
 ```{r Chronic Disease Analysis: Pricing of Drugs}
+
+```
+
+### For 2016, for a given drug, is how much money spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
+```{r}
+#read in advertising dataset
+
 
 ```
 
 ### Is trade name and condition related? (Pseudo Sentiment analysis)
 
 ```{r}
-#there is no method to this madness! somewhat repitive of the chronic disease analysis. i think i'll skip
-```
-
-### For 2016, for a given drug is how much money is spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
-```{r}
-
+#there is no method to this madness! I will skip. What do others think?
 ```
 
 ```{r remove_var}
