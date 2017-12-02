@@ -563,8 +563,8 @@ chronic_diseases_final$disease = tolower(chronic_diseases_final$disease)
 final_dataset = left_join(final_dataset,chronic_diseases_final, by = "disease")
 final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
 final_dataset = final_dataset %>%
-  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic")) #%>%
-  #select(everything(), -chronic_disease.x, -chronic_disease.y)
+  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic")) %>%
+  select(everything(), -chronic_disease.x, -chronic_disease.y)
 
 rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final) #clean up workspace
 ```
@@ -900,29 +900,27 @@ summary_advertising_pricing = final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   inner_join(top_advertising_cost) %>%
   group_by(trade_name, disease, disease_type) %>%
-  summarize(median_avg_price = median(avg_price))
+  summarize(median_avg_price = median(avg_price)) 
+# Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), has the highest median average price of $43.14. Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest median average price of $5.28. 
 
 # boxplot comparing most advertising drugs
 final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   inner_join(top_advertising_cost) %>%
   group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3")
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Top Advertised Drugs")
 
 ### IS there a way for me to have the disease/disease_type AND have name of drug displayed????
 # derivation of the above boxplot (categorical data as the disease they treat)
-final_dataset %>%
-  filter(!is.na(disease) & !is.na(avg_price)) %>%
-  inner_join(top_advertising_cost) %>%
-  group_by(trade_name, disease, disease_type) %>%
-  plot_ly(y = ~avg_price, type = "box", color = ~disease, colors = "Set3")
-
 # by disease type they treat
 final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   inner_join(top_advertising_cost) %>%
   group_by(trade_name, disease, disease_type) %>%
-  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Top Advertised Drugs based on Disease Type")
+# Top advertised drugs that treat acute conditons have a lower median average price compared to top advertised drugs that treat chronic conditons. Overall, top advertised drugs that treat acute conditon may have a statisitcally different average price compared to those that treat chronic illnesses. 
 
 # pricing and advertising 
 final_dataset %>%
@@ -930,16 +928,24 @@ final_dataset %>%
   inner_join(top_advertising_cost) %>%
   group_by(trade_name, spending_million_dollars) %>%
   summarize(median_avg_price = median(avg_price)) %>%
-  plot_ly(x = ~median_avg_price, y = ~spending_million_dollars, color = ~trade_name, type = "scatter", colors = "Set2")
+  plot_ly(x = ~median_avg_price, y = ~spending_million_dollars, color = ~trade_name, type = "scatter", colors = "Set2") %>%
+  layout(title = "Median Average Price compared to Advertising Spending", xaxis = list(title = 'Median Average Price'), yaxis = list(title = 'Advertising Spending (Million)'))
+# No clear trend. Interesting that the pharmaceutical company Bristol Myers Squibb invests a high amount of advertising spending for a low cost drug like Elliquis.  
+# It would be interesting to see if Bristol Myers Squibb justifies this because of demand? (cue investigation of drug sales!!!!)
 ```
 
-###What about drug sales?
+###What about drug sales? Let's look at the top 20 prescription drugs based on 2016 US Sales (in billions of dollars)
 ```{r}
 top_prescribed_drugs_sales = read_excel("./data/top_prescribed-drugs-sales-2016.xlsx",
     sheet = "Data", skip = 3) %>%
   clean_names() %>%
   rename(trade_name = top_20_prescription_drugs_based_on_u_s_sales_in_2016_in_billion_u_s_dollars, sales_billion_dollars = sales_in_billion_u_s_dollars)
 
+summary_drug_sales = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_prescribed_drugs_sales) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  summarize(median_drug_sales_billions = median(sales_billion_dollars))
 ```
 
 ```{r remove_var}
