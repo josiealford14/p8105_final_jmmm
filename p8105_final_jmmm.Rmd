@@ -13,14 +13,21 @@ In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Pu
 * FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
 
   + Patents: Contains patent number and expiration dates of FDA approved drugs.
+  
   + Exclusivity: Contains information on drugs that were granted exclusivity by the FDA.  Exclusivity provides protection from new market competition for a short time.
+  
   + Ingredients: Contained information on the active ingredients in drugs.
+  
   + Products: Contained the trade name for the drug, the company that developed the drug, and whether the drug was brand or generic.
   
 * Drug Price: This dataset contained the prices paid by pharmacies to acquire the drug.
+
 * NIH Funding: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
+
 * Drug Disease: Dataset linking drugs was the disease that they treat.
+
 * Advertising: Money spent on advertising on TV in 2016 for the top 10 most advertised drugs.
+
 * Sales: Top 20 prescription drugs based on US sales in 2016 (in billions of dollars)
 
 ###The Variables
