@@ -948,6 +948,11 @@ rm(patent_exclusivity, product_ingredient)
 ```
 
 Manali
+
+
+Next, we looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We see breast cancer treatments are unusually high in price, which again makes sense given what we know about cancer treatment. 
 ```{r}
 #do rare diseases recieve less funding?
 #set.seed(1)
@@ -956,8 +961,8 @@ final_dataset %>%
   group_by(disease, prevalence) %>%
   #filter(!is.na(disease)) %>%
   #filter(!is.na(prevalence)) %>%
-  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
-  plot_ly(x = ~ prevalence, y = ~ total_funding, type = "scatter", color = ~disease)
+  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ prevalence, y = ~ avg_funding, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 #does funding correlate with drug prices?
 
@@ -966,10 +971,11 @@ final_dataset %>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 
 ```
+
 
 ### **Muhire**
 
