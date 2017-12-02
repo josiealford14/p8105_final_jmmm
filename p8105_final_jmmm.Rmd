@@ -1,9 +1,31 @@
 ---
-title: "p8105_final_jmmm"
+title: "What Drives Drug Prices?"
 author: "MeOak/Muhire/Manali/Josie"
-date: "10/31/2017"
+date: "12/4/2017"
 output: html_document
 ---
+### Introduction
+
+In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
+
+###The Data
+
+* FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
+
+  + Patents: Contains patent number and expiration dates of FDA approved drugs.
+  + Exclusivity: Contains information on drugs that were granted exclusivity by the FDA.  Exclusivity provides protection from new market competition for a short time.
+  + Ingredients: Contained information on the active ingredients in drugs.
+  + Products: Contained the trade name for the drug, the company that developed the drug, and whether the drug was brand or generic.
+  
+* Drug Price: This dataset contained the prices paid by pharmacies to acquire the drug.
+* NIH Funding: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
+* Drug Disease: Dataset linking drugs was the disease that they treat.
+* Advertising: Money spent on advertising on TV in 2016 for the top 10 most advertised drugs.
+* Sales: Top 20 prescription drugs based on US sales in 2016 (in billions of dollars)
+
+###The Variables
+The variables that we retained are: 
+
 
 ```{r project_website}
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
@@ -453,10 +475,23 @@ Josie
 library(tidyverse)
 library(rvest)
 library(httr)
+library(jsonlite)
+library(plotly)
+library(lubridate)
+library(forcats)
+library(stringr)
+library(viridis)
+library(ggplot2)
+library(dplyr)
+library(flexdashboard)
+library(readxl)
+library(janitor)
 ```
 
 ### Do drugs that treat chronic illnesses (diabetes, heart disease, high blood pressure, etc) receive more or less funding, and pricing  compared to acute illnesses? 
-```{r}
+
+## How does pricing and funding compare across diseases (27 unique diseases in our "orange book") regardless of disease type?
+```{r Clean Chronic Disease Dataset}
 ###chronic diseases
 
 #first dataset
@@ -487,8 +522,6 @@ chronic_diseases_3 = chronic_diseases_3_html %>%
 chronic_diseases = rbind(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) %>%
   distinct()
 
-rm(chronic_diseases_1, chronic_diseases_2, chronic_diseases_3) #clean up workspace
-
 #recode diseases
 chronic_diseases$disease[62] = "Cancer"
 chronic_diseases$disease[67] = "High Blood Pressure"
@@ -498,9 +531,40 @@ chronic_diseases$disease[55] = "Arthritis"
 chronic_diseases$disease[46] = "Hypothyroidism"
 chronic_diseases$disease[38] = "Dysrhythmia"
 chronic_diseases$disease[66] = "inactive thyroid gland"
-chronic_diseases$disease[53] = "Alzheimer’s Disease"
-chronic_diseases$disease[26] = "Dementia"  
+chronic_diseases$disease[53] = "alzheimer's disease"
+chronic_diseases$disease[26] = "Dementia"
 chronic_diseases$disease[56] = "Hepatitis"
+chronic_diseases$disease[71] = "COPD"
+
+#need to include breast cancer, hepatitis b, hepatitis c, lung cancer, prostate cancer bc chronic disease set does not specify
+#hepatitis
+hepatitis_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("hepatitis", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#cancer
+cancer_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("cancer", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#hiv/aids
+hiv_aids_chronic = final_dataset %>%
+  filter(str_detect(disease, regex("hiv", ignore_case = TRUE)) | str_detect(disease, regex("aids", ignore_case = TRUE))) %>%
+  pull(disease) %>%
+  unique() %>%
+  as_tibble() %>%
+  rename(disease = value)
+
+#combine hepatitis, cancer and hiv/aids with chronic diseases
+chronic_diseases = rbind(chronic_diseases, hepatitis_chronic, cancer_chronic, hiv_aids_chronic)
+chronic_diseases = chronic_diseases %>%
+  unique()
 
 #indicator of chronic disease
 indicator_chronic_disease = vector()
@@ -509,46 +573,408 @@ indicator_chronic_disease = as.tibble(indicator_chronic_disease)
 
 #final chronic disease dataset with indicator column (y/n)
 chronic_diseases_final = cbind(chronic_diseases, indicator_chronic_disease) %>%
-  rename(chronic_disease = value) %>%
-  mutate(disease = str_to_title(disease))
+  rename(chronic_disease = value) 
 
-chronic_diseases_final$disease[71] = "COPD"
-
-# Recode the 15 or so unique "disease" entries from the final_dataset 
+#formatting for exact matching
+final_dataset$disease = trimws(final_dataset$disease, which = "right")
+chronic_diseases_final$disease = trimws(chronic_diseases_final$disease, which = "both")
+final_dataset$disease = tolower(final_dataset$disease)
+chronic_diseases_final$disease = tolower(chronic_diseases_final$disease)
 
 # Join final dataset and chronic disease dataset to complete analysis.
+final_dataset = left_join(final_dataset,chronic_diseases_final, by = "disease")
+final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+final_dataset = final_dataset %>%
+  mutate(disease_type = recode(chronic_disease, 'no' = "acute", 'yes' = "chronic")) #%>%
+  #select(everything(), -chronic_disease.x, -chronic_disease.y)
 
-# #join final_dataset to chronic_diseases to highlight chronic illnesses
-# final_dataset_chronic_match = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease", distance_col = NULL) %>%
-#    as_tibble() %>%
-#   filter(!is.na(value))
-#    rename()
-# final_dataset = fuzzy_left_join(final_dataset, chronic_diseases_final, by = "disease")
-# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
-# #join final_dataset to chronic_diseases to highlight chronic illnesses
-# # final_dataset_chronic_match = pmatch(final_dataset$disease, chronic_diseases_final$disease) %>%
-# #   as_tibble()
-# final_dataset_chronic_match = stringdist_left_join(final_dataset$disease, chronic_diseases_final$disease)
-# final_dataset = stringdist_left_join(final_dataset, chronic_diseases_final, by = "disease")
-# final_dataset$chronic_disease[is.na(final_dataset$chronic_disease)] = "no"
+rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final) #clean up workspace
 ```
 
-### Is  trade name and condition related? (Pseudo Sentiment analysis)
+### FUNDING
+```{r Chronic Disease Analysis: Funding of Diseases: Summary}
+#Let's examine funding based on whether or not a disease is chronic or acute
+
+### EXPLORATORY ANALYSIS
+#Summary Statistics for Funding: Chronic Disease vs. Acute Disease (by disease-->we have 27 unique diseases)
+summary_funding_individual_diseases = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease_type, disease) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Which disease (top 3) has the highest median funding (by disease type)? 
+max_funding_individual_diseases = summary_funding_individual_diseases %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Which disease (bottom 3) has the lowest median funding (by disease type)? 
+min_funding_individual_diseases = summary_funding_individual_diseases %>%
+  filter(min_rank(median) < 4)
+
+#Summary Statistics for Funding: Chronic Disease vs. Acute Disease (by disease type)
+summary_funding_disease_type = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease_type) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Summary Statistics for Funding: Disease in General
+summary_funding_by_disease = final_dataset %>%
+  filter(!is.na(disease)) %>% #exclude orange book entries without a disease entry
+  group_by(disease) %>% #this line and upward is general for chronic disease analysis
+  filter(!is.na(funding)) %>%
+  summarize(n = n(), mean = mean(funding), median = median(funding), standard_deviation = sd(funding), minimum = min(funding), maximum = max(funding)) 
+
+#Which disease (top 3) has the highest median funding? 
+max_funding = summary_funding_by_disease %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Lowest funding (lowest 3)?
+min_funding = summary_funding_by_disease %>%
+  filter(min_rank(median) < 4)
+```
+
+```{r Chronic Disease Analysis: Funding of Diseases: Plots}
+#Graphs for Funding (PLOT_LY!)
+# 1. Diseases with higest median funding (grouped by disease_type) (top 3) (bar chart) NEED HELP REARRANGING FROM SMALLEST TO LARGEST
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  # mutate(disease = fct_infreq(disease),
+  #        disease_type = fct_infreq(disease_type)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar")
+  
+  #possible help?
+  # mutate(cuisine_description = fct_reorder(cuisine_description, score)) %>%
+  # group_by(cuisine_description, grade) %>%
+  # summarize(mean_score = mean(score)) %>%
+  # plot_ly(x = ~cuisine_description, y = ~mean_score, color = ~grade, type = "bar")
+  
+# 2. Diseases with lowest median funding (bottom 3) (bar chart)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar", colors = "Set2")
+
+# 1A. Overall: Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  # mutate(disease = fct_infreq(disease)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2A. Overall: Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1B. Acute Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1C. Chronic Diseases with highest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2B. Acute Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set1")
+
+# 2C. Chronic Diseases with lowest median funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(funding)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set3")
+
+# 3. Funding by disease status (boxplot)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease_type = fct_reorder(disease_type, funding)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3")
+
+# 4. Funding by disease status & disease (boxplot)
+
+#by most orange book entries (Could try by prevalence)
+most_entries_diseases = final_dataset %>%
+  group_by(disease_type) %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  count(disease, sort = TRUE) %>%
+  top_n(3) %>%
+  select(disease)
+
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  inner_join(most_entries_diseases) %>%
+  # mutate(disease_type = fct_reorder(disease_type, funding), 
+  #        disease = fct_reorder(disease)) %>%
+  group_by(disease) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease, colors = "Set3")
+
+#by prevalence NOT WORKING!
+# most_prevalent_diseases = final_dataset %>%
+#   group_by(disease, disease_type) %>%
+#   filter(!is.na(disease) & !is.na(funding) & !is.na(funding)) %>%
+#   filter(min_rank(desc(prevalence)) < 4) %>%
+#   select(disease)
+  
+# 5. Prevalence vs. Median Funding based on Disease Type. Do more prevalent Chronic or Acute Diseases receive more funding?
+#line graph
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, prevalence) %>% 
+  summarize(median_funding = median(funding)) %>%
+  plot_ly(x = ~prevalence, y = ~median_funding, type = "scatter", mode = "lines", color = ~disease_type, colors = "Set1")
+  
+#scatter plot
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  group_by(disease_type, disease, prevalence) %>% 
+  summarize(median_funding = median(funding)) %>%
+  plot_ly(x = ~prevalence, y = ~median_funding, type = "scatter", color = ~disease_type, colors = "Set1")
+```
+
+
+###PRICING
+```{r Chronic Disease Analysis: Pricing of Drugs: Summary}
+summary_pricing_individual_diseases = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease_type, disease) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price)) 
+
+#Which disease (top 3) has the highest median pricing (by disease type)? 
+max_price_individual_diseases = summary_pricing_individual_diseases %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Which disease (bottom 3) has the lowest median pricing (by disease type)? 
+min_price_individual_diseases = summary_pricing_individual_diseases %>%
+  filter(min_rank(median) < 4)
+
+#Summary Statistics for Pricing: Chronic Disease vs. Acute Disease (by disease type)
+summary_pricing_disease_type = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease_type) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price))  
+
+#Summary Statistics for Pricing: Disease in General
+summary_pricing_by_disease = final_dataset %>%
+  filter(!is.na(disease)) %>% 
+  group_by(disease) %>% 
+  filter(!is.na(avg_price)) %>%
+  summarize(n = n(), mean = mean(avg_price), median = median(avg_price), standard_deviation = sd(avg_price), minimum = min(avg_price), maximum = max(avg_price)) 
+
+#Which disease (top 3) has the highest median pricing? 
+max_pricing = summary_pricing_by_disease %>%
+  filter(min_rank(desc(median)) < 4)
+
+#Lowest pricing (lowest 3)?
+min_pricing = summary_pricing_by_disease %>%
+  filter(min_rank(median) < 4)
+```
+
+```{r Chronic Disease Analysis: Pricing of Drugs: Plots}
+#Graphs for Pricing (PLOT_LY!)
+# 1. Diseases with higest median pricing (grouped by disease_type) (top 3) (bar chart) NEED HELP REARRANGING FROM SMALLEST TO LARGEST
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(desc(median)) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar")
+  
+# 2. Diseases with lowest median pricing (bottom 3) (bar chart)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  group_by(disease_type, disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(median) < 4) %>%
+  plot_ly(x = ~disease, y = ~median, color = ~disease_type, type = "bar")
+
+# 1A. Overall: Diseases with highest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  # mutate(disease = fct_infreq(disease)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2A. Overall: Diseases with lowest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1B. Acute Diseases with highest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 1C. Chronic Diseases with highest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(desc(median)) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set2")
+
+# 2B. Acute Diseases with lowest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price) & disease_type == "acute") %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set1")
+
+# 2C. Chronic Diseases with lowest median Pricing
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price) & disease_type == "chronic") %>%
+  group_by(disease) %>% 
+  summarize(median = median(avg_price)) %>%
+  filter(min_rank(median) < 6) %>%
+  plot_ly(x = ~disease, y = ~median, type = "bar", color = ~disease, colors = "Set3")
+
+# 3. Pricing by disease status (boxplot)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  mutate(disease_type = fct_reorder(disease_type, avg_price)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+
+# 4. Pricing by disease status & disease (boxplot)
+
+#by most orange book entries (Could try by prevalence)
+most_entries_diseases = final_dataset %>%
+  group_by(disease_type) %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  count(disease, sort = TRUE) %>%
+  top_n(3) %>%
+  select(disease)
+
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(most_entries_diseases) %>%
+  group_by(disease) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~disease, colors = "Set3")
+  
+# 5. Prevalence vs. Median Pricing based on Disease Type. Do more prevalent Chronic or Acute Diseases have higher average prices?
+#line graph
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  group_by(disease_type, prevalence) %>% 
+  summarize(median_avg_price = median(avg_price)) %>%
+  plot_ly(x = ~prevalence, y = ~median_avg_price, type = "scatter", mode = "lines", color = ~disease_type, colors = "Set1")
+  
+#scatter plot. the less prevalent a disease, the higher the median_avg price
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  group_by(disease_type, disease, prevalence) %>% 
+  summarize(median_avg_price = median(avg_price)) %>%
+  plot_ly(x = ~prevalence, y = ~median_avg_price, type = "scatter", color = ~disease_type, colors = "Set1")
+```
+
+### For 2016, and among top 10 drugs for advertising, is how much money spent on advertising correlated with unit price? Funding?
 ```{r}
+#read in advertising dataset
+top_advertising_cost = read_excel("./data/advertising_cost.xlsx", 
+    sheet = "Data", skip = 3) %>%
+  clean_names() %>%
+  rename(trade_name = leading_pharmaceutical_brands_in_the_united_states_in_2016_by_national_tv_ad_spend_in_million_u_s_dollars, spending_million_dollars = spending_in_million_u_s_dollars)
 
+# pricing
+summary_advertising_pricing = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  summarize(median_avg_price = median(avg_price))
+
+# pricing with disease and disease type (more detailed)
+summary_advertising_pricing = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  summarize(median_avg_price = median(avg_price))
+
+# boxplot comparing most advertising drugs
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3")
+
+### IS there a way for me to have the disease/disease_type AND have name of drug displayed????
+# derivation of the above boxplot (categorical data as the disease they treat)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  plot_ly(y = ~avg_price, type = "box", color = ~disease, colors = "Set3")
+
+# by disease type they treat
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, disease, disease_type) %>%
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+
+# pricing and advertising 
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  inner_join(top_advertising_cost) %>%
+  group_by(trade_name, spending_million_dollars) %>%
+  summarize(median_avg_price = median(avg_price)) %>%
+  plot_ly(x = ~median_avg_price, y = ~spending_million_dollars, color = ~trade_name, type = "scatter", colors = "Set2")
 ```
 
-### For 2016,  for a given drug is how much money is spent on advertising correlated with unit price? (funding for 2016, advertising cost dataset).
+###What about drug sales?
 ```{r}
+top_prescribed_drugs_sales = read_excel("./data/top_prescribed-drugs-sales-2016.xlsx",
+    sheet = "Data", skip = 3) %>%
+  clean_names() %>%
+  rename(trade_name = top_20_prescription_drugs_based_on_u_s_sales_in_2016_in_billion_u_s_dollars, sales_billion_dollars = sales_in_billion_u_s_dollars)
 
 ```
 
-```{r remove_var}
+```{r remove_var, eval = FALSE}
 # Remomve some unecessary datasets
 rm(patent_exclusivity, product_ingredient)
 ```
 
 Manali
+
+
+Next, we looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We see breast cancer treatments are unusually high in price, which again makes sense given what we know about cancer treatment. 
 ```{r}
 #do rare diseases recieve less funding?
 #set.seed(1)
@@ -557,8 +983,8 @@ final_dataset %>%
   group_by(disease, prevalence) %>%
   #filter(!is.na(disease)) %>%
   #filter(!is.na(prevalence)) %>%
-  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
-  plot_ly(x = ~ prevalence, y = ~ total_funding, type = "scatter", color = ~disease)
+  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ prevalence, y = ~ avg_funding, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 #does funding correlate with drug prices?
 
@@ -567,10 +993,11 @@ final_dataset %>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 
 ```
+
 
 ### **Muhire**
 
