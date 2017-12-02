@@ -1,9 +1,82 @@
 ---
-title: "p8105_final_jmmm"
+title: "What Drives Drug Prices?"
 author: "MeOak/Muhire/Manali/Josie"
-date: "10/31/2017"
+date: "12/4/2017"
 output: html_document
 ---
+### Introduction
+
+In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
+
+###The Data
+
+* FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
+
+  + Patents: Contains patent number and expiration dates of FDA approved drugs.
+  
+  + Exclusivity: Contains information on drugs that were granted exclusivity by the FDA.  Exclusivity provides protection from new market competition for a short time.
+  
+  + Ingredients: Contained information on the active ingredients in drugs.
+  
+  + Products: Contained the trade name for the drug, the company that developed the drug, and whether the drug was brand or generic.
+  
+* Drug Price: This dataset contained the prices paid by pharmacies to acquire the drug.
+
+* NIH Funding: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
+
+* Drug Disease: Dataset linking drugs was the disease that they treat.
+
+* Advertising: Money spent on advertising on TV in 2016 for the top 10 most advertised drugs.
+
+* Sales: Top 20 prescription drugs based on US sales in 2016 (in billions of dollars)
+
+###The Variables
+The variables that we retained are: 
+
+* trade_name: the trade name of the drug
+
+* drug_type: the drug type (B: Brand or G: Generic)
+
+* otc: over the counter drug (Yes or No)
+
+* pricing_unit: EA for each, GM for gram, and ML for milliliters
+
+* year: the funding and pricing year
+
+* avg_price: the average price for the particular year
+
+* dose_form: the dose form (tablet, solution, solution injectable)
+
+* route: route of administration (oral or IV)
+
+* strength: the strength of the dose
+
+* application_no: the FDA assigned number to the drug application.
+
+* approval_year: the year the patent was approved
+
+* app_full: the full name of the company that developed the drug
+
+* active_ingredient: the active ingredient
+
+* patent_num: the patent number
+
+* pediatric_exclusivity_granted: yes or no
+
+* year_pat_expires: the patent expiration year
+
+* year_excl_expires: the exclusivity expiration year
+
+* disease: the disease the drug treats
+
+* prevalence: the disease prevalence for 2015
+
+* US_mortality_2015: the disease mortality rate
+
+* funding: the NIH funding for disease research in millions
+
+* disease_type: the type disease (acute or chronic)
+
 
 ```{r project_website}
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
@@ -948,12 +1021,17 @@ summary_drug_sales = final_dataset %>%
   summarize(median_drug_sales_billions = median(sales_billion_dollars))
 ```
 
-```{r remove_var}
+```{r remove_var, eval = FALSE}
 # Remomve some unecessary datasets
 rm(patent_exclusivity, product_ingredient)
 ```
 
 Manali
+
+
+Next, we looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We see breast cancer treatments are unusually high in price, which again makes sense given what we know about cancer treatment. 
 ```{r}
 #do rare diseases recieve less funding?
 #set.seed(1)
@@ -962,8 +1040,8 @@ final_dataset %>%
   group_by(disease, prevalence) %>%
   #filter(!is.na(disease)) %>%
   #filter(!is.na(prevalence)) %>%
-  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
-  plot_ly(x = ~ prevalence, y = ~ total_funding, type = "scatter", color = ~disease)
+  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ prevalence, y = ~ avg_funding, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 #does funding correlate with drug prices?
 
@@ -972,20 +1050,21 @@ final_dataset %>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
 
 
 ```
+
 
 ### **Muhire**
 
 We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis C seem to have the highest cost.
 
-**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex, Prozac, Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
+**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex (arthritis; not in dataset), Prozac (Depression; present in data. Price increased), Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
 
 ```{r price_drug_disease}
 final_dataset %>% 
-  filter(disease %in% c("Panic Disorders")) %>% 
+  filter(disease %in% c("Heart Failure")) %>%
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
   plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
   layout(showlegend = FALSE)
