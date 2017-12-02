@@ -580,7 +580,7 @@ We created a spaghetti plot of the average price of drugs per year for each drug
 
 ```{r price_drug_disease}
 final_dataset %>% 
-  filter(disease %in% c("Heart Failure")) %>% 
+  filter(disease %in% c("Heart Failure")) %>%
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
   plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
   layout(showlegend = FALSE)
