@@ -1,9 +1,31 @@
 ---
-title: "p8105_final_jmmm"
+title: "What Drives Drug Prices?"
 author: "MeOak/Muhire/Manali/Josie"
-date: "10/31/2017"
+date: "12/4/2017"
 output: html_document
 ---
+### Introduction
+
+In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
+
+###The Data
+
+* FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
+
+  + Patents: Contains patent number and expiration dates of FDA approved drugs.
+  + Exclusivity: Contains information on drugs that were granted exclusivity by the FDA.  Exclusivity provides protection from new market competition for a short time.
+  + Ingredients: Contained information on the active ingredients in drugs.
+  + Products: Contained the trade name for the drug, the company that developed the drug, and whether the drug was brand or generic.
+  
+* Drug Price: This dataset contained the prices paid by pharmacies to acquire the drug.
+* NIH Funding: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
+* Drug Disease: Dataset linking drugs was the disease that they treat.
+* Advertising: Money spent on advertising on TV in 2016 for the top 10 most advertised drugs.
+* Sales: Top 20 prescription drugs based on US sales in 2016 (in billions of dollars)
+
+###The Variables
+The variables that we retained are: 
+
 
 ```{r project_website}
 #project website. can you see it? https://josiealford14.github.io/therealcostofdrugs/
@@ -942,7 +964,7 @@ top_prescribed_drugs_sales = read_excel("./data/top_prescribed-drugs-sales-2016.
 
 ```
 
-```{r remove_var}
+```{r remove_var, eval = FALSE}
 # Remomve some unecessary datasets
 rm(patent_exclusivity, product_ingredient)
 ```
