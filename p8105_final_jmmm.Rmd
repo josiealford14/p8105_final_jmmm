@@ -618,99 +618,12 @@ final_dataset = final_dataset %>%
 rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final, patent_exclusivity, product_ingredient) #clean up workspace
 ```
 
-### **Case Study** : description and summary statistics of most advertised vs. most abused vs. most prescribed 
-
-#### Most Advertised (by spending)
-```{r, warning = FALSE, message = FALSE}
-top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
-# In 2016, Humira had the highest advertising spending of $344 million.
-# Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), has the highest mean average price of $45.70. Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest mean average price of $5.29 among these drugs.
-```
-
-#### Most Prescribed (by sales)
-```{r, warning = FALSE, message = FALSE}
-### Top 20 precribed drugs by US sales
-top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort") 
-
-#Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease. 
-
-#Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
-
-#Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
-```
-
-#### Most Abused
-```{r, warning = FALSE, message = FALSE}
-most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
-
-# https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
-# https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
-# https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
-# Opiods (examine change in prices for opiod drugs. also Percocet is commonly referenced in "trap music". Suboxone is a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled), Depressants (Xanax is frequently referenced in "trap music"), Stimulants (Adderall and Ritalin are commonnly abused by college students)
-#Opiod Epidemic (Public Health Threat. data from 2014): 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. Practitioners were urged to treat pain aggresively (without the tools and training), pharmaceutical companies marketing prescription opiods to doctors. There were 259 million opiod prescription in 2012, according to the CDC. An increase in 400% since 1999.Prescription opiods account for 1/2 of opiod deaths, heroin (illicit) accounts for other 1/2. Considered gateway drug for heroin. Highly addictive. Other opiods include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup". Infamously, the rapper Lil' Wayne has struggled with past addiction to codeine. The rapper Pimp C died from overdosing on codeine).
-#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
-#Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
-#One in three unintential overdose deaths result from opiods combined with benzodiazepines (Valium and Xanax)
-#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
-```
-
-#### Anecdotal or Commonly Discussed in Popular Culture
-```{r, warning = FALSE, message = FALSE}
-#pharma drugs that people we know use, ones that we see commericals for, and commonly discussed in popular culture
-most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
-
-#The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
-#Zocor (simvastatin): cholesterol lowering drug
-# https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
-```
 
 ### Analysis & Discussion
 
-#### **Josie**
-```{r, warning = FALSE, message = FALSE}
-#shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
-#another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
-final_dataset %>%
-  filter(!is.na(avg_price)) %>%
-  filter(trade_name %in% top_advertising_cost) %>%
-  group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
-  layout(title = "Distribution of Average Price for Most Advertised Drugs")
-
-final_dataset %>%
-  filter(!is.na(avg_price)) %>%
-  filter(trade_name %in% most_abused_drugs) %>%
-  group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
-  layout(title = "Distribution of Average Price for Most Abused Drugs")
-
-final_dataset %>%
-  filter(!is.na(avg_price)) %>%
-  filter(trade_name %in% most_popular_drugs) %>%
-  group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
-  layout(title = "Distribution of Average Price for Popular Drugs")
-
-final_dataset %>% #harvoni is an extreme outlier, should we drop?
-  filter(!is.na(avg_price)) %>%
-  filter(trade_name %in% top_prescribed_drugs_sales) %>%
-  group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
-  layout(title = "Distribution of Average Price for Most Prescribed Drugs")
-
-#shiny application: acute vs. chronic
-final_dataset %>%
-  filter(!is.na(disease) & !is.na(funding)) %>%
-  mutate(disease = factor(disease)) %>%
-  group_by(disease) %>%
-  summarize(mean_funding = mean(funding)) %>%
-  mutate(disease = fct_reorder(disease, mean_funding)) %>%
-  plot_ly(x = ~disease, y = ~mean_funding, type = "bar")
-```
-
 #### **Manali**
 
-Next, we looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
 
 Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We see breast cancer treatments are unusually high in price, which again makes sense given what we know about cancer treatment. 
 ```{r}
@@ -762,6 +675,115 @@ final_dataset %>%
 ```{r}
 
 ```
+
+
+#### **Josie**
+```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
+#shiny application: funding by disease
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease = factor(disease)) %>%
+  group_by(disease) %>%
+  summarize(mean_funding = mean(funding)) %>%
+  mutate(disease = fct_reorder(disease, mean_funding)) %>%
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~diseasetype = "bar", colors = "Set3")
+
+#acute vs. chronic (boxplot)
+#Funding by disease status
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease_type = fct_reorder(disease_type, funding)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3")
+
+#Pricing by disease status (boxplot)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  mutate(disease_type = fct_reorder(disease_type, avg_price)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+```
+
+### **Case Study** : description and summary statistics of most advertised vs. most abused vs. most prescribed 
+
+#### Most Advertised (by spending)
+```{r Most Advertised, warning = FALSE, message = FALSE}
+top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
+# In 2016, Humira had the highest advertising spending of $344 million.
+# Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), has the highest mean average price of $45.70. Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest mean average price of $5.29 among these drugs.
+```
+
+#### Most Prescribed (by sales)
+```{r Most Prescribed, warning = FALSE, message = FALSE}
+### Top 20 precribed drugs by US sales
+top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort") 
+
+#Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease. 
+
+#Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
+
+#Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
+```
+
+#### Most Abused
+```{r Most Abused, warning = FALSE, message = FALSE}
+most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
+
+# https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
+# https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
+# https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
+# opioids (examine change in prices for opioid drugs. also Percocet is commonly referenced in "trap music". Suboxone is a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled), Depressants (Xanax is frequently referenced in "trap music"), Stimulants (Adderall and Ritalin are commonnly abused by college students)
+#opioid Epidemic (Public Health Threat. data from 2014): 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. Practitioners were urged to treat pain aggresively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors. There were 259 million opioid prescription in 2012, according to the CDC. An increase in 400% since 1999.Prescription opioids account for 1/2 of opioid deaths, heroin (illicit) accounts for other 1/2. Considered gateway drug for heroin. Highly addictive. Other opioids include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup". Infamously, the rapper Lil' Wayne has struggled with past addiction to codeine. The rapper Pimp C died from overdosing on codeine).
+#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+#Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
+#One in three unintential overdose deaths result from opioids combined with benzodiazepines (Valium and Xanax)
+#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+```
+
+#### Anecdotal or Commonly Discussed in Popular Culture
+```{r Popular Culture, warning = FALSE, message = FALSE}
+#pharma drugs that people we know use, ones that we see commericals for, and commonly discussed in popular culture
+most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
+
+#The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
+#Zocor (simvastatin): cholesterol lowering drug
+# https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
+# context about the relationship between "pill-pop" and American music
+```
+
+
+```{r Case Study Analysis}
+#shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
+#another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_advertising_cost) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Advertised Drugs")
+
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_abused_drugs) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Abused Drugs")
+
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_popular_drugs) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Popular Drugs")
+
+final_dataset %>% #harvoni is an extreme outlier, should we drop?
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_prescribed_drugs_sales) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Prescribed Drugs")
+```
+
 
 ### Project Website
 ```{r project_website}
