@@ -749,7 +749,7 @@ t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
   + Acute conditons have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentionally more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
   + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
     + Yes; drugs that treat acute conditons have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
 final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
@@ -766,54 +766,132 @@ chronic = final_dataset %>%
 t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 ```
 
-### **Case Study** 
+#### **Case Study** 
+* We are interested in conducting a case study on pharmaceutical drugs that receive the highest advertisment spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture.
 
-#### Most Advertised (by spending)
+##### Most Advertised (by spending)
 ```{r Most Advertised, warning = FALSE, message = FALSE}
 top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
-# In 2016, Humira had the highest advertising spending of $344 million.
-# Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), has the highest mean average price of $45.70. Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest mean average price of $5.29 among these drugs.
 ```
 
-#### Most Prescribed (by sales)
+  + First we examined the most advertised drugs in 2016.
+  
+    + In 2016, Humira had the highest advertising spending of $344 million.
+  
+    + Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), had the highest mean average price per dose of $45.70. 
+  
+    + Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest mean average price per dose of $5.29.
+  
+##### Most Prescribed (by sales)
 ```{r Most Prescribed, warning = FALSE, message = FALSE}
 ### Top 20 precribed drugs by US sales
 top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort") 
-
-#Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease. 
-
-#Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
-
-#Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
 ```
 
-#### Most Abused
+  + Second, we examined the most prescribed drugs by US sales. 
+  
+      + Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease.
+      
+      + Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
+      
+      + Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
+
+##### Most Abused
 ```{r Most Abused, warning = FALSE, message = FALSE}
 most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
 
-# https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
-# https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
-# https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
-# opioids (examine change in prices for opioid drugs. also Percocet is commonly referenced in "trap music". Suboxone is a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled), Depressants (Xanax is frequently referenced in "trap music"), Stimulants (Adderall and Ritalin are commonnly abused by college students)
-#opioid Epidemic (Public Health Threat. data from 2014): 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. Practitioners were urged to treat pain aggresively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors. There were 259 million opioid prescription in 2012, according to the CDC. An increase in 400% since 1999.Prescription opioids account for 1/2 of opioid deaths, heroin (illicit) accounts for other 1/2. Considered gateway drug for heroin. Highly addictive. Other opioids include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup". Infamously, the rapper Lil' Wayne has struggled with past addiction to codeine. The rapper Pimp C died from overdosing on codeine).
-#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
 #Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
 #One in three unintential overdose deaths result from opioids combined with benzodiazepines (Valium and Xanax)
-#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
 ```
-
-#### Anecdotal or Commonly Discussed in Popular Culture
+  + Now, let's take a look at the most abused drugs in America
+  
+    + This list of drugs involves drugs that are over prescribed, highly addictive, and/or frequently used as illicit street drugs
+    
+      + Benzodiazepines
+    
+      + Central nervous system depressants
+    
+         + Nembutal
+      
+          + Valium: used to treat anxiety disorders, abused along with alcohol or other depressants
+      
+          + Xanax: frequently referenced in "trap music"
+      
+         + Suboxone: a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled
+    
+      + Stimulants
+    
+        + Dexedrine
+      
+       + Ritalin: commonnly abused by college students
+      
+        + Concerta
+      
+        + Adderall: commonnly abused by college students
+      
+  + Interested in how prices for opiod drugs have changed over time, especially in regards to the Opioid Epidemic. 
+  
+    + Public Health threat. 
+    
+    + 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)
+    + What casued the Epidemic? Perfect Storm
+    
+        + Practitioners were urged to treat pain aggresively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.
+      
+      + 259 million opioid prescription in 2012, according to the CDC. An increase in 400% since 1999.
+      
+      + Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin
+      
+      + Highly addictive. Other opioids include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup". Infamously, the rapper Lil' Wayne has struggled with past addiction to codeine. The rapper Pimp C died from overdosing on codeine).
+  
+  + Opioids
+    
+       + Duragesic
+      
+          + Fentanyl is Heroin's synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is popular street drug driving heroin overdose deaths in the US.
+        
+      + Vicodin
+      
+      + OxyContin
+      
+      + Opana
+      
+      + Darvon
+      
+      + Dilaudid
+      
+      + Demerol 
+      
+      + Lomotil
+      
+      + Percocet: crushed into power and snorted (like cocaine) for a high. commonly referenced in trap music
+      
+  + References
+  
+    + https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
+    
+    + https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
+    
+    + https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
+    
+    + https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+    
+##### Anecdotal or Commonly Discussed in Popular Culture
 ```{r Popular Culture, warning = FALSE, message = FALSE}
-#pharma drugs that people we know use, ones that we see commericals for, and commonly discussed in popular culture
 most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
-
-#The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
-#Zocor (simvastatin): cholesterol lowering drug
-# https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
-# context about the relationship between "pill-pop" and American music
 ```
+  + Finally, we investigate "popular" drugs: pharmaceutical drugs that people we know use, ones that we see commericals for, and/or commonly discussed in popular culture
+  
+  + The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
+#Zocor (simvastatin): cholesterol lowering drug
 
+  + Relationship between "pill-pop" and American music
+  
+    + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html
+    
+  + Reference: https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
 
+##### Boxplots of each category of drugs
 ```{r Case Study Analysis}
 #shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
 #another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
@@ -844,8 +922,15 @@ final_dataset %>% #harvoni is an extreme outlier, should we drop?
   group_by(trade_name) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Most Prescribed Drugs")
-```
 
+final_dataset %>% #without harvoni 
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_prescribed_drugs_sales) %>%
+  filter(trade_name != "Harvoni") %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Prescribed Drugs")
+```
 
 ### Project Website
 ```{r project_website}
