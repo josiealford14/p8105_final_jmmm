@@ -766,7 +766,6 @@ final_dataset %>%
 ### Project Website
 ```{r project_website}
 #https://josiealford14.github.io/p8105_final_jmmm/
-#project website https://josiealford14.github.io/therealcostofdrugs/
 ```
 
 ### Conclusion
