@@ -676,11 +676,11 @@ final_dataset %>%
 
 ```
 
-
-
 #### **Disease & Funding**
 
-* Does funding differ by disease?
+* Does funding differ by disease? 
+
+  + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. This illustrates that acute conditions have a wider distribution of average funding, compared to chronic conditions. 
 
 ```{r Disease & Funding, warning = FALSE, message = FALSE}
 #shiny application: funding by disease
@@ -691,10 +691,34 @@ final_dataset %>%
   summarize(mean_funding = mean(funding)) %>%
   mutate(disease = fct_reorder(disease, mean_funding)) %>%
   plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3")
+
+#funding by disease (filtered by disease type = acute)
+#shiny: user clicks acute and sees funding
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
+  mutate(disease = factor(disease)) %>%
+  group_by(disease) %>%
+  summarize(mean_funding = mean(funding)) %>%
+  mutate(disease = fct_reorder(disease, mean_funding)) %>%
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3")
+
+#funding by disease (filtered by disease type = chronic)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding) & disease_type == "chronic") %>%
+  mutate(disease = factor(disease)) %>%
+  group_by(disease) %>%
+  summarize(mean_funding = mean(funding)) %>%
+  mutate(disease = fct_reorder(disease, mean_funding)) %>%
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3")
 ```
 
-#### **Acute vs. Chronic Disease**: Is there a difference in funding and pricing?
+#### **Acute vs. Chronic Disease**
+##### Funding
+* Is there a difference in funding between acute conditons and chronic diseases?
 
+  + Now, let's investigate if there is a difference in distribution of funding based on disease conditon: acute versus chronic. We see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute conditon funding compared to chronic. 25% of acute conditons have a funding of $18 million or less. 25% of acute condtions receive funding of more than $313 million or more. The median funding for acute conditons is $50 million per year. Acute funding is right skewed. 
+  
+  + Comparatively, chronic conditions have a lower variability in funding, but have more outiliers. 25% of chronic conditons have a funding of $224 million or less. 25% of chronic condtions receive funding of more than $272.5 million or more. The median funding for acute conditons is $253 million per year. Chronic funding has an approximately normal distribution in funding. 
 ```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
 #acute vs. chronic (boxplot)
 #Funding by disease status
@@ -703,16 +727,46 @@ final_dataset %>%
   mutate(disease_type = fct_reorder(disease_type, funding)) %>%
   group_by(disease_type) %>% 
   plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3")
+```
 
+* Is there a statistically significant difference in funding between acute and chronic diseases?
+
+  + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+```{r}
+#Statistical Test of Funding Difference
+acute = final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  filter(disease_type == "acute") 
+chronic = final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  filter(disease_type == "chronic")
+t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
+```
+
+##### Pricing
+* Is there a difference in funding between acute conditons and chronic diseases? 
+
+  + Acute conditons have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentionally more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
+  + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
+    + Yes; drugs that treat acute conditons have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+```{r}
 #Pricing by disease status (boxplot)
 final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   mutate(disease_type = fct_reorder(disease_type, avg_price)) %>%
   group_by(disease_type) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+
+acute = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  filter(disease_type == "acute") 
+chronic = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  filter(disease_type == "chronic")
+t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 ```
 
-### **Case Study** : description and summary statistics of most advertised vs. most abused vs. most prescribed 
+### **Case Study** 
 
 #### Most Advertised (by spending)
 ```{r Most Advertised, warning = FALSE, message = FALSE}
