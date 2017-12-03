@@ -677,8 +677,12 @@ final_dataset %>%
 ```
 
 
-#### **Josie**
-```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
+
+#### **Disease & Funding**
+
+* Does funding differ by disease?
+
+```{r Disease & Funding, warning = FALSE, message = FALSE}
 #shiny application: funding by disease
 final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -686,8 +690,12 @@ final_dataset %>%
   group_by(disease) %>%
   summarize(mean_funding = mean(funding)) %>%
   mutate(disease = fct_reorder(disease, mean_funding)) %>%
-  plot_ly(x = ~disease, y = ~mean_funding, color = ~diseasetype = "bar", colors = "Set3")
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3")
+```
 
+#### **Acute vs. Chronic Disease**: Is there a difference in funding and pricing?
+
+```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
 #acute vs. chronic (boxplot)
 #Funding by disease status
 final_dataset %>%
