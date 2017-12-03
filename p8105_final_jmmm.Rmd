@@ -53,11 +53,15 @@ The variables that we retained are:
 
 * application_no: the FDA assigned number to the drug application.
 
+* product_no: The FDA assigned number to identify the application products; used for joining datasets.
+
 * approval_year: the year the patent was approved
 
 * app_full: the full name of the company that developed the drug
 
 * active_ingredient: the active ingredient
+
+* ingredient: the active ingredients in a wide format; used for joining datasets
 
 * patent_num: the patent number
 
@@ -80,13 +84,13 @@ The variables that we retained are:
 ### Data Wrangling 
 * The code chunks below were used for loading and tidying the data.
 
- + We put all sub-datasets in long format. We renamed variables as necessary. 
+  + We put all sub-datasets in long format. We renamed variables as necessary. 
  
- + We restricted our final dataset to contain only non-solution drugs. These drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable.  Also all drugs were measured by two different units: mills and grams. Therefore, we could not adequately compare between solution and per gram/each type of drugs. 
+  + We restricted our final dataset to contain only non-solution drugs. These drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable.  Also all drugs were measured by two different units: mills and grams. Therefore, we could not adequately compare between solution and per gram/each type of drugs. 
  
- + The Drug Price Excel dataset had over 5 million observations. To representatively condense this dataset, we averaged monthly drug price for each drug into a yearly “avg_price” variable.  Essentially, each unique drug observation had 12 drug prices for each month of a year. We averaged these 12 drug prices into one average price for the year. This condensed the Drug Price dataset to approximately 2.5 million observations. 
+  + The Drug Price Excel dataset had over 5 million observations. To representatively condense this dataset, we averaged monthly drug price for each drug into a yearly “avg_price” variable.  Essentially, each unique drug observation had 12 drug prices for each month of a year. We averaged these 12 drug prices into one average price for the year. This condensed the Drug Price dataset to approximately 2.5 million observations. 
  
- + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into our Final Dataset named final_dataset. We used the variables ingredient, appl_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
+  + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into our Final Dataset named final_dataset. We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
 
 ```{r load_packages, message = FALSE}
 library(tidyverse)
@@ -434,7 +438,7 @@ The `drug_disease_data` contains `r drug_disease_data %>% nrow` observations and
 * `disease`: the disease name
 
 
-#### Dataset 8: Chronic Diseases
+#### **Dataset 8: Chronic Diseases**
 
 ```{r}
 #first dataset
