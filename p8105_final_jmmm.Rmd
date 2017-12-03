@@ -771,7 +771,7 @@ chronic = final_dataset %>%
 t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 ```
 
-#### **Case Study** 
+### **Case Study** 
 * We are interested in conducting a case study on pharmaceutical drugs that receive the highest advertisment spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture.
 
 ##### Most Advertised (by spending)
@@ -806,7 +806,7 @@ top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar",
 most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
 
 #Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
-#One in three unintential overdose deaths result from opioids combined with benzodiazepines (Valium and Xanax)
+#motivation: statistics on prescription abuse among high schoolers (drugabuse.gov site)
 ```
   + Now, let's take a look at the most abused drugs in America
   
@@ -828,7 +828,7 @@ most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", 
     
         + Dexedrine
       
-       + Ritalin: commonnly abused by college students
+        + Ritalin: commonnly abused by college students
       
         + Concerta
       
@@ -935,6 +935,36 @@ final_dataset %>% #without harvoni
   group_by(trade_name) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Most Prescribed Drugs")
+```
+
+#### **"Pill Pop": The Relationship Between Pop Music & "Pill Popping" Culture**
+```{r}
+# #focus on xanax and percocet
+# # Use Muhire's 
+# trade_name_choice = "Xanax"
+# violin_drug = drug_price %>%
+#   filter(trade_name == trade_name_choice) %>%
+#   ggplot(aes(x = year, y = unit_price, fill = year)) + 
+#   geom_violin() +
+#   ggtitle(paste0("Distribution of Prices for ", trade_name_choice), subtitle = NULL)
+# ggplotly(violin_drug)
+# 
+# trade_name_choice = "Percocet"
+# violin_drug = drug_price %>%
+#   filter(trade_name == trade_name_choice) %>%
+#   ggplot(aes(x = year, y = unit_price, fill = year)) + 
+#   geom_violin() +
+#   ggtitle(paste0("Distribution of Prices for ", trade_name_choice), subtitle = NULL)
+# ggplotly(violin_drug)
+```
+
+#### **The Opioid Epidemic**
+```{r}
+# focus on pharmaceutical opioids: Duragesic, Vicodin, Opana, Darvon, Dilaudid, Demerol & Lomotil. Have their prices increased over time? 
+# mention their "cousins": heroin and synthetic fentanyl
+# https://en.wikipedia.org/wiki/Opioid_epidemic
+# https://www.forbes.com/sites/neilhowe/2017/11/30/americas-opioid-crisis-a-nation-hooked/#241da82a6a57
+#motivation: One in three unintential overdose deaths result from opioids combined with benzodiazepines (Valium and Xanax)
 ```
 
 ### Project Website
