@@ -634,7 +634,18 @@ final_dataset %>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
+  # plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
+  #         , text = ~paste('Drug: ', trade_name, '<br>Disease: ', disease)) %>%
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease)) %>%
+  layout(title = "Average Funding vs Average Price", showlegend = FALSE)
+
+
+final_dataset %>%
+  group_by(disease, funding, disease_type) %>%
+  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ disease, y = ~ funding, color = ~disease_type, type = "scatter") %>%
+  layout(title = "Average Funding For Chronic vs Acute Diseases")
+              
 ```
 
 
