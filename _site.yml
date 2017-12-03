@@ -1,0 +1,21 @@
+name: "What Drives Drug Prices?"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "Data"
+      href: data.html
+    - text: "Data Wrangling"
+      href: datawrangling.html
+    - text: "Analysis"
+      href: analysis.html
+    - text: "R Markdown"
+      href: p8105_final_jmmm.html     
+    - icon: fa-envelope fa-lg
+      href: mailto:<josiealford14@gmail.com>
+    - icon: fa-github fa-lg
+      href: https://github.com/josiealford14/p8105_final_jmmm.git
+output:
+  html_document:
+    theme: cosmo
+    

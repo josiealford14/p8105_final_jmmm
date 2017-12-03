@@ -654,7 +654,7 @@ most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", 
 #https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
 ```
 
-### Anecdotal or Commonly Discussed in Popular Culture
+#### Anecdotal or Commonly Discussed in Popular Culture
 ```{r, warning = FALSE, message = FALSE}
 #pharma drugs that people we know use, ones that we see commericals for, and commonly discussed in popular culture
 most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
@@ -765,6 +765,7 @@ final_dataset %>%
 
 ### Project Website
 ```{r project_website}
+#https://josiealford14.github.io/p8105_final_jmmm/
 #project website https://josiealford14.github.io/therealcostofdrugs/
 ```
 
