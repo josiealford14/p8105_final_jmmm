@@ -92,7 +92,7 @@ The variables that we retained are:
  
   + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into our Final Dataset named final_dataset. We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
 
-```{r load_packages, message = FALSE}
+```{r load_packages, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(dplyr)
 library(rvest)
@@ -111,7 +111,7 @@ library(readxl)
 #### **Dataset 1: Drug Prices**
 
 * Scrapping and Saving as CSV the Drug Price to speed up run-time.
-```{r tidy_drug_price}
+```{r tidy_drug_price, warning = FALSE, message = FALSE}
 # # API code
 # url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
 # drug_price =
@@ -143,7 +143,7 @@ descriptions [here](https://www.medicaid.gov/medicaid-chip-program-information/b
 * We will focus on the variables `effective_date`, `ndc`, `ndc_description`, `otc`, `classification_for_rate_setting`, `pricing_unit`, and `nadac_per_unit`. We will rename the variables `effective_date`, `ndc_description`, `classification_for_rate_setting`, and `nadac_per_unit` as `date`, `drug_name`, `drug_type`, and `unit_price` respectively. We will also split the `date` variable into the `year`, `month` and `date` variables.
 
 * Cleaning Drug Price Dataset
-```{r rename_split_date}
+```{r rename_split_date, warning = FALSE, message = FALSE}
 drug_price = 
   drug_price %>%
   rename(trade_name = ndc_description,
@@ -165,7 +165,7 @@ drug_price =
   select(trade_name, everything()) 
 ```
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 new_drug_price = drug_price %>% 
   group_by(trade_name, drug_type, otc, pricing_unit, year) %>% 
   summarize(avg_price = mean(unit_price, na.rm = TRUE))
@@ -178,7 +178,7 @@ new_drug_price
 * The NIH RCDC Report
 * This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
 *Funding for 2018 are estimated figures.
-```{r load_funding}
+```{r load_funding, warning = FALSE, message = FALSE}
 url = "https://report.nih.gov/categorical_spending.aspx"
 NIH_xml = read_html(url)
 NIH_funding = (NIH_xml %>% html_nodes(css = "table"))[[3]] %>% html_table() %>% as_tibble()
@@ -260,7 +260,7 @@ final_NIH_funding
 
 * Patent Delist Request Flag: Sponsor has requested patent be delisted.  This patent has remained listed because, under Section 505(j)(5)(D)(i) of the Act, a first applicant may retain eligibility for 180-day exclusivity based on a paragraph IV certification to this patent for a certain period.  Applicants under Section 505(b)(2) are not required to certify to patents where this flag is set to Y.
 
-```{r load_patents}
+```{r load_patents, warning = FALSE, message = FALSE}
 patents = read_csv("./data/patent.csv")
 patents = patents %>% 
   clean_names() %>%
@@ -320,7 +320,7 @@ patents
 
 *Applicant Full Name: The full name of the firm holding legal responsibility for the new drug application. 
 
-```{r load_products}
+```{r load_products, warning = FALSE, message = FALSE}
 products = read_csv("./data/products.csv")
 products = products %>%
   rename(drug_type = appl_type,
@@ -340,7 +340,7 @@ products
 
 We load and tidy the `exclusivity` dataset
 
-```{r tidy_exclusivity}
+```{r tidy_exclusivity, warning = FALSE, message = FALSE}
 exclusivity = read_csv("./data/exclusivity.csv") %>%
   clean_names() %>%
   rename(drug_type = appl_type) %>% 
@@ -362,7 +362,7 @@ The tidied `exclusivity` dataset has `r exclusivity %>% nrow` observations and `
 
 We load the `ingredient` dataset. 
 
-```{r tidy_ingredients}
+```{r tidy_ingredients, warning = FALSE, message = FALSE}
 ingredient = read_csv("./data/ingredient.csv") %>%
   clean_names() %>%
   select(singnum, singredient, everything())
@@ -379,7 +379,7 @@ The tidied `ingredient` dataset has `r ingredient %>% nrow` observations and `r 
 
 Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
 
-```{r scrape_drug_disease}
+```{r scrape_drug_disease, warning = FALSE, message = FALSE}
 
 urls = paste("https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/", toupper(letters), sep = "")
 
@@ -440,7 +440,7 @@ The `drug_disease_data` contains `r drug_disease_data %>% nrow` observations and
 
 #### **Dataset 8: Chronic Diseases**
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #first dataset
 chronic_diseases_1_html = read_html("https://www.medicalschemes.com/medical_schemes_pmb/chronic_disease_list.htm")
 chronic_diseases_1 = chronic_diseases_1_html %>%
@@ -486,7 +486,7 @@ chronic_diseases$disease[71] = "COPD"
 
 #### Join Datasets
 
-```{r join_dataset}
+```{r join_dataset, warning = FALSE, message = FALSE}
 #A: join datasets by ingredient for ingredient and products (left join)
 #products = longer dataset + ingredient
 product_ingredient = left_join(products, ingredient, by = "ingredient")
@@ -620,28 +620,83 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 ### **Case Study** : description and summary statistics of most advertised vs. most abused vs. most prescribed 
 
-#### Most Advertised
+#### Most Advertised (by spending)
+```{r, warning = FALSE, message = FALSE}
+top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
+# In 2016, Humira had the highest advertising spending of $344 million.
+# Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), has the highest mean average price of $45.70. Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditons), had the lowest mean average price of $5.29 among these drugs.
+```
+
+#### Most Prescribed (by sales)
+```{r, warning = FALSE, message = FALSE}
+### Top 20 precribed drugs by US sales
+top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort") 
+
+#Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease. 
+
+#Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
+
+#Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
+```
 
 #### Most Abused
+```{r, warning = FALSE, message = FALSE}
+most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
 
-#### Most Prescribed
+# https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
+# https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
+# https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
+# Opiods (examine change in prices for opiod drugs. also Percocet is commonly referenced in "trap music". Suboxone is a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled), Depressants (Xanax is frequently referenced in "trap music"), Stimulants (Adderall and Ritalin are commonnly abused by college students)
+#Opiod Epidemic (Public Health Threat. data from 2014): 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. Practitioners were urged to treat pain aggresively (without the tools and training), pharmaceutical companies marketing prescription opiods to doctors. There were 259 million opiod prescription in 2012, according to the CDC. An increase in 400% since 1999.Prescription opiods account for 1/2 of opiod deaths, heroin (illicit) accounts for other 1/2. Considered gateway drug for heroin. Highly addictive. Other opiods include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup". Infamously, the rapper Lil' Wayne has struggled with past addiction to codeine. The rapper Pimp C died from overdosing on codeine).
+#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+#Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
+#One in three unintential overdose deaths result from opiods combined with benzodiazepines (Valium and Xanax)
+#https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+```
 
+### Anecdotal or Commonly Discussed in Popular Culture
+```{r, warning = FALSE, message = FALSE}
+#pharma drugs that people we know use, ones that we see commericals for, and commonly discussed in popular culture
+most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
 
+#The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
+#Zocor (simvastatin): cholesterol lowering drug
+# https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
+```
 
 ### Analysis & Discussion
 
 #### **Josie**
-```{r}
-top_advertising_cost = c("Viagra")
-
+```{r, warning = FALSE, message = FALSE}
 #shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
 #another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
 final_dataset %>%
-  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  filter(!is.na(avg_price)) %>%
   filter(trade_name %in% top_advertising_cost) %>%
   group_by(trade_name) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
-  layout(title = "Distribution of Average Price for Top Advertised Drugs")
+  layout(title = "Distribution of Average Price for Most Advertised Drugs")
+
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_abused_drugs) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Abused Drugs")
+
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_popular_drugs) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Popular Drugs")
+
+final_dataset %>% #harvoni is an extreme outlier, should we drop?
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_prescribed_drugs_sales) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Prescribed Drugs")
 
 #shiny application: acute vs. chronic
 final_dataset %>%
