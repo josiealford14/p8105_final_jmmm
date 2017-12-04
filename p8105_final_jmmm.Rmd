@@ -92,6 +92,10 @@ The variables that we retained are:
  
   + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into our Final Dataset named final_dataset. We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set( collapse = TRUE) # courtesy of Julia
+```
+
 ```{r load_packages, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidytext)
