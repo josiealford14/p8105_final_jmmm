@@ -623,28 +623,37 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 #### **Manali**
 
-We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
 
-Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We see breast cancer treatments are unusually high in price, which again makes sense given what we know about cancer treatment. 
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of caners including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
+
+Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding.
+
+
 ```{r}
 #does funding correlate with drug prices?
 
 final_dataset %>%
   #sample_n(50)%>%
-  group_by(disease, funding, avg_price) %>%
-  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
-  #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  # plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
-  #         , text = ~paste('Drug: ', trade_name, '<br>Disease: ', disease)) %>%
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease)) %>%
+  group_by(disease, trade_name) %>%
+  summarize(avg_funding = mean(funding, na.rm = TRUE), 
+            avg_price_disease = mean(avg_price, na.rm=TRUE)) %>%
+  plot_ly(x = ~ avg_funding, y = ~ avg_price_disease, type = "scatter", color = ~disease, text = ~paste('Drug: ', trade_name, '<br> Disease:', disease)) %>%
   layout(title = "Average Funding vs Average Price", showlegend = FALSE)
-
-
+  
+ax <- list(
+  title = "",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+# p <- plot_ly(x = c(1, 2), y = c(1, 2)) %>%
+#   layout(xaxis = ax, yaxis = ax)
 final_dataset %>%
   group_by(disease, funding, disease_type) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   plot_ly(x = ~ disease, y = ~ funding, color = ~disease_type, type = "scatter") %>%
-  layout(title = "Average Funding For Chronic vs Acute Diseases")
+  layout(title = "Average Funding For Chronic vs Acute Diseases", xaxis = ax)
               
 ```
 
@@ -677,6 +686,8 @@ final_dataset %>%
 ```
 
 We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence) colored by disease. Among drugs with available information on price per unit drug, obesity seems to have received the most funding on average and to have the highest 2015 prevalence.
+
+We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
 
 ```{r funding_demand}
 final_dataset %>% 
