@@ -94,18 +94,18 @@ The variables that we retained are:
 
 ```{r load_packages, warning = FALSE, message = FALSE}
 library(tidyverse)
+library(tidytext)
+
+library(broom)
 library(dplyr)
-library(rvest)
+library(forcats)
 library(httr)
 library(janitor)
-library(stringr)
-library(forcats)
-library(tidytext)
-library(viridis)
-library(broom)
 library(plotly)
-library(forcats)
 library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
 ```
 
 #### **Dataset 1: Drug Prices**
@@ -634,7 +634,18 @@ final_dataset %>%
   group_by(disease, funding, avg_price) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   #plot_ly(x = ~funding, y = ~avg_price, type = "scatter")
-  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease))
+  # plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter")
+  #         , text = ~paste('Drug: ', trade_name, '<br>Disease: ', disease)) %>%
+  plot_ly(x = ~ avg_funding, y = ~ avg_price, type = "scatter", color = ~disease, text = ~paste('Disease:', disease)) %>%
+  layout(title = "Average Funding vs Average Price", showlegend = FALSE)
+
+
+final_dataset %>%
+  group_by(disease, funding, disease_type) %>%
+  summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ disease, y = ~ funding, color = ~disease_type, type = "scatter") %>%
+  layout(title = "Average Funding For Chronic vs Acute Diseases")
+              
 ```
 
 
@@ -678,7 +689,42 @@ final_dataset %>%
 
 #### **MeOak**
 ```{r}
+# final_dataset = read_csv("./data/final_dataset.csv") 
+# str(final_dataset)
 
+#Which pharmaco's are holding the most patents?
+most_pat_company = final_dataset %>% 
+  select(-c(1:13, 15:16, 18:24, 26:31)) %>% 
+  filter(!duplicated(patent_num)) %>% 
+  group_by(appfull) %>% 
+  count() %>% 
+  rename(num_pat_held = n) %>% 
+  ungroup()
+most_pat_company %>% 
+  mutate(appfull = fct_reorder(appfull, num_pat_held)) %>% 
+  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set3")
+
+#diseases with most patents issued
+most_pat_dis = final_dataset %>% 
+  select(-c(1:16, 18:24, 26:31)) %>% 
+  filter(!duplicated(patent_num)) %>% 
+  group_by(disease) %>% 
+  count() %>% 
+  rename(num_pat_held = n) %>% 
+  ungroup()
+most_pat_dis %>% 
+  mutate(disease = fct_reorder(disease, num_pat_held)) %>% 
+  plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "Set2")
+
+
+# #scatter year_pat_expires
+# final_dataset %>% 
+#   ggplot(aes(x = disease, y = year_pat_expires)) + 
+#   geom_point() 
+# 
+# final_dataset %>% 
+#   ggplot(aes(x = disease, y = year_excl_expires)) + 
+#   geom_point() 
 ```
 
 #### **Disease & Funding**
