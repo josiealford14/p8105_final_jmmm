@@ -700,41 +700,111 @@ final_dataset %>%
 #### **Pharmaceutical Companies and Top Drugs**
 ```{r}
 # final_dataset = read_csv("./data/final_dataset.csv") 
-# str(final_dataset)
 
-#Which pharmaco's are holding the most patents?
-most_pat_company = final_dataset %>% 
-  select(-c(1:13, 15:16, 18:24, 26:31)) %>% 
+#more cleaning
+patents = final_dataset %>% 
+  select(-c(1:13, 15:16, 18, 19, 21:24, 26:31)) %>% 
   filter(!duplicated(patent_num)) %>% 
+  filter(!is.na(disease)) %>%
+  filter(year_pat_expires > 2017) %>% 
+  mutate(
+    as.factor(year_pat_expires > 2017), 
+    appfull = str_replace(appfull, "-", " "),
+    appfull = str_replace(appfull, " Ab", ""),
+    appfull = str_replace(appfull, " And", ""),
+    appfull = str_replace(appfull, " Biotech", ""),
+    appfull = str_replace(appfull, " Co", ""),
+    appfull = str_replace(appfull, " Inc", ""), 
+    appfull = str_replace(appfull, " International", ""),
+    appfull = str_replace(appfull, " Ireland s", ""),
+    appfull = str_replace(appfull, " Ltd", ""), 
+    appfull = str_replace(appfull, " Llc", ""), 
+    appfull = str_replace(appfull, " Lp", ""), 
+    appfull = str_replace(appfull, " Holdings", ""), 
+    appfull = str_replace(appfull, " Pharmaceutical", ""),
+    appfull = str_replace(appfull, " Pharmaceuticals", ""), 
+    appfull = str_replace(appfull, " Products", ""),
+    appfull = str_replace(appfull, " Research Institute", ""), 
+    appfull = str_replace(appfull, " Research Development", ""), 
+    appfull = str_replace(appfull, " s ", ""),
+    appfull = str_replace(appfull, " Trading", ""), 
+    appfull = str_replace(appfull, " Unltd", ""), 
+    appfull = str_replace(appfull, "Allergans", "Allergan"),
+    appfull = str_replace(appfull, "Astrazenecas", "Astrazeneca"),
+    appfull = str_replace(appfull, "Janssens", "Janssen"), 
+    appfull = str_replace(appfull, "Ingelheims", "Ingelheim"), 
+    appfull = str_replace(appfull, "Pfizers", "Pfizer"),
+    appfull = str_replace(appfull, "Wyeths Wholly Owned Sub Pfizer Inc", "Pfizer")
+    ) %>% 
+  arrange(appfull)
+patents
+
+# Categorical = Disease, PharmaCo
+# Continuous = Year
+# Response = #of patents
+
+##################
+
+
+
+# relationship between excl vs pat
+
+
+#Which pharmaco's are currently holding the most patents?
+most_pat_company = patents %>% 
   group_by(appfull) %>% 
   count() %>% 
   rename(num_pat_held = n) %>% 
-  ungroup()
-most_pat_company %>% 
+  ungroup() %>% 
   mutate(appfull = fct_reorder(appfull, num_pat_held)) %>% 
-  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set3")
+  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set2")
+most_pat_company 
+############# QUESTION:  How can we arrange the legend to be alphabetized?
 
-#diseases with most patents issued
-most_pat_dis = final_dataset %>% 
-  select(-c(1:16, 18:24, 26:31)) %>% 
-  filter(!duplicated(patent_num)) %>% 
+
+#diseases currently with most patents
+most_pat_dis = patents %>%
   group_by(disease) %>% 
   count() %>% 
   rename(num_pat_held = n) %>% 
-  ungroup()
-most_pat_dis %>% 
+  ungroup() %>% 
   mutate(disease = fct_reorder(disease, num_pat_held)) %>% 
   plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "Set2")
+most_pat_dis
+############# QUESTION:  How can we arrange the legend to be alphabetized?
 
 
-# #scatter year_pat_expires
-# final_dataset %>% 
-#   ggplot(aes(x = disease, y = year_pat_expires)) + 
-#   geom_point() 
-# 
-# final_dataset %>% 
-#   ggplot(aes(x = disease, y = year_excl_expires)) + 
-#   geom_point() 
+#pharmaco that has most patents expiring by year (i.e. in each upcoming year, who has most expiring?  Could this be a driver for funding applications?)
+pat_exp = patents %>%
+  group_by(appfull, year_pat_expires) %>% 
+  count() %>% 
+  rename(num_pat_exp = n) %>% 
+  ungroup() %>% 
+  plot_ly(
+    x = ~year_pat_expires, 
+    y = ~num_pat_exp, 
+    color = ~appfull, 
+    type = "scatter", 
+    mode = "lines", 
+    colors = "Set2")
+pat_exp
+
+#diseases currently with most patents
+dis_pat_exp = patents %>%
+  group_by(disease, year_pat_expires) %>% 
+  count() %>% 
+  rename(num_pat_exp = n) %>% 
+  ungroup() %>% 
+  mutate(disease = fct_reorder(disease, num_pat_exp)) %>% 
+  plot_ly(
+    x = ~year_pat_expires, 
+    y = ~num_pat_exp, 
+    color = ~disease, 
+    type = "scatter", 
+    mode = "lines", 
+    colors = "Set2")
+dis_pat_exp
+######################### QUESTION:  How do I amend x-axis to show each year as opposed to every two years?
 ```
 
 #### **Disease & Funding**
