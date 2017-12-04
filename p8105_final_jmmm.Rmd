@@ -625,9 +625,6 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 ### Analysis & Discussion
 
-#### **Manali**
-
-
 Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of caners including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
 
 Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding.
@@ -661,8 +658,6 @@ final_dataset %>%
               
 ```
 
-
-#### **Muhire**
 
 * We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the mean (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
 
@@ -702,7 +697,7 @@ final_dataset %>%
   layout(title = "Funding vs Need", showlegend = FALSE)
 ```
 
-#### **MeOak**
+#### **Pharmaceutical Companies and Top Drugs**
 ```{r}
 # final_dataset = read_csv("./data/final_dataset.csv") 
 # str(final_dataset)
@@ -964,9 +959,14 @@ most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Cres
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% top_advertising_cost) %>%
-  group_by(trade_name) %>% 
-  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  ungroup() %>%
+  mutate(trade_name = factor(trade_name)) %>%
+  mutate(trade_name_new = fct_relevel(trade_name, c("Eliquis", "Xeljanz", "Cialis", "Invokana", "Latuda","Viagra"))) %>%
+   group_by(trade_name) %>% 
+  plot_ly(x = ~trade_name_new, y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Most Advertised Drugs")
+#Elliquis spends more than Xeljanz, 
+#some drugs are missing because of subsetting
 
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
@@ -1028,11 +1028,17 @@ final_dataset %>% #without harvoni
 #motivation: One in three unintential overdose deaths result from opioids combined with benzodiazepines (Valium and Xanax)
 ```
 
-### Project Website & Shiny Application
+### Project Website And Shiny Application
 ```{r project_website}
 #https://josiealford14.github.io/p8105_final_jmmm/
 #https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
 ```
 
-### Conclusion
-
+### Conclusion And Limitations
+What? & Why? (2 sentences)
+Summarize (interesting results!, Obesity, cancers)
+Case Study (2 sentences): general overview, anything cool. We made shiny app that illustrates the trends. 
+2 sentences for MeOak's patent analysis
+Limitations: loss data through joining/subsetting (only each/per gram). as a result: affected the graphs and possible Missclassifcication bias of acute vs. chronic. 
+we believe that these results help us better understand the factros that go into pricing, 
+future work: drug in solution forms and compare. better ways of joining characters without lossing large amounts of data (fuzzy dataset: complex and time consuming, convoluted). 
