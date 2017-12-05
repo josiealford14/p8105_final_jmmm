@@ -861,11 +861,13 @@ final_dataset %>%
 
 #### **Acute vs. Chronic Disease**
 ##### Funding
+
 * Is there a difference in funding between acute conditions and chronic diseases?
 
   + Now, let's investigate if there is a difference in distribution of funding based on disease condition: acute versus chronic. We see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
   
-  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for acute conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding. 
+  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for acute conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
+  
 ```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
 #acute vs. chronic (boxplot)
 #Funding by disease status
@@ -879,6 +881,7 @@ final_dataset %>%
 * Is there a statistically significant difference in funding between acute and chronic diseases?
 
   + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  
 ```{r}
 #Statistical Test of Funding Difference
 acute = final_dataset %>%
@@ -891,11 +894,13 @@ t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
 ```
 
 ##### Pricing
+
 * Is there a difference in funding between acute conditions and chronic diseases? 
 
   + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentially more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
   + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
     + Yes; drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+    
 ```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
 final_dataset %>%
@@ -917,6 +922,7 @@ t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 * We are interested in conducting a case study on pharmaceutical drugs that receive the highest advertisement spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture.
 
 ##### Most Advertised (by spending)
+
 ```{r Most Advertised, warning = FALSE, message = FALSE}
 top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
 ```
@@ -932,6 +938,7 @@ top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "In
       + Of the twenty drugs with highest advertising spending, six drugs were found within the dataset.
   
 ##### Most Prescribed (by sales)
+
 ```{r Most Prescribed, warning = FALSE, message = FALSE}
 ### Top 20 precribed drugs by US sales
 top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort")
@@ -946,6 +953,7 @@ top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar",
       + Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
 
 ##### Most Abused
+
 ```{r Most Abused, warning = FALSE, message = FALSE}
 most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
 #Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
@@ -1031,6 +1039,7 @@ most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", 
     + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term=.49524bcc93b1
     
 ##### Anecdotal or Commonly Discussed in Popular Culture
+
 ```{r Popular Culture, warning = FALSE, message = FALSE}
 most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
 ```
@@ -1059,6 +1068,7 @@ most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Cres
       + The most abused drugs are relatively inexpensive compared to others. This gives patients greater access to highly addictive prescriptions, including painkillers. This may be a driving force of prescription drug abuse; cheap and highly addicitve are fatal combinations for drug dependence.
       
       + The most prescribed drugs are notably more expensive. The mean is skewed by the Hepatitis C drug, Harvoni. Harvoni has a median average price of $1,093.83. Excluding Harvoni results in a mean of average price per tablet of $21.71 for most prescribed drugs, which is on-par with most popular and most advertised drugs. 
+      
 ```{r}
 mean_price_abused = final_dataset %>%
   filter(!is.na(avg_price)) %>%
@@ -1088,6 +1098,7 @@ mean_price_advertised = final_dataset %>%
 ```
 
 ##### Boxplots of each category of drugs
+
 ```{r Plottly Formatting, warning = FALSE, message = FALSE}
 #plotly formatting
 f = list(
@@ -1104,9 +1115,12 @@ avg_price_axis = list(
   titlefont = f
 )
 ```
-###### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
+
+##### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
+
   + Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28. 
   + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
+  
 ```{r Most Advertised plots, warning = FALSE, message = FALSE}
 #shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
 #another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
@@ -1122,12 +1136,14 @@ final_dataset %>%
          Ordered by Descending Advertising Spending", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
 
-###### The Distribution of Average Price for Most Popular Drugs
+##### The Distribution of Average Price for Most Popular Drugs
+
   + Viagra, which treats erectile dysfunction (acute), had the highest median of average price of $35.47. 
   
   + Xanax, which treats anxiety and panic attack (acute), had the lowest median of average price of $3.41.
   
   + There is no clear trend between disease type (acute vs. chronic) and disease condition (psychiatric drugs vs. cardiovascular).
+  
 ```{r Most Popular, warning = FALSE, message = FALSE}
 x = final_dataset %>%
   filter(!is.na(avg_price)) %>%
@@ -1136,8 +1152,11 @@ x = final_dataset %>%
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Popular Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
-###### The Distribution of Average Price for Most Abused Drugs 
+
+##### The Distribution of Average Price for Most Abused Drugs 
+
   + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price per dose of $13.45 and $11.94 respectively. Focalin and Ritalinm, which both treat ADHD, have the lowest median of average drug price per dose of $0.97 each. 
+  
 ```{r Case Study Analysis, warning = FALSE, message = FALSE}
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
@@ -1146,7 +1165,9 @@ final_dataset %>%
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Most Abused Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
-###### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
+
+##### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
+
   + Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
   
   + Some explanation from HuffPost: "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
@@ -1160,6 +1181,7 @@ final_dataset %>%
   + If we exclude Harvoni, we can better see the box plots of the other drugs.
   
     + As prescription rates decrease, average drug price per tablet does not display any discernible trend.
+    
 ```{r}
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
