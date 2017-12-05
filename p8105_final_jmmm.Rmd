@@ -625,6 +625,27 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 ### Analysis & Discussion
 
+First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implimentation of the Affordable Care Act (ACA) in 2015.
+
+We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled in 2016 and there is a projected decrease for 2018.
+
+```{r}
+
+final_dataset %>%
+  group_by(year) %>%
+  summarize(avg_all_drugs_price = mean(avg_price)) %>%
+  plot_ly(x = ~ year, y = ~avg_all_drugs_price, mode = "lines", type = "scatter") %>%
+  layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "Drug Price"))
+
+
+final_NIH_funding %>%
+  group_by(year) %>%
+  summarize(avg_funding = sum(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ year, y = ~ avg_funding, mode = "lines", type = "scatter")
+
+```
+
+
 Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of caners including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
 
 Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding.
@@ -1105,10 +1126,15 @@ final_dataset %>% #without harvoni
 ```
 
 ### Conclusion And Limitations
-What? & Why? (2 sentences)
-Summarize (interesting results!, Obesity, cancers)
-Case Study (2 sentences): general overview, anything cool. We made shiny app that illustrates the trends. 
-2 sentences for MeOak's patent analysis
-Limitations: loss data through joining/subsetting (only each/per gram). as a result: affected the graphs and possible Missclassifcication bias of acute vs. chronic. 
-we believe that these results help us better understand the factros that go into pricing, 
-future work: drug in solution forms and compare. better ways of joining characters without lossing large amounts of data (fuzzy dataset: complex and time consuming, convoluted). 
+
+High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
+We observe a clear increasing trend in overall average drug price from 2013 to 2017 wtih a notable increase between 2014 and 2015, possibly due to ACA implimentation in 2015.
+We explored some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising.  
+We see that cancers in particular seem to recieve very high funding despite having a lower need as defined by prevalence.
+
+
+**Additionally, we seek to understand the types of drugs that receive patents/exclusivity.**
+
+There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type.
+In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+
