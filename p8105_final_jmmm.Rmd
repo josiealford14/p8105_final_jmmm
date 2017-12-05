@@ -1150,7 +1150,11 @@ final_dataset %>%
   
   + Some explanation from HuffPost: "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
   
-    +https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a
+      +https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a
+    
+    + Influences of pricing: uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
+  
+      + https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp
     
   + If we exclude Harvoni, we can better see the box plots of the other drugs.
   
@@ -1179,6 +1183,9 @@ final_dataset %>% #without harvoni
   layout(title = "Distribution of Average Price for Most Prescribed Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
 
+
+
+
 ### Project Website And Shiny Application
 ```{r project_website}
 #https://josiealford14.github.io/p8105_final_jmmm/
@@ -1189,12 +1196,13 @@ final_dataset %>% #without harvoni
 
 High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
 We observe a clear increasing trend in overall average drug price from 2013 to 2017 wtih a notable increase between 2014 and 2015, possibly due to ACA implimentation in 2015.
-We explored some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising.  
-We see that cancers in particular seem to recieve very high funding despite having a lower need as defined by prevalence.
+We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.  
+We observe that drugs that receive the most prescriptions have a higher mean average price per tablet. 
+We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.
 
+For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.
 
 **Additionally, we seek to understand the types of drugs that receive patents/exclusivity.**
 
 There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type.
 In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
-
