@@ -1107,7 +1107,7 @@ avg_price_axis = list(
 ###### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
   + Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28. 
   + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
-```{r Most Advertised, warning = FALSE, message = FALSE}
+```{r Most Advertised plots, warning = FALSE, message = FALSE}
 #shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
 #another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
 final_dataset %>%
@@ -1121,6 +1121,7 @@ final_dataset %>%
   layout(title = "Distribution of Average Price for Most Advertised Drugs, 
          Ordered by Descending Advertising Spending", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
+
 ###### The Distribution of Average Price for Most Popular Drugs
   + Viagra, which treats erectile dysfunction (acute), had the highest median of average price of $35.47. 
   
@@ -1182,9 +1183,6 @@ final_dataset %>% #without harvoni
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name_presc, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Most Prescribed Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
 ```
-
-
-
 
 ### Project Website And Shiny Application
 ```{r project_website}
