@@ -133,7 +133,7 @@ drug_price =
 ```
 
 * The raw `drug_price` dataset is huge and takes a while to load.
-* It contains weekly drug prices from november 2013 to october 2017 recorded. There are `r drug_price %>% nrow()` observations and `r drug_price %>% ncol()` variables in the dataset:
+* It contains weekly drug prices from November 2013 to October 2017 recorded. There are `r drug_price %>% nrow()` observations and `r drug_price %>% ncol()` variables in the dataset:
     + `as_of_date`: date of data posting
     + `classification_for_rate_setting`: indicates whether, for NADAC calculation, the NDC was considered brand (‘B’) or generic (‘G’) or brand (‘B’) approved under an Abbreviated New Drug Application (ANDA) (‘B-ANDA’).
     + `corresponding_generic_drug_effecitve_date`:  effective date of when the Corresponding Generic Drug NADAC Per Unit is assigned to a multiple source brand drug NDC
@@ -309,7 +309,7 @@ patents
 
 * Strength: The potency of the active ingredient.  May repeat for multiple part products.
 
-* Drug Application Type: The type of new drug application approval. NDA orANDA as for patents dataset.
+* Drug Application Type: The type of new drug application approval. NDA or ANDA as for patents dataset.
 
 * New Drug Application (NDA) Number: The FDA assigned number to the application.
 
@@ -628,7 +628,7 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 ### Analysis & Discussion
 
-First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implimentation of the Affordable Care Act (ACA) in 2015.
+First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
 We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled in 2016 and there is a projected decrease for 2018.
 
@@ -1065,7 +1065,7 @@ most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Cres
   
   + These results are particularly interesting. 
   
-      + The most abused drugs are relatively inexpensive compared to others. This gives patients greater access to highly addictive prescriptions, including painkillers. This may be a driving force of prescription drug abuse; cheap and highly addicitve are fatal combinations for drug dependence.
+      + The most abused drugs are relatively inexpensive compared to others. This gives patients greater access to highly addictive prescriptions, including painkillers. This may be a driving force of prescription drug abuse; cheap and highly addictive are fatal combinations for drug dependence.
       
       + The most prescribed drugs are notably more expensive. The mean is skewed by the Hepatitis C drug, Harvoni. Harvoni has a median average price of $1,093.83. Excluding Harvoni results in a mean of average price per tablet of $21.71 for most prescribed drugs, which is on-par with most popular and most advertised drugs. 
       
@@ -1155,7 +1155,7 @@ x = final_dataset %>%
 
 ##### The Distribution of Average Price for Most Abused Drugs 
 
-  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price per dose of $13.45 and $11.94 respectively. Focalin and Ritalinm, which both treat ADHD, have the lowest median of average drug price per dose of $0.97 each. 
+  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price per dose of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price per dose of $0.97 each. 
   
 ```{r Case Study Analysis, warning = FALSE, message = FALSE}
 final_dataset %>%
@@ -1215,7 +1215,7 @@ final_dataset %>% #without harvoni
 ### Conclusion And Limitations
 
 High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
-We observe a clear increasing trend in overall average drug price from 2013 to 2017 wtih a notable increase between 2014 and 2015, possibly due to ACA implimentation in 2015.
+We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015.
 We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.  
 We observe that drugs that receive the most prescriptions have a higher mean average price per tablet. 
 We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.
