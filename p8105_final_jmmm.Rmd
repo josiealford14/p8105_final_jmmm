@@ -6,11 +6,11 @@ output:
     code_folding: hide
 title: "What Drives Drug Prices?"
 ---
-### Introduction
+### **Introduction**
 
 In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
 
-### The Data
+### **The Data**
 
 * FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
 
@@ -83,7 +83,7 @@ The variables that we retained are:
 
 * disease_type: the type disease (acute or chronic)
 
-### Data Wrangling 
+### **Data Wrangling** 
 * The code chunks below were used for loading and tidying the data.
 
   + We put all sub-datasets in long format. We renamed variables as necessary. 
@@ -626,7 +626,7 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 ```
 
 
-### Analysis & Discussion
+### **Analysis & Discussion**
 
 First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
@@ -1212,7 +1212,7 @@ final_dataset %>% #without harvoni
 #https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
 ```
 
-### Conclusion And Limitations
+### **Conclusion And Limitations**
 
 High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
 We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015.
