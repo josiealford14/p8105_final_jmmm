@@ -843,11 +843,13 @@ yax_2 = list(
 )
 
 pat_exp = patents %>%
-  group_by(appfull, year_pat_expires) %>%
+  group_by(appfull, disease, year_pat_expires) %>%
   count() %>% 
   rename(num_pat_exp = n) 
 # %>%
 #   ungroup() 
+# ay vs day vs ady
+# 203 vs 233 vs 233
 
 # pat_exp %>%
 #   plot_ly(x = ~year_pat_expires, y = ~num_pat_exp, color = ~appfull, type = "scatter", mode = "lines", colors = "Set2") %>%
@@ -874,29 +876,24 @@ xax_3 = list(
   showticklabels = TRUE,
   showgrid = TRUE
 )
+
 yax_3 = list(
-  title = "",
+  title = "No. Patents Expiring",
   zeroline = FALSE,
   showline = FALSE,
   showticklabels = TRUE,
   showgrid = TRUE
 )
-
-dis_pat_exp = patents %>%
-  group_by(disease, year_pat_expires) %>%
-  count() %>%
-  rename(num_pat_exp = n) %>%
-  # ungroup() %>%
-  # mutate(disease = fct_reorder(disease, num_pat_exp)) %>%
-    plot_ly(x = ~year_pat_expires, 
-          y = ~disease, 
-          color = ~disease, 
-          type = "scatter", 
-          mode = 'markers', 
-          marker = list(size = ~num_pat_exp*3), 
-          text = ~paste('Count: ', num_pat_exp)) %>%
-  layout(title = "Projection of Expiring Patents by Disease", xaxis = xax_3, yaxis = yax_3, showlegend = FALSE)
-  dis_pat_exp
+  
+pat_exp %>% 
+  plot_ly(
+    x = ~year_pat_expires, 
+    y= ~num_pat_exp,
+    type = "scatter", 
+    mode = 'markers', 
+    marker = list(size = ~num_pat_exp*3), 
+    text = ~paste('Company: ', appfull, '<br> Disease:', disease)) %>% 
+  layout(title = "Projection of Expiring Patents", xaxis = xax_3, yaxis = yax_3, showlegend = FALSE)
 ```
 
 #### **Disease & Funding**
