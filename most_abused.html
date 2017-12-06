@@ -11,7 +11,7 @@
 
 
 
-<title>Factors Influencing Drug Prices</title>
+<title>Most Abused</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -283,7 +283,7 @@ div.tocify {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        
+        <li class="dropdown-header">Home</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -357,61 +357,69 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Factors Influencing Drug Prices</h1>
+<h1 class="title toc-ignore">Most Abused</h1>
 
 </div>
 
 
-<div id="drug-prices-affect-us-all-or-some-other-corny-intro" class="section level3">
-<h3>Drug Prices Affect US All (or some other corny intro)</h3>
-</div>
-<div id="informative-graphic-imbed-plottly-that-gives-overview-to-project" class="section level3">
-<h3>Informative Graphic (imbed plottly that gives overview to project)</h3>
-<p>In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; “Why Prescription Drugs…”, 2017). This project aims at exploring some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.</p>
-</div>
-<div id="illustrative-picture" class="section level3">
-<h3>Illustrative Picture</h3>
-</div>
-<div id="conclusion-and-limitations" class="section level3">
-<h3><strong>Conclusion And Limitations</strong></h3>
-<p>High drug prices have become an increasing concern in the United States (Hancock, 2016 ; “Why Prescription Drugs…”, 2017). We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015. We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.<br />
-We observe that drugs that receive the most prescriptions have the highest mean average price per tablet. Additionally, we observe that the most abused drugs have the lowest mean average price per tablet. We observe that chronic diseases receive more funding than acute conditions; further, we observe that drugs that treat acute conditions have higher mean average prices per tablet than drugs that treat chronic diseases.</p>
-<p>We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.</p>
-</div>
-<div id="informative-graphic-imbed-plottly-that-gives-overview-to-project-1" class="section level3">
-<h3>Informative Graphic (imbed plottly that gives overview to project)</h3>
-<div id="future-research" class="section level4">
-<h4>Future Research</h4>
-<p>For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.</p>
-<p><strong>Additionally, we seek to understand the types of drugs that receive patents/exclusivity.</strong></p>
-</div>
-<div id="limitations" class="section level4">
-<h4>Limitations</h4>
-<p>There are a couple of important limitations of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption. In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
-</div>
-</div>
-<div id="picture-related-to-drug-prices-pills-someone-looking-stressed-bc-gotta-pay-bills" class="section level3">
-<h3>Picture related to Drug Prices (pills, someone looking stressed bc gotta pay bills)</h3>
-</div>
-<div id="further-explore-how-various-factors-affect-drug-prices" class="section level3">
-<h3>Further Explore How Various Factors Affect Drug Prices</h3>
+<div id="talk-about-search-for-these-references" class="section level5">
+<h5>talk about search for these (references)</h5>
+<pre class="r"><code>most_abused_drugs = c(&quot;Vicodin&quot;, &quot;OxyContin&quot;, &quot;Ritalin&quot;, &quot;Concerta&quot;, &quot;Focalin&quot;, &quot;Metadate&quot;, &quot;Ambien&quot;, &quot;Lunesta&quot;, &quot;Valium&quot;, &quot;Xanax&quot;, &quot;Duragesic&quot;, &quot;Opana&quot;, &quot;Darvon&quot;, &quot;Dilaudid&quot;, &quot;Demerol&quot;, &quot;Lomotil&quot;, &quot;Nembutal&quot;, &quot;Dexedrine&quot;, &quot;Adderall&quot;, &quot;Percocet&quot;, &quot;Suboxone&quot;, &quot;Fentanyl&quot;) 
+#Interested in seeing how prescription opioid prices have increased through time (Muhire&#39;s plot) 
+most_abused_drugs</code></pre>
+<pre><code>##  [1] &quot;Vicodin&quot;   &quot;OxyContin&quot; &quot;Ritalin&quot;   &quot;Concerta&quot;  &quot;Focalin&quot;  
+##  [6] &quot;Metadate&quot;  &quot;Ambien&quot;    &quot;Lunesta&quot;   &quot;Valium&quot;    &quot;Xanax&quot;    
+## [11] &quot;Duragesic&quot; &quot;Opana&quot;     &quot;Darvon&quot;    &quot;Dilaudid&quot;  &quot;Demerol&quot;  
+## [16] &quot;Lomotil&quot;   &quot;Nembutal&quot;  &quot;Dexedrine&quot; &quot;Adderall&quot;  &quot;Percocet&quot; 
+## [21] &quot;Suboxone&quot;  &quot;Fentanyl&quot;</code></pre>
 <ul>
-<li><a href="datawrangling.html">Data Wrangling</a></li>
-<li><a href="data.html">Raw Datasets</a></li>
-<li><a href="analysis.html">Analysis</a></li>
-<li><a href="manali.html">Manali</a></li>
-<li><a href="muhire.html">Muhire</a></li>
-<li><a href="meoak.html">MeOak</a></li>
-<li><a href="chronic_acute.html">Chronic vs. Acute Diseases</a></li>
-<li><a href="case_study.html">Overview of Case Study</a>
+<li><p>Now, let’s take a look at the most abused drugs in America</p>
 <ul>
-<li><a href="most_advertised.html">Most Advertised</a></li>
-<li><a href="most_abused.html">Most Abused</a></li>
-<li><a href="most_prescribed.html">Most Prescribed</a></li>
-<li><a href="most_popular.html">Most Popular</a></li>
+<li><p>This list of drugs involves drugs that are over prescribed, highly addictive, and/or frequently used as illicit street drugs</p></li>
+<li><p>Benzodiazepines</p></li>
+<li><p>Central nervous system depressants</p>
+<ul>
+<li><p>Nembutal</p></li>
+<li><p>Valium: used to treat anxiety disorders, abused along with alcohol or other depressants</p></li>
+<li><p>Xanax: frequently referenced in “trap music”</p></li>
+<li><p>Suboxone: a popular street drug, most popular illicit drug bought and sold in jails and prisons–often smuggled</p></li>
 </ul></li>
-<li>Versions of <a href="rpackage.html">R and Packages</a> used in Analysis</li>
-<li><a href="references.html">References</a></li>
+<li><p>Stimulants</p>
+<ul>
+<li><p>Dexedrine</p></li>
+<li><p>Ritalin: commonly abused by college students</p></li>
+<li><p>Concerta</p></li>
+<li><p>Adderall: commonly abused by college students</p></li>
+</ul></li>
+</ul></li>
+<li><p>Opioids</p>
+<ul>
+<li><p>Duragesic</p>
+<ul>
+<li>Fentanyl is Heroin’s synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is popular street drug driving heroin overdose deaths in the US.</li>
+</ul></li>
+<li><p>Vicodin</p></li>
+<li><p>OxyContin</p></li>
+<li><p>Opana</p></li>
+<li><p>Darvon</p></li>
+<li><p>Dilaudid</p></li>
+<li><p>Demerol</p></li>
+<li><p>Lomotil</p></li>
+<li><p>Percocet: crushed into power and snorted (like cocaine) for a high. commonly referenced in trap music</p></li>
+<li><p>Important Facts &amp; Figures about Opioid Epidemic</p></li>
+<li><p>Public Health threat.</p></li>
+<li><p>2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)</p></li>
+<li><p>Causes of Epidemic Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.</p></li>
+<li>259 million opioid prescriptions in 2012, according to the CDC. An increase in 400% since 1999.</li>
+<li><p>Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin</p></li>
+<li><p>Four in five Heroin Users used prescription opioids before heroin.</p></li>
+<li><p>Highly addictive. Other opioids include morphine, codeine cough syrup (know as “lean”, “purple drank”, “Sizzurp”, and “syrup”.</p></li>
+</ul></li>
+<li><p>Something to think about</p>
+<ul>
+<li><p>The pop legends Michael Jackson, Whitney Houston and Prince each died with with opioids (painkillers) and/or benzodiazepines (anti anxiety) in their systems.</p></li>
+<li><p>“The gods of pop music, indestructible in song, died taking the same drugs that everyone takes.” Chris Richards of The Washington Post</p></li>
+</ul></li>
 </ul>
 </div>
 

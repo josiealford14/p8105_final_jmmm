@@ -1,0 +1,78 @@
+---
+title: "Chronic vs. Acute Diseases"
+---
+### Funding
+
+* Is there a difference in funding between acute conditions and chronic diseases?
+
+  + Now, let's investigate if there is a difference in distribution of funding based on disease condition: acute versus chronic. We see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
+  
+  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for acute conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
+  
+```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidytext)
+
+library(broom)
+library(dplyr)
+library(forcats)
+library(httr)
+library(janitor)
+library(knitr)
+library(plotly)
+library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
+#acute vs. chronic (boxplot)
+#Funding by disease status
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease_type = fct_reorder(disease_type, funding)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3") %>% 
+  layout(title = "Distribtuion NIH Funding (millions USD) for Acute vs Chronic Diseases")
+```
+
+* Is there a statistically significant difference in funding between acute and chronic diseases?
+
+  + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  
+```{r}
+#Statistical Test of Funding Difference
+acute = final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  filter(disease_type == "acute") 
+chronic = final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  filter(disease_type == "chronic")
+t_test_results = t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
+t_test_results
+```
+
+### Pricing
+
+* Is there a difference in pricing between acute conditions and chronic diseases? 
+
+  + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentially more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
+  + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
+    + Yes; drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+    
+```{r, warning = FALSE, message = FALSE}
+#Pricing by disease status (boxplot)
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  mutate(disease_type = fct_reorder(disease_type, avg_price)) %>%
+  group_by(disease_type) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~disease_type, colors = "Set3")
+
+acute = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  filter(disease_type == "acute") 
+chronic = final_dataset %>%
+  filter(!is.na(disease) & !is.na(avg_price)) %>%
+  filter(disease_type == "chronic")
+t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
+t_test_results
+```

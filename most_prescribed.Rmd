@@ -1,0 +1,18 @@
+---
+title: "Most Prescribed"
+---
+##### Most Prescribed (by sales)
+
+```{r Most Prescribed, warning = FALSE, message = FALSE}
+### Top 20 precribed drugs by US sales
+top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort")
+top_prescribed_drugs_sales
+```
+
+  + Second, we examined the most prescribed drugs by US sales. 
+  
+      + Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease.
+      
+      + Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
+      
+      + Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.

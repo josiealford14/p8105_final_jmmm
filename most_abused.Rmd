@@ -1,0 +1,81 @@
+---
+title: "Most Abused"
+---
+##### talk about search for these (references)
+
+```{r Most Abused, warning = FALSE, message = FALSE}
+most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
+#Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
+most_abused_drugs
+```
+  + Now, let's take a look at the most abused drugs in America
+  
+    + This list of drugs involves drugs that are over prescribed, highly addictive, and/or frequently used as illicit street drugs
+    
+      + Benzodiazepines
+    
+      + Central nervous system depressants
+    
+         + Nembutal
+      
+          + Valium: used to treat anxiety disorders, abused along with alcohol or other depressants
+      
+          + Xanax: frequently referenced in "trap music"
+      
+         + Suboxone: a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled
+    
+      + Stimulants
+    
+        + Dexedrine
+      
+        + Ritalin: commonly abused by college students
+      
+        + Concerta
+      
+        + Adderall: commonly abused by college students
+  
+  + Opioids
+    
+       + Duragesic
+      
+          + Fentanyl is Heroin's synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is popular street drug driving heroin overdose deaths in the US.
+        
+      + Vicodin
+      
+      + OxyContin
+      
+      + Opana
+      
+      + Darvon
+      
+      + Dilaudid
+      
+      + Demerol 
+      
+      + Lomotil
+      
+      + Percocet: crushed into power and snorted (like cocaine) for a high. commonly referenced in trap music
+      
+    + Important Facts & Figures about Opioid Epidemic
+  
+      + Public Health threat. 
+    
+      + 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)
+      
+      + Causes of Epidemic Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.
+      
+      + 259 million opioid prescriptions in 2012, according to the CDC. An increase in 400% since 1999.
+      + Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin
+      
+      + Four in five Heroin Users used prescription opioids before heroin.
+      
+      + Highly addictive. Other opioids include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup".
+      
+  + Something to think about
+  
+    + The pop legends Michael Jackson, Whitney Houston and Prince each died with with opioids (painkillers) and/or benzodiazepines (anti anxiety) in their systems. 
+    
+    + "The gods of pop music, indestructible in song, died taking the same drugs that everyone takes." Chris Richards of The Washington Post
+      
+
+    

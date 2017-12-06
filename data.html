@@ -11,7 +11,7 @@
 
 
 
-<title>Data</title>
+<title>Raw Datasets Used for Analysis</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +19,11 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -158,8 +162,111 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -172,7 +279,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">The Real Cost of Drugs</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -185,17 +292,47 @@ $(document).ready(function () {
 <li>
   <a href="datawrangling.html">Data Wrangling</a>
 </li>
-<li>
-  <a href="analysis.html">Analysis</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">General Analysis</li>
+    <li>
+      <a href="manali.html">Manali</a>
+    </li>
+    <li>
+      <a href="muhire.html">Muhire</a>
+    </li>
+    <li>
+      <a href="meoak.html">MeOak</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Case Study</li>
+    <li>
+      <a href="case_study.html">Overview</a>
+    </li>
+    <li>
+      <a href="most_advertised.html">Most Advertised</a>
+    </li>
+    <li>
+      <a href="most_abused.html">Most Abused</a>
+    </li>
+    <li>
+      <a href="most_prescribed.html">Most Prescribed</a>
+    </li>
+    <li>
+      <a href="most_popular.html">Most Popular</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="p8105_final_jmmm.html">R Markdown</a>
 </li>
 <li>
-  <a href="mailto:&lt;josiealford14@gmail.com&gt;">
-    <span class="fa fa-envelope fa-lg"></span>
-     
-  </a>
+  <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Shiny Dashboard</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
@@ -210,17 +347,74 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-
-
-<h1 class="title toc-ignore">Data</h1>
-
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
 </div>
 
 
 
+<h1 class="title toc-ignore">Raw Datasets Used for Analysis</h1>
+
+</div>
+
+
+<div id="drug-price" class="section level3">
+<h3>Drug Price</h3>
+<ul>
+<li>Found <a href="https://data.medicaid.gov/resource/tau9-gfwr.cs">here</a></li>
+<li>It contains weekly drug prices from November 2013 to October 2017 recorded.</li>
+</ul>
+</div>
+<div id="nih-funding" class="section level3">
+<h3>NIH Funding</h3>
+<ul>
+<li>The NIH RCDC Report</li>
+<li>This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH). Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control &amp; Prevention (CDC).</li>
+<li>Explore <a href="https://report.nih.gov/categorical_spending.aspx">here</a></li>
+</ul>
+</div>
+<div id="patents" class="section level3">
+<h3>Patents</h3>
+<ul>
+<li>The Patents <a href="https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm">dataset</a> from the FDA Orange Book</li>
+</ul>
+</div>
+<div id="products" class="section level3">
+<h3>Products</h3>
+<ul>
+<li>The Products <a href="https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm">dataset</a> from the FDA Orange Book</li>
+</ul>
+</div>
+<div id="exclusivity" class="section level3">
+<h3>Exclusivity</h3>
+</div>
+<div id="ingredient" class="section level3">
+<h3>Ingredient</h3>
+</div>
+<div id="drugs-by-condition" class="section level3">
+<h3>Drugs By Condition</h3>
+<ul>
+<li>Scraping data on drugs per condition from <a href="https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A">this website</a></li>
+</ul>
+</div>
+<div id="chronic-diseases" class="section level3">
+<h3>Chronic Diseases</h3>
+<ul>
+<li>Scrapping data on chronic diseases from three websites.</li>
+<li><a href="https://www.medicalschemes.com/medical_schemes_pmb/chronic_disease_list.htm">First</a></li>
+<li><a href="http://www.health24.com/Medical-schemes/PMB-and-chronic-disease/List-of-chronic-diseases-20120721">Second</a></li>
+<li><a href="https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Chronic-Conditions/CC_Main.html">Third</a></li>
+</ul>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 

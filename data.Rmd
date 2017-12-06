@@ -1,3 +1,32 @@
 ---
-title: "Data"
+title: "Raw Datasets Used for Analysis"
 ---
+### Drug Price
+
+  + Found [here](https://data.medicaid.gov/resource/tau9-gfwr.cs)
+* It contains weekly drug prices from November 2013 to October 2017 recorded. 
+
+### NIH Funding
+
+* The NIH RCDC Report
+* This dataset contains the annual support for various disease categories based on grants, contracts, and other funding mechanisms used across the National Institutes of Health (NIH).  Prevalence and mortality data included in this dataset is from the National Center for Health Statistics (NCHS) at the Centers for Disease Control & Prevention (CDC).
+  + Explore [here](https://report.nih.gov/categorical_spending.aspx)
+  
+### Patents
+* The Patents [dataset](https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm) from the FDA Orange Book
+
+### Products
+* The Products [dataset](https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm) from the FDA Orange Book
+
+### Exclusivity
+
+### Ingredient
+
+### Drugs By Condition
+* Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)
+
+### Chronic Diseases
+* Scrapping data on chronic diseases from three websites. 
+  + [First](https://www.medicalschemes.com/medical_schemes_pmb/chronic_disease_list.htm)
+  + [Second](http://www.health24.com/Medical-schemes/PMB-and-chronic-disease/List-of-chronic-diseases-20120721)
+  + [Third](https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Chronic-Conditions/CC_Main.html)

@@ -11,7 +11,7 @@
 
 
 
-<title>Factors Influencing Drug Prices</title>
+<title>Variables</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -357,63 +357,38 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Factors Influencing Drug Prices</h1>
+<h1 class="title toc-ignore">Variables</h1>
 
 </div>
 
 
-<div id="drug-prices-affect-us-all-or-some-other-corny-intro" class="section level3">
-<h3>Drug Prices Affect US All (or some other corny intro)</h3>
-</div>
-<div id="informative-graphic-imbed-plottly-that-gives-overview-to-project" class="section level3">
-<h3>Informative Graphic (imbed plottly that gives overview to project)</h3>
-<p>In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; “Why Prescription Drugs…”, 2017). This project aims at exploring some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.</p>
-</div>
-<div id="illustrative-picture" class="section level3">
-<h3>Illustrative Picture</h3>
-</div>
-<div id="conclusion-and-limitations" class="section level3">
-<h3><strong>Conclusion And Limitations</strong></h3>
-<p>High drug prices have become an increasing concern in the United States (Hancock, 2016 ; “Why Prescription Drugs…”, 2017). We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015. We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.<br />
-We observe that drugs that receive the most prescriptions have the highest mean average price per tablet. Additionally, we observe that the most abused drugs have the lowest mean average price per tablet. We observe that chronic diseases receive more funding than acute conditions; further, we observe that drugs that treat acute conditions have higher mean average prices per tablet than drugs that treat chronic diseases.</p>
-<p>We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.</p>
-</div>
-<div id="informative-graphic-imbed-plottly-that-gives-overview-to-project-1" class="section level3">
-<h3>Informative Graphic (imbed plottly that gives overview to project)</h3>
-<div id="future-research" class="section level4">
-<h4>Future Research</h4>
-<p>For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.</p>
-<p><strong>Additionally, we seek to understand the types of drugs that receive patents/exclusivity.</strong></p>
-</div>
-<div id="limitations" class="section level4">
-<h4>Limitations</h4>
-<p>There are a couple of important limitations of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption. In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
-</div>
-</div>
-<div id="picture-related-to-drug-prices-pills-someone-looking-stressed-bc-gotta-pay-bills" class="section level3">
-<h3>Picture related to Drug Prices (pills, someone looking stressed bc gotta pay bills)</h3>
-</div>
-<div id="further-explore-how-various-factors-affect-drug-prices" class="section level3">
-<h3>Further Explore How Various Factors Affect Drug Prices</h3>
+<p>The variables that we retained are:</p>
 <ul>
-<li><a href="datawrangling.html">Data Wrangling</a></li>
-<li><a href="data.html">Raw Datasets</a></li>
-<li><a href="analysis.html">Analysis</a></li>
-<li><a href="manali.html">Manali</a></li>
-<li><a href="muhire.html">Muhire</a></li>
-<li><a href="meoak.html">MeOak</a></li>
-<li><a href="chronic_acute.html">Chronic vs. Acute Diseases</a></li>
-<li><a href="case_study.html">Overview of Case Study</a>
-<ul>
-<li><a href="most_advertised.html">Most Advertised</a></li>
-<li><a href="most_abused.html">Most Abused</a></li>
-<li><a href="most_prescribed.html">Most Prescribed</a></li>
-<li><a href="most_popular.html">Most Popular</a></li>
-</ul></li>
-<li>Versions of <a href="rpackage.html">R and Packages</a> used in Analysis</li>
-<li><a href="references.html">References</a></li>
+<li><p>trade_name: the trade name of the drug</p></li>
+<li><p>drug_type: the drug type (B: Brand or G: Generic)</p></li>
+<li><p>otc: over the counter drug (Yes or No)</p></li>
+<li><p>pricing_unit: EA for each, GM for gram, and ML for milliliters</p></li>
+<li><p>year: the funding and pricing year</p></li>
+<li><p>avg_price: the average price for the particular year</p></li>
+<li><p>dose_form: the dose form (tablet, solution, solution injectable)</p></li>
+<li><p>route: route of administration (oral or IV)</p></li>
+<li><p>strength: the strength of the dose</p></li>
+<li><p>application_no: the FDA assigned number to the drug application.</p></li>
+<li><p>product_no: The FDA assigned number to identify the application products; used for joining datasets.</p></li>
+<li><p>approval_year: the year the patent was approved</p></li>
+<li><p>app_full: the full name of the company that developed the drug</p></li>
+<li><p>active_ingredient: the active ingredient</p></li>
+<li><p>ingredient: the active ingredients in a wide format; used for joining datasets</p></li>
+<li><p>patent_num: the patent number</p></li>
+<li><p>pediatric_exclusivity_granted: yes or no</p></li>
+<li><p>year_pat_expires: the patent expiration year</p></li>
+<li><p>year_excl_expires: the exclusivity expiration year</p></li>
+<li><p>disease: the disease the drug treats</p></li>
+<li><p>prevalence: the disease prevalence for 2015</p></li>
+<li><p>US_mortality_2015: the disease mortality rate</p></li>
+<li><p>funding: the NIH funding for disease research in millions</p></li>
+<li><p>disease_type: the type disease (acute or chronic)</p></li>
 </ul>
-</div>
 
 
 
