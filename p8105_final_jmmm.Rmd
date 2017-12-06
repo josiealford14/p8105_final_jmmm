@@ -908,7 +908,7 @@ patents %>%
   + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. This illustrates that acute conditions have a wider distribution of average funding, compared to chronic conditions. 
 
 ```{r Disease & Funding, warning = FALSE, message = FALSE}
-# final_dataset = read.csv("./data/final_dataset.csv")
+final_dataset = read.csv("./data/final_dataset.csv")
 #shiny application: funding by disease
 final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -921,7 +921,7 @@ final_dataset %>%
 
 #funding by disease (filtered by disease type = acute)
 #shiny: user clicks acute and sees funding
-final_dataset %>%
+# final_dataset %>%
   filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
   mutate(disease = factor(disease)) %>%
   group_by(disease) %>%
@@ -961,8 +961,16 @@ final_dataset %>%
 
 * Is there a statistically significant difference in funding between acute and chronic diseases?
 
-  + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
   
+  + The Wilcoxon Rank-Sum Test comparing median funding of the disease types rejects the null hypothesis that the medians of acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median funding of acute funding is statistically different from the median funding of chronic diseases.
+  
+  + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
+  
+      + At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  
+  + In conclusion, we can conclude that the mean/median of chronic funding of $323.68 million/year is statistically different from the mean/median of acute funding of $184.51 million/year. 
+
 ```{r}
 #Statistical Test of Funding Difference
 acute = final_dataset %>%
@@ -971,6 +979,11 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
   filter(disease_type == "chronic")
+boxplot_skew_funding = boxplot(acute$funding, chronic$funding)
+hist(acute$funding)
+hist(chronic$funding)
+wilcox_results_funding = wilcox.test(acute$funding, chronic$funding, alternative = "two.sided", mu = 0, paired = FALSE)
+wilcox_results_funding
 t_test_results = t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
 t_test_results
 ```
@@ -997,8 +1010,8 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   filter(disease_type == "chronic")
-t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
-t_test_results
+# t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
+# t_test_results
 ```
 
 ### **Case Study** 
