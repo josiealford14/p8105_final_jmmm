@@ -1,48 +1,50 @@
-name: "What Drives Drug Prices?"
-output_dir: "."
+name: What Drives Drug Prices?
+output_dir: .
 navbar:
-  title: "The Real Cost of Drugs"
+  title: The Real Cost of Drugs
   right:
-    - text: "Data"
-      href: data.html
-    - text: "Data Wrangling"
-      href: datawrangling.html
-    - text: "Analysis"
-      href: analysis.html
-      menu:
-        - text: "General Analysis"
-        - text: "Manali"
-          href: manali.html
-        - text: "Muhire"
-          href: muhire.html
-        - text: "MeOak"
-          href: meoak.html          
-        - text: "---------"
-        - text: "Disease Type Analysis"
-        - text: "Chronic vs. Acute"
-          href: chronic_acute.html               
-        - text: "---------"        
-        - text: "Case Study"
-        - text: "Overview"
-          href: case_study.html       
-        - text: "Most Advertised"
-          href: most_advertised.html
-        - text: "Most Abused"
-          href: most_abused.html
-        - text: "Most Prescribed"
-          href: most_prescribed.html
-        - text: "Most Popular"
-          href: most_popular.html          
-    - text: "R Markdown"
-      href: p8105_final_jmmm.html     
-    - text: "Shiny Dashboard"
-      href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
-    - icon: fa-github fa-lg
-      href: https://github.com/josiealford14/p8105_final_jmmm.git
+  - text: Data
+    href: data.html
+  - text: Data Wrangling
+    href: datawrangling.html
+  - text: Analysis
+    href: analysis.html
+    menu:
+    - text: General Analysis
+    - text: Manali
+      href: manali.html
+    - text: Muhire
+      href: muhire.html
+    - text: MeOak
+      href: meoak.html
+    - text: '---------'
+    - text: Disease Type Analysis
+    - text: Chronic vs. Acute
+      href: chronic_acute.html
+    - text: '---------'
+    - text: Case Study
+    - text: Overview
+      href: case_study.html
+    - text: Most Advertised
+      href: most_advertised.html
+    - text: Most Abused
+      href: most_abused.html
+    - text: Most Prescribed
+      href: most_prescribed.html
+    - text: Most Popular
+      href: most_popular.html
+  - text: R Markdown
+    href: p8105_final_jmmm.html
+  - text: Shiny Dashboard
+    href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
+  - icon: fa-github fa-lg
+    href: https://github.com/josiealford14/p8105_final_jmmm.git
 output:
   html_document:
     theme: cosmo
-    toc: true
-    toc_float: true
+    toc: yes
+    toc_float: yes
     code_folding: hide
-    
+    lib_dir: site_libs
+    self_contained: no
+
