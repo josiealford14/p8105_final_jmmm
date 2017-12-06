@@ -1,6 +1,8 @@
 ---
 title: "Variables"
 ---
+### need to add images or something
+
 The variables that we retained are: 
 
 * trade_name: the trade name of the drug
