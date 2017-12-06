@@ -945,6 +945,7 @@ final_dataset %>%
 #### **Acute vs. Chronic Disease**
 ##### Funding
 
+###### Is there a difference in funding between acute conditions and chronic diseases?
   + Based on the boxplots below, we see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
   
   + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for chronic conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
@@ -961,9 +962,19 @@ final_dataset %>%
   layout(title = "Distribtuion NIH Funding (millions USD) for Acute vs Chronic Diseases")
 ```
 
-  + The mean of funding for chronic diseases of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+###### Is there a statistically significant difference in funding between acute and chronic diseases?
+
+  + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
   
-```{r, warning = FALSE, message = FALSE}
+  + The Wilcoxon Rank-Sum Test comparing median funding of the disease types rejects the null hypothesis that the median fundings of acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median funding of acute funding is statistically different from the median funding of chronic diseases.
+  
+  + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
+  
+      + At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  
+  + In conclusion, we can conclude that the mean/median of chronic funding of $323.68 million/year is statistically different from the mean/median of acute funding of $184.51 million/year. 
+  
+```{r}
 #Statistical Test of Funding Difference
 acute = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -971,15 +982,32 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
   filter(disease_type == "chronic")
+# boxplot_skew_funding = boxplot(acute$funding, chronic$funding)
+# hist(acute$funding)
+# hist(chronic$funding)
+wilcox_results_funding = wilcox.test(acute$funding, chronic$funding, alternative = "two.sided", mu = 0, paired = FALSE)
+wilcox_results_funding
 t_test_results = t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
 t_test_results
 ```
 
 ##### Pricing
 
+###### Is there a difference in pricing between acute conditions and chronic diseases? 
   + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have more outliers in pricing. Acute has a larger IQR for pricing, while chronic has a wider range in pricing. The average price of drugs that treat chronic diseases ranges from $0.03 to $1,096.67. The average price of drugs that threat chronic diseases ranges from $0.11 to $462.03. 
  
-    + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+###### Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
+  
+      + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, average price is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median average price for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
+  
+      + The Wilcoxon Rank-Sum Test comparing median average price of the disease types rejects the null hypothesis that the median average prices of drugs that treat acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median average price of acute funding is statistically different from the median funding of chronic diseases.
+  
+      + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
+  
+          +  At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+  
+      + In conclusion, we can conclude that the mean/median average price of drugs that treat acute diseases is statistically different from the mean/median average price of drugs that treat chronic diseases.
+        + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose.  
     
 ```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
@@ -995,6 +1023,8 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   filter(disease_type == "chronic")
+wilcox_results_price = wilcox.test(acute$avg_price, chronic$avg_price, alternative = "two.sided", mu = 0, paired = FALSE)
+wilcox_results_price
 t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 t_test_results
 ```
@@ -1028,7 +1058,6 @@ top_prescribed_drugs_sales
 ```
 
   + Second, we examined the most prescribed drugs as defined by US sales. 
-  
       + Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease.
       
       + Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
