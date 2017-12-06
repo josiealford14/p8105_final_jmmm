@@ -721,15 +721,16 @@ final_dataset %>%
   layout(title = "Funding (millions USD) vs Prevalence", showlegend = FALSE)
 ```
 
-#### **Pharmaceutical Companies and Top Drugs**
-```{r, warning = FALSE, message = FALSE}
-# write_csv(final_dataset, path = "./data/final_dataset_20171205.csv")
-final_dataset = read_csv("./data/final_dataset_20171205.csv")
 
-#more cleaning
+#### **Pharmaceutical Companies and Top Drugs**
+```{r}
+# write_csv(final_dataset, path = "./data/final_dataset_20171205.csv")
+# final_dataset = read_csv("./data/final_dataset_20171205.csv")
+
+#Patent Cleaning
 patents = final_dataset %>%
   ungroup() %>% 
-  select(appfull, patent_num, year_pat_expires, disease) %>% 
+  select(appfull, patent_num, year_pat_expires, disease, approval_year, year_excl_expires) %>% 
   filter(!duplicated(patent_num)) %>%
   filter(!is.na(disease)) %>%
   filter(year_pat_expires > 2017) %>% 
@@ -765,13 +766,17 @@ patents = final_dataset %>%
     appfull = str_replace(appfull, "Wyeths Wholly Owned Sub Pfizer Inc", "Pfizer")) %>%
   arrange(appfull)
 patents
-```
 
-
-```{r, warning = FALSE, message = FALSE}
-#diseases currently with most patents
-xax <- list(
+#Labeling Axes
+xax_pharma = list(
   title = "Pharmaceutical Company",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+xax_disease = list(
+  title = "Disease",
   zeroline = FALSE,
   showline = FALSE,
   showticklabels = FALSE,
@@ -784,83 +789,34 @@ yax = list(
   showticklabels = TRUE,
   showgrid = TRUE
 )
+yax_1 = list(
+  title = "No. of Patents",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = TRUE
+)
+```
 
-#pharmaco's currently holding the most patents
-most_pat_company = patents %>%
+Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.
+```{r}
+#No. of Patents Currently Held by Pharma Company
+patents %>%
   group_by(appfull) %>%
   count() %>%
   rename(num_pat_held = n) %>%
   ungroup() %>%
   mutate(appfull = fct_reorder(appfull, num_pat_held)) %>%
-  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set2") %>% 
-  layout(title = "No. of Patents Currently Held by Pharmaceutical Company", xaxis = xax, yaxis = yax, showlegend = FALSE)
-most_pat_company
+  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "blue") %>% 
+  layout(title = "No. of Patents Currently Held by Pharmaceutical Company",  yaxis = yax, showlegend = FALSE)
+#xaxis = xax_pharma,
 
-most_pat_dis = patents %>%
-  group_by(disease) %>%
-  count() %>%
-  rename(num_pat_held = n) %>%
-  ungroup() %>%
-  mutate(disease = fct_reorder(disease, num_pat_held)) %>%
-  plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "Set2") %>% 
-  layout(title = "No. of Patents Currently Held by Disease", xaxis = xax, yaxis = yax, showlegened = FALSE)
-most_pat_dis
-```
-
-
-```{r, warning = FALSE, message = FALSE}
-#pharmaco that has most patents expiring by year (i.e. in each upcoming year, who has most expiring?)
+#Projection of Expiring Patents by Pharma Company
 pat_exp = patents %>%
-  group_by(appfull, disease, year_pat_expires) %>%
+  group_by(appfull, year_pat_expires) %>%
   count() %>% 
-  rename(num_pat_exp = n) 
-# ay vs day vs ady
-# 203 vs 233 vs 233
+  rename(num_pat_exp = n)
 
-xax_2 = list(
-  title = "Year",
-  zeroline = TRUE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
-
-yax_2 = list(
-  title = "No. Patents Expiring",
-  zeroline = FALSE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
-  
-pat_exp %>% 
-  plot_ly(
-    x = ~year_pat_expires, 
-    y= ~num_pat_exp,
-    type = "scatter", 
-    mode = 'markers', 
-    marker = list(size = ~num_pat_exp*3), 
-    text = ~paste('Company: ', appfull, '<br> Disease:', disease)) %>% 
-  layout(title = "Projection of Expiring Patents", xaxis = xax_2, yaxis = yax_2, showlegend = FALSE)
-
-xax_2 = list(
-  title = "Year",
-  zeroline = TRUE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
-
-yax_2 = list(
-  title = "Company",
-  zeroline = FALSE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
-
-
-#BUBBLE
 pat_exp %>%
   plot_ly(x = ~year_pat_expires, 
           y = ~appfull, 
@@ -869,39 +825,73 @@ pat_exp %>%
           mode = 'markers', 
           marker = list(size = ~num_pat_exp*3), 
           text = ~paste('Count: ', num_pat_exp)) %>%
-  layout(title = "Projection of Expiring Patents by Pharmaceutical Company ", xaxis = xax_2, yaxis = yax_2, showlegend = FALSE)
+  layout(title = "Projection of Expiring Patents by Pharmaceutical Company ", 
+         yaxis = list(
+           title = "Pharmaceutical Company",
+           zeroline = FALSE,
+           showline = FALSE,
+           showticklabels = FALSE,
+           showgrid = TRUE), 
+         showlegend = FALSE)
+```
+AstraZeneca is currently the largest patent holder.
+Keryx Pharmaceuticals has the most number of patents expiring overall.  Keryx's 11 patents expiring in 2024 cover chronic kidney disease allowing generics to enter the kidney disease markt.
 
-xax_3 = list(
-  title = "Year",
-  zeroline = TRUE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
-yax_3 = list(
-  title = "",
-  zeroline = FALSE,
-  showline = FALSE,
-  showticklabels = TRUE,
-  showgrid = TRUE
-)
 
-#BUBBLE_disease
+The following two plots explore the number of patents currently held by each specfic disease followed by a projection of expiring patents for that condition.
+```{r}
+#No. of Patents Currently Held by Disease
 patents %>%
-  group_by(disease, appfull, year_pat_expires) %>%
+  group_by(disease) %>%
+  count() %>%
+  rename(num_pat_held = n) %>%
+  ungroup() %>%
+  mutate(disease = fct_reorder(disease, num_pat_held)) %>%
+  plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "red") %>% 
+  layout(title = "No. of Patents Currently Held by Disease",  yaxis = yax, showlegend = FALSE)
+#xaxis = xax_disease,
+
+#Projection of Expiring Patents by Disease
+patents %>%
+  group_by(disease, year_pat_expires) %>%
   count() %>%
   rename(num_pat_exp = n) %>%
-  # ungroup() %>%
-  # mutate(disease = fct_reorder(disease, num_pat_exp)) %>%
-    plot_ly(x = ~year_pat_expires, 
+  # ungroup() %>% 
+  plot_ly(x = ~year_pat_expires, 
           y = ~disease, 
-          color = ~appfull, 
-          type = "scatter", 
+          color = ~disease, 
+          type = "scatter",
+          colors = "Set3", 
           mode = 'markers', 
           marker = list(size = ~num_pat_exp*3), 
-          text = ~paste('Count: ', num_pat_exp)) %>%
-  layout(title = "Projection of Expiring Patents by Disease", xaxis = xax_2, yaxis = yax_2, showlegend = FALSE)
+          text = ~paste('Disease:', disease, 'Count:', num_pat_exp)) %>%
+  layout(title = "Projection of Expiring Patents by Disease", 
+           yaxis = list(
+           title = "",
+           zeroline = FALSE,
+           showline = FALSE,
+           showticklabels = TRUE,
+           showgrid = TRUE), 
+         showlegend = FALSE)
+```
+Based on the plot above, the disease covered by the most patents is chronic diarrhea.
+The disease with the most patents expiring over the next several years chronic kidney disease.
 
+```{r, echo = FALSE}
+#Projection of Expiring Patents
+# patents %>%
+#   group_by(appfull, disease, year_pat_expires) %>%
+#   count() %>% 
+#   rename(num_pat_exp = n)  %>% 
+#   plot_ly(
+#     x = ~year_pat_expires, 
+#     y = ~num_pat_exp,
+#     type = "scatter",
+#     colors = "Set2",
+#     mode = 'markers', 
+#     marker = list(size = ~num_pat_exp*3), 
+#     text = ~paste('Company: ', appfull, 'Disease:', disease)) %>% 
+#   layout(title = "Projection of Expiring Patents", xaxis = xax_2, yaxis = yax_2, showlegend = FALSE)
 ```
 
 #### **Disease & Funding**
@@ -1320,6 +1310,7 @@ final_dataset %>% #without harvoni
 ```{r project_website, warning = FALSE, message = FALSE}
 #https://josiealford14.github.io/p8105_final_jmmm/
 #https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
+#GitHubRepo: https://github.com/josiealford14/p8105_final_jmmm.git
 ```
 
 #### **Limitations**
