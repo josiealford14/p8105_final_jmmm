@@ -721,7 +721,7 @@ final_dataset %>%
 #### **Pharmaceutical Companies and Top Drugs**
 ```{r}
 # write_csv(final_dataset, path = "./data/final_dataset_20171205.csv")
-final_dataset = read_csv("./data/final_dataset_20171205.csv")
+# final_dataset = read_csv("./data/final_dataset_20171205.csv")
 
 #more cleaning
 patents = final_dataset %>%
@@ -908,7 +908,6 @@ patents %>%
   + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. This illustrates that acute conditions have a wider distribution of average funding, compared to chronic conditions. 
 
 ```{r Disease & Funding, warning = FALSE, message = FALSE}
-final_dataset = read.csv("./data/final_dataset.csv")
 #shiny application: funding by disease
 final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -921,7 +920,7 @@ final_dataset %>%
 
 #funding by disease (filtered by disease type = acute)
 #shiny: user clicks acute and sees funding
-# final_dataset %>%
+final_dataset %>%
   filter(!is.na(disease) & !is.na(funding) & disease_type == "acute") %>%
   mutate(disease = factor(disease)) %>%
   group_by(disease) %>%
@@ -942,7 +941,7 @@ final_dataset %>%
 #### **Acute vs. Chronic Disease**
 ##### Funding
 
-* Is there a difference in funding between acute conditions and chronic diseases?
+###### Is there a difference in funding between acute conditions and chronic diseases?
 
   + Now, let's investigate if there is a difference in distribution of funding based on disease condition: acute versus chronic. We see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
   
@@ -959,7 +958,7 @@ final_dataset %>%
   layout(title = "Distribtuion NIH Funding (millions USD) for Acute vs Chronic Diseases")
 ```
 
-* Is there a statistically significant difference in funding between acute and chronic diseases?
+###### Is there a statistically significant difference in funding between acute and chronic diseases?
 
   + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
   
@@ -989,10 +988,10 @@ t_test_results
 
 ##### Pricing
 
-* Is there a difference in pricing between acute conditions and chronic diseases? 
-
+###### Is there a difference in pricing between acute conditions and chronic diseases? 
   + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentially more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
-  + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
+
+###### Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
   
       + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, average price is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median average price for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
   
