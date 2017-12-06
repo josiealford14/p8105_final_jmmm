@@ -8,11 +8,14 @@ title: "Factors Influencing Drug Prices"
 ---
 ### **Introduction**
 
-In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
+
+High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).  In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). 
+
+This project aims at  exploring factors associated with US prescription drug prices.  Those factors include disease research funding, drug need (prevalence), sales, and advertising. 
 
 ### **The Data**
 
-* FDA Orange Book: This contained 4 datasets: patents, exclusivity, ingredients, and products.
+**FDA Orange Book**: This contained 4 datasets: patents, exclusivity, ingredients, and products.
 
   + Patents: Contains patent number and expiration dates of FDA approved drugs.
   
@@ -22,17 +25,13 @@ In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Pu
   
   + Products: Contained the trade name for the drug, the company that developed the drug, and whether the drug was brand or generic.
   
-* Drug Price: This dataset contained the prices paid by pharmacies to acquire the drug.
+**Drug Price**: This dataset contained the prices paid by pharmacies to acquire the drug.
 
-* NIH Funding: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
+**NIH Funding**: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.  
 
-* Drug Disease: Dataset linking drugs was the disease that they treat.
+**Drug Disease**: Dataset linking drugs was the disease that they treat.
 
-* Advertising: Money spent on advertising on TV in 2016 for the top 10 most advertised drugs.
 
-* Sales: Top 20 prescription drugs based on US sales in 2016 (in billions of dollars)
-
-### The Variables
 The variables that we retained are: 
 
 * trade_name: the trade name of the drug
@@ -84,19 +83,16 @@ The variables that we retained are:
 * disease_type: the type disease (acute or chronic)
 
 ### **Data Wrangling** 
+
+  + We put all sub-datasets in long format and renamed variables as necessary. 
+ 
+  + We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable.  Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs. 
+ 
+  + The Drug Price Excel dataset had over 5 million observations. Prices were recorded for each drug every week.  To representatively condense this dataset, we obtained a yearly average drug price (avg_price). This condensed the Drug Price dataset to approximately 2.5 million observations. 
+ 
+  + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into a final dataset (final_dataset). We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
+  
 * The code chunks below were used for loading and tidying the data.
-
-  + We put all sub-datasets in long format. We renamed variables as necessary. 
- 
-  + We restricted our final dataset to contain only non-solution drugs. These drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable.  Also all drugs were measured by two different units: mills and grams. Therefore, we could not adequately compare between solution and per gram/each type of drugs. 
- 
-  + The Drug Price Excel dataset had over 5 million observations. To representatively condense this dataset, we averaged monthly drug price for each drug into a yearly “avg_price” variable.  Essentially, each unique drug observation had 12 drug prices for each month of a year. We averaged these 12 drug prices into one average price for the year. This condensed the Drug Price dataset to approximately 2.5 million observations. 
- 
-  + We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into our Final Dataset named final_dataset. We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).
-
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set( collapse = TRUE) # courtesy of Julia
-```
 
 ```{r load_packages, warning = FALSE, message = FALSE}
 library(tidyverse)
@@ -630,17 +626,18 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 
 First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
-We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled in 2016 and there is a projected decrease for 2018.
-
-```{r}
+```{r, warning = FALSE, message = FALSE}
 
 final_dataset %>%
   group_by(year) %>%
   summarize(avg_all_drugs_price = mean(avg_price)) %>%
   plot_ly(x = ~ year, y = ~avg_all_drugs_price, mode = "lines", type = "scatter") %>%
   layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "drug price (USD)"))
+```
 
+We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled off in 2016 and there is a projected decrease for 2018.
 
+```{r, warning = FALSE, message = FALSE}
 final_NIH_funding %>%
   group_by(year) %>%
   summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
@@ -650,12 +647,13 @@ final_NIH_funding %>%
 ```
 
 
-Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.  We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of caners including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.
 
-Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding.
+We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of cancers including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  
 
+This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #does funding correlate with drug prices?
 
 final_dataset %>%
@@ -664,7 +662,11 @@ final_dataset %>%
             avg_price_disease = mean(avg_price, na.rm = TRUE)) %>%
   plot_ly(x = ~ avg_funding, y = ~ avg_price_disease, type = "scatter", color = ~disease, text = ~paste('Drug: ', trade_name, '<br> Disease:', disease)) %>%
   layout(title = "Average Funding vs Average Price", showlegend = FALSE)
-  
+```
+
+Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding by disease type.
+
+```{r, warning = FALSE, message = FALSE}  
 ax <- list(
   zeroline = FALSE,
   showline = FALSE,
@@ -681,9 +683,9 @@ final_dataset %>%
 ```
 
 
-* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled from 2013 to 2017.
+* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
 
-```{r drug_price_distr}
+```{r drug_price_distr, warning = FALSE, message = FALSE}
 trade_name_choice = "Zoloft"
 violin_drug = drug_price %>%
   filter(trade_name == trade_name_choice) %>%
@@ -694,22 +696,23 @@ violin_drug = drug_price %>%
 ggplotly(violin_drug)
 ```
 
-We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis C seem to have the highest cost.
+We created a spaghetti plot of the average price per year for each drug. Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that, the drugs for Hepatitis C seem to have the highest cost.
 
-
-```{r price_drug_disease}
+```{r price_drug_disease, warning = FALSE, message = FALSE}
 final_dataset %>% 
-  filter(disease %in% c("Obesity")) %>%
+  #filter(disease %in% c("Obesity")) %>%
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
   plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
   layout(title = "Average Price (USD) of Drugs over Time", showlegend = FALSE)
 ```
 
-We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence) colored by disease. Among drugs with available information on price per unit drug, obesity seems to have received the most funding on average and to have the highest 2015 prevalence.
+We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence). Obesity seems to have received the most funding on average and to have the highest 2015 prevalence.  This may be due to Michelle Obama's Let's Move initiative to fight childhood obesity.
 
-We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of the average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. Many of the diseases with high funding are cancers, which have a low prevalence.  This makes sense as there is a lot of research focused on cancer and new drug development.  Most cancers have large subgroups with no good treatment options, so it makes sense that a large amount of funding is devoted to cancer.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. 
 
-```{r funding_demand}
+Many of the diseases with high funding are cancers, which have a low prevalence.  Most cancers have large subgroups with no good treatment options, so it makes sense that there is a lot of research focused on cancer and new drug development.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+```{r funding_demand, warning = FALSE, message = FALSE}
 final_dataset %>% 
   filter(pricing_unit == "EA" & !is.na(funding) & !is.na(prevalence)) %>% 
   group_by(trade_name, disease, prevalence) %>% 
@@ -719,9 +722,9 @@ final_dataset %>%
 ```
 
 #### **Pharmaceutical Companies and Top Drugs**
-```{r}
+```{r, warning = FALSE, message = FALSE}
 # write_csv(final_dataset, path = "./data/final_dataset_20171205.csv")
-# final_dataset = read_csv("./data/final_dataset_20171205.csv")
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
 
 #more cleaning
 patents = final_dataset %>%
@@ -765,7 +768,7 @@ patents
 ```
 
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #diseases currently with most patents
 xax <- list(
   title = "Pharmaceutical Company",
@@ -805,7 +808,7 @@ most_pat_dis
 ```
 
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #pharmaco that has most patents expiring by year (i.e. in each upcoming year, who has most expiring?)
 pat_exp = patents %>%
   group_by(appfull, disease, year_pat_expires) %>%
@@ -905,9 +908,10 @@ patents %>%
 
 * Does funding differ by disease? 
 
-  + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. This illustrates that acute conditions have a wider distribution of average funding, compared to chronic conditions. 
+  + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received the lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. 
 
 ```{r Disease & Funding, warning = FALSE, message = FALSE}
+# final_dataset = read.csv("./data/final_dataset.csv")
 #shiny application: funding by disease
 final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -941,12 +945,11 @@ final_dataset %>%
 #### **Acute vs. Chronic Disease**
 ##### Funding
 
-###### Is there a difference in funding between acute conditions and chronic diseases?
+  + Based on the boxplots below, we see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
+  
+  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for chronic conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
+  
 
-  + Now, let's investigate if there is a difference in distribution of funding based on disease condition: acute versus chronic. We see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
-  
-  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for acute conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
-  
 ```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
 #acute vs. chronic (boxplot)
 #Funding by disease status
@@ -958,18 +961,9 @@ final_dataset %>%
   layout(title = "Distribtuion NIH Funding (millions USD) for Acute vs Chronic Diseases")
 ```
 
-###### Is there a statistically significant difference in funding between acute and chronic diseases?
-
-  + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
+  + The mean of funding for chronic diseases of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
   
-  + The Wilcoxon Rank-Sum Test comparing median funding of the disease types rejects the null hypothesis that the median fundings of acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median funding of acute funding is statistically different from the median funding of chronic diseases.
-  
-  + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
-  
-      + At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
-  
-  + In conclusion, we can conclude that the mean/median of chronic funding of $323.68 million/year is statistically different from the mean/median of acute funding of $184.51 million/year. 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #Statistical Test of Funding Difference
 acute = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
@@ -977,32 +971,15 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
   filter(disease_type == "chronic")
-# boxplot_skew_funding = boxplot(acute$funding, chronic$funding)
-# hist(acute$funding)
-# hist(chronic$funding)
-wilcox_results_funding = wilcox.test(acute$funding, chronic$funding, alternative = "two.sided", mu = 0, paired = FALSE)
-wilcox_results_funding
 t_test_results = t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
 t_test_results
 ```
 
 ##### Pricing
 
-###### Is there a difference in pricing between acute conditions and chronic diseases? 
-  + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentially more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
-
-###### Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
-  
-      + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, average price is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median average price for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
-  
-      + The Wilcoxon Rank-Sum Test comparing median average price of the disease types rejects the null hypothesis that the median average prices of drugs that treat acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median average price of acute funding is statistically different from the median funding of chronic diseases.
-  
-      + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
-  
-          +  At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
-  
-      + In conclusion, we can conclude that the mean/median average price of drugs that treat acute diseases is statistically different from the mean/median average price of drugs that treat chronic diseases.
-        + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. 
+  + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have more outliers in pricing. Acute has a larger IQR for pricing, while chronic has a wider range in pricing. The average price of drugs that treat chronic diseases ranges from $0.03 to $1,096.67. The average price of drugs that threat chronic diseases ranges from $0.11 to $462.03. 
+ 
+    + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
     
 ```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
@@ -1018,8 +995,6 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   filter(disease_type == "chronic")
-wilcox_results_price = wilcox.test(acute$avg_price, chronic$avg_price, alternative = "two.sided", mu = 0, paired = FALSE)
-wilcox_results_price
 t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 t_test_results
 ```
@@ -1040,9 +1015,9 @@ top_advertising_cost
   
     + Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), had the highest mean average price per dose of $45.70. 
   
-    + Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditions), had the lowest mean average price per dose of $5.29.
+    + Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditions), had the lowest mean yearly price per dose of $5.29.
     
-      + Of the twenty drugs with highest advertising spending, six drugs were found within the dataset.
+      + Of the twenty drugs with highest advertising spending, six drugs were found within the final dataset.
   
 ##### Most Prescribed (by sales)
 
@@ -1052,7 +1027,7 @@ top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar",
 top_prescribed_drugs_sales
 ```
 
-  + Second, we examined the most prescribed drugs by US sales. 
+  + Second, we examined the most prescribed drugs as defined by US sales. 
   
       + Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease.
       
@@ -1097,7 +1072,7 @@ most_abused_drugs
     
        + Duragesic
       
-          + Fentanyl is Heroin's synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is popular street drug driving heroin overdose deaths in the US.
+          + Fentanyl is Heroin's synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is a popular street drug driving heroin overdose deaths in the US.
         
       + Vicodin
       
@@ -1121,7 +1096,7 @@ most_abused_drugs
     
       + 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)
       
-      + Causes of Epidemic Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.
+      + Causes of Epidemic: Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.
       
       + 259 million opioid prescriptions in 2012, according to the CDC. An increase in 400% since 1999.
       + Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin
@@ -1179,7 +1154,7 @@ most_popular_drugs
       
       + The most prescribed drugs are notably more expensive. The mean is skewed by the Hepatitis C drug, Harvoni. Harvoni has a median average price of $1,093.83. Excluding Harvoni results in a mean of average price per tablet of $21.71 for most prescribed drugs, which is on-par with most popular and most advertised drugs. 
       
-```{r}
+```{r, warning = FALSE, message = FALSE}
 mean_price_abused = final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% most_abused_drugs) %>%
@@ -1265,7 +1240,7 @@ final_dataset %>%
 
 ##### The Distribution of Average Price for Most Abused Drugs 
 
-  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price per dose of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price per dose of $0.97 each. 
+  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price of $0.97 each. 
   
 ```{r Case Study Analysis, warning = FALSE, message = FALSE}
 final_dataset %>%
@@ -1280,19 +1255,15 @@ final_dataset %>%
 
   + Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
   
-  + Some explanation from HuffPost: "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
+  + Some explanation from [HuffPost](https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a): "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
   
-      +https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a
-    
-    + Influences of pricing: uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
+    + Influences of pricing [Investopedia](https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp): uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
   
-      + https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp
-    
   + If we exclude Harvoni, we can better see the box plots of the other drugs.
   
     + As prescription rates decrease, average drug price per tablet does not display any discernible trend.
     
-```{r}
+```{r, warning = FALSE, message = FALSE}
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% top_prescribed_drugs_sales) %>%
@@ -1317,25 +1288,18 @@ final_dataset %>% #without harvoni
 ```
 
 ### Project Website And Shiny Application
-```{r project_website}
+```{r project_website, warning = FALSE, message = FALSE}
 #https://josiealford14.github.io/p8105_final_jmmm/
 #https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
 ```
 
-### **Conclusion And Limitations**
-
-High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
-We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015.
-We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.  
-We observe that drugs that receive the most prescriptions have the highest mean average price per tablet.
-Additionally, we observe that the most abused drugs have the lowest mean average price per tablet.
-We observe that chronic diseases receive more funding than acute conditions; further, we observe that drugs that treat acute conditions have higher mean average prices per tablet than drugs that treat chronic diseases. 
-
-We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.
-
-For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.
-
-**Additionally, we seek to understand the types of drugs that receive patents/exclusivity.**
+#### **Limitations**
 
 There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
-In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+
+### **Conclusion**
+
+Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding,  drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.  However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.
+
+For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+
