@@ -18,6 +18,10 @@ navbar:
         - text: "MeOak"
           href: meoak.html          
         - text: "---------"
+        - text: "Disease Type Analysis"
+        - text: "Chronic vs. Acute"
+          href: chronic_acute.html               
+        - text: "---------"        
         - text: "Case Study"
         - text: "Overview"
           href: case_study.html       
