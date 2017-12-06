@@ -1,10 +1,10 @@
 ---
 author: "MeOak/Muhire/Manali/Josie"
-date: "12/4/2017"
+date: "12/6/2017"
 output:
   html_document: 
     code_folding: hide
-title: "Factors Influencing Drug Prices?"
+title: "Factors Influencing Drug Prices"
 ---
 ### **Introduction**
 
@@ -959,7 +959,7 @@ final_dataset %>%
 
 * Is there a statistically significant difference in funding between acute and chronic diseases?
 
-  + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  + Yes, the mean of chronic funding of $323.68 million/year is statistically different from the mean of acute funding of $184.51 million/year. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
   
 ```{r}
 #Statistical Test of Funding Difference
@@ -969,16 +969,17 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
   filter(disease_type == "chronic")
-t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
+t_test_results = t.test(acute$funding, chronic$funding, var.equal = TRUE, paired = FALSE)
+t_test_results
 ```
 
 ##### Pricing
 
-* Is there a difference in funding between acute conditions and chronic diseases? 
+* Is there a difference in pricing between acute conditions and chronic diseases? 
 
   + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have exponentially more outliers in pricing. Acute has a larger IQR, while chronic has a wider range in pricing. Average price of drugs that treat chronic diseases range from $0.03 to $1,096.67 per dose. Average price of drugs that threat chronic diseases range from $0.11 to $462.03. 
   + Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
-    + Yes; drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+    + Yes; drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose. Assuming that the two samples are normally distributed, independent and have equal variances, we performed a two-sample t-test for Independent Samples. At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
     
 ```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
@@ -994,7 +995,8 @@ acute = final_dataset %>%
 chronic = final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
   filter(disease_type == "chronic")
-t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
+t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
+t_test_results
 ```
 
 ### **Case Study** 
@@ -1004,6 +1006,7 @@ t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 
 ```{r Most Advertised, warning = FALSE, message = FALSE}
 top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
+top_advertising_cost
 ```
 
   + First we examined the most advertised drugs in 2016 (top twenty).
@@ -1021,6 +1024,7 @@ top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "In
 ```{r Most Prescribed, warning = FALSE, message = FALSE}
 ### Top 20 precribed drugs by US sales
 top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort")
+top_prescribed_drugs_sales
 ```
 
   + Second, we examined the most prescribed drugs by US sales. 
@@ -1036,6 +1040,7 @@ top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar",
 ```{r Most Abused, warning = FALSE, message = FALSE}
 most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
 #Interested in seeing how prescription opioid prices have increased through time (Muhire's plot) 
+most_abused_drugs
 ```
   + Now, let's take a look at the most abused drugs in America
   
@@ -1115,12 +1120,13 @@ most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", 
     + https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
     
     + https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
-    + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term=.49524bcc93b1
+    + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term
     
 ##### Anecdotal or Commonly Discussed in Popular Culture
 
 ```{r Popular Culture, warning = FALSE, message = FALSE}
 most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
+most_popular_drugs
 ```
   + Finally, we investigate "popular" drugs: pharmaceutical drugs that people we know use, ones that we see commercials for, and/or commonly discussed in popular culture
   
@@ -1198,6 +1204,7 @@ avg_price_axis = list(
 ##### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
 
   + Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28. 
+  
   + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
   
 ```{r Most Advertised plots, warning = FALSE, message = FALSE}
@@ -1221,17 +1228,14 @@ final_dataset %>%
   
   + Xanax, which treats anxiety and panic attack (acute), had the lowest median of average price of $3.41.
   
-  + There is no clear trend between disease type (acute vs. chronic) and disease condition (psychiatric drugs vs. cardiovascular).
+  + There is no clear trend between disease type (acute vs. chronic) and disease condition (i.e: psychiatric drugs vs. cardiovascular).
   
 ```{r Most Popular, warning = FALSE, message = FALSE}
-x = final_dataset %>%
+final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% most_popular_drugs) %>%
-  # select(trade_name, disease, disease_type) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Popular Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
-
-x
 ```
 
 ##### The Distribution of Average Price for Most Abused Drugs 
@@ -1298,12 +1302,15 @@ final_dataset %>% #without harvoni
 High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
 We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015.
 We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.  
-We observe that drugs that receive the most prescriptions have a higher mean average price per tablet. 
+We observe that drugs that receive the most prescriptions have the highest mean average price per tablet.
+Additionally, we observe that the most abused drugs have the lowest mean average price per tablet.
+We observe that chronic diseases receive more funding than acute conditions; further, we observe that drugs that treat acute conditions have higher mean average prices per tablet than drugs that treat chronic diseases. 
+
 We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.
 
 For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.
 
 **Additionally, we seek to understand the types of drugs that receive patents/exclusivity.**
 
-There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type.
+There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
 In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
