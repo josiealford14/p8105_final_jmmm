@@ -4,7 +4,7 @@ date: "12/4/2017"
 output:
   html_document: 
     code_folding: hide
-title: "What Drives Drug Prices?"
+title: "Factors Innfluencing Drug Prices?"
 ---
 ### **Introduction**
 
@@ -638,13 +638,14 @@ final_dataset %>%
   group_by(year) %>%
   summarize(avg_all_drugs_price = mean(avg_price)) %>%
   plot_ly(x = ~ year, y = ~avg_all_drugs_price, mode = "lines", type = "scatter") %>%
-  layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "Drug Price"))
+  layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "drug price (USD)"))
 
 
 final_NIH_funding %>%
   group_by(year) %>%
-  summarize(avg_funding = sum(funding, na.rm = TRUE)) %>%
-  plot_ly(x = ~ year, y = ~ avg_funding, mode = "lines", type = "scatter")
+  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ year, y = ~ total_funding, mode = "lines", type = "scatter") %>% 
+  layout(title = "Change in Total NIH Funding (millions USD) over Time")
 
 ```
 
@@ -658,54 +659,50 @@ Looking at funding vs. disease for acute vs chronic diseases, we see a relativel
 #does funding correlate with drug prices?
 
 final_dataset %>%
-  #sample_n(50)%>%
   group_by(disease, trade_name) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE), 
-            avg_price_disease = mean(avg_price, na.rm=TRUE)) %>%
+            avg_price_disease = mean(avg_price, na.rm = TRUE)) %>%
   plot_ly(x = ~ avg_funding, y = ~ avg_price_disease, type = "scatter", color = ~disease, text = ~paste('Drug: ', trade_name, '<br> Disease:', disease)) %>%
   layout(title = "Average Funding vs Average Price", showlegend = FALSE)
   
 ax <- list(
-  title = "",
   zeroline = FALSE,
   showline = FALSE,
   showticklabels = FALSE,
   showgrid = FALSE
 )
-# p <- plot_ly(x = c(1, 2), y = c(1, 2)) %>%
-#   layout(xaxis = ax, yaxis = ax)
+
 final_dataset %>%
   group_by(disease, funding, disease_type) %>%
   summarize(avg_funding = mean(funding, na.rm = TRUE)) %>%
   plot_ly(x = ~ disease, y = ~ funding, color = ~disease_type, type = "scatter") %>%
-  layout(title = "Average Funding For Chronic vs Acute Diseases", xaxis = ax)
+  layout(title = "Average NIH Funding (millions USD) For Chronic vs Acute Diseases", xaxis = ax)
               
 ```
 
 
-* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions and the mean (instead of the mean) price might be the better measure to use in the analyses. Also, it might be worth creating a shiny app for people to view the price distributions for various drugs.
+* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled from 2013 to 2017.
 
 ```{r drug_price_distr}
-trade_name_choice = "Abacavir"
+trade_name_choice = "Zoloft"
 violin_drug = drug_price %>%
   filter(trade_name == trade_name_choice) %>%
   ggplot(aes(x = year, y = unit_price, fill = year)) + 
   geom_violin() +
-  ggtitle(paste0("Distribution of Prices for ", trade_name_choice), subtitle = NULL)
+  ggtitle(paste0("Distribution of Prices (USD) for ", trade_name_choice), subtitle = NULL)
 
 ggplotly(violin_drug)
 ```
 
 We created a spaghetti plot of the average price of drugs per year for each drug. We only used data on prices per drug unit (mainly per tablet). Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that of the drugs with information on price per unit drug, the drugs for Hepatitis C seem to have the highest cost.
 
-**Possible case studies on most popular (perceived) drugs: *Lipitor (Schizophrenia; not in dataset)*, Xanax (Panic Disorders, not in dataset), Celebrex (arthritis; not in dataset), Prozac (Depression; present in data. Price increased), Crestor, Nexium, Lisinopril, Zoloft (Panic Disorders; present in dataset. Almost doubled from 2013 to 2017)**
 
 ```{r price_drug_disease}
 final_dataset %>% 
   filter(disease %in% c("Obesity")) %>%
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
   plot_ly(x = ~year, y = ~avg_price, type = "scatter", mode = "lines", text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~trade_name, alpha = 0.5) %>% 
-  layout(title = "Average Price of Drugs over Time", showlegend = FALSE)
+  layout(title = "Average Price (USD) of Drugs over Time", showlegend = FALSE)
 ```
 
 We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence) colored by disease. Among drugs with available information on price per unit drug, obesity seems to have received the most funding on average and to have the highest 2015 prevalence.
@@ -718,7 +715,7 @@ final_dataset %>%
   group_by(trade_name, disease, prevalence) %>% 
   summarize(mean_fund = mean(funding)) %>% 
   plot_ly(x = ~prevalence, y = ~mean_fund, type = "scatter", alpha = 1, text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~disease) %>%
-  layout(title = "Funding vs Need", showlegend = FALSE)
+  layout(title = "Funding (millions USD) vs Prevalence", showlegend = FALSE)
 ```
 
 #### **Pharmaceutical Companies and Top Drugs**
@@ -837,7 +834,8 @@ final_dataset %>%
   group_by(disease) %>%
   summarize(mean_funding = mean(funding)) %>%
   mutate(disease = fct_reorder(disease, mean_funding)) %>%
-  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3")
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3") %>% 
+  layout(title = "NIH Funding per Disease (millions USD)", xaxis = ax)
 
 #funding by disease (filtered by disease type = acute)
 #shiny: user clicks acute and sees funding
@@ -875,7 +873,8 @@ final_dataset %>%
   filter(!is.na(disease) & !is.na(funding)) %>%
   mutate(disease_type = fct_reorder(disease_type, funding)) %>%
   group_by(disease_type) %>% 
-  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3")
+  plot_ly(y = ~funding, type = "box", color = ~disease_type, colors = "Set3") %>% 
+  layout(title = "Distribtuion NIH Funding (millions USD) for Acute vs Chronic Diseases")
 ```
 
 * Is there a statistically significant difference in funding between acute and chronic diseases?
@@ -1148,9 +1147,11 @@ final_dataset %>%
 x = final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% most_popular_drugs) %>%
-  select(trade_name, disease, disease_type) %>% 
+  # select(trade_name, disease, disease_type) %>% 
   plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
   layout(title = "Distribution of Average Price for Popular Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
+
+x
 ```
 
 ##### The Distribution of Average Price for Most Abused Drugs 

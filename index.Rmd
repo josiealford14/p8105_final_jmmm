@@ -1,5 +1,5 @@
 ---
-title: "What Drives Drug Prices?"
+title: "Factors Influencing Drug Prices?"
 ---
 ###
 ### Our Final Project Website
