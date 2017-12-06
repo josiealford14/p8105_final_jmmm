@@ -762,7 +762,23 @@ patents = final_dataset %>%
     appfull = str_replace(appfull, "Wyeths Wholly Owned Sub Pfizer Inc", "Pfizer")) %>%
   arrange(appfull)
 patents
+```
 
+```{r }
+xax <- list(
+  title = "Pharmaceutical Company",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+yax = list(
+  title = "No. of Patents",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
 
 #pharmaco's currently holding the most patents
 most_pat_company = patents %>%
@@ -771,52 +787,116 @@ most_pat_company = patents %>%
   rename(num_pat_held = n) %>%
   ungroup() %>%
   mutate(appfull = fct_reorder(appfull, num_pat_held)) %>%
-  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set2")
+  plot_ly(x = ~appfull, y = ~num_pat_held, color = ~appfull, type = "bar", colors = "Set2") %>% 
+  layout(title = "No. of Patents Currently Held by Pharmaceutical Company", xaxis = xax, yaxis = yax)
 most_pat_company
+```
 
 
+```{r}
 #diseases currently with most patents
+xax <- list(
+  title = "Pharmaceutical Company",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+yax = list(
+  title = "No. of Patents",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
+
 most_pat_dis = patents %>%
   group_by(disease) %>%
   count() %>%
   rename(num_pat_held = n) %>%
   ungroup() %>%
   mutate(disease = fct_reorder(disease, num_pat_held)) %>%
-  plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "Set2")
+  plot_ly(x = ~disease, y = ~num_pat_held, color = ~disease, type = "bar", colors = "Set2") %>% 
+  layout(title = "No. of Patents Currently Held by Disease", xaxis = xax, yaxis = yax)
 most_pat_dis
+```
 
 
+```{r}
 #pharmaco that has most patents expiring by year 
 #(i.e. in each upcoming year, who has most expiring?)
+
+xax_2 = list(
+  title = "Year",
+  zeroline = TRUE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
+
+yax_2 = list(
+  title = "Company",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
+
 pat_exp = patents %>%
   group_by(appfull, year_pat_expires) %>%
-  count() %>%
-  rename(num_pat_exp = n) %>%
-  ungroup() %>%
-  plot_ly(
-    x = ~year_pat_expires,
-    y = ~num_pat_exp,
-    color = ~appfull,
-    type = "scatter",
-    mode = "lines",
-    colors = "Set2")
-pat_exp
+  count() %>% 
+  rename(num_pat_exp = n) 
+# %>%
+#   ungroup() 
 
+# pat_exp %>%
+#   plot_ly(x = ~year_pat_expires, y = ~num_pat_exp, color = ~appfull, type = "scatter", mode = "lines", colors = "Set2") %>%
+#   layout(title = "Projection of Expiring Patents by Pharmaceutical Company ", xaxis = xax_2, yaxis = yax_2)
+# 
+
+#BUBBLE
+pat_exp %>%
+  plot_ly(x = ~year_pat_expires, 
+          y = ~appfull, 
+          color = ~appfull, 
+          type = "scatter", 
+          mode = 'markers', 
+          marker = list(size = ~num_pat_exp*3), 
+          text = ~paste('Count: ', num_pat_exp)) %>%
+  layout(title = "Projection of Expiring Patents by Pharmaceutical Company ", xaxis = xax_2, yaxis = yax_2, showlegend = FALSE)
+```
+
+```{r}
+xax_3 = list(
+  title = "Year",
+  zeroline = TRUE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
+yax_3 = list(
+  title = "",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = TRUE,
+  showgrid = TRUE
+)
 
 dis_pat_exp = patents %>%
   group_by(disease, year_pat_expires) %>%
   count() %>%
   rename(num_pat_exp = n) %>%
-  ungroup() %>%
-  mutate(disease = fct_reorder(disease, num_pat_exp)) %>%
-  plot_ly(
-    x = ~year_pat_expires,
-    y = ~num_pat_exp,
-    color = ~disease,
-    type = "scatter",
-    mode = "lines",
-    colors = "Set2")
-dis_pat_exp
+  # ungroup() %>%
+  # mutate(disease = fct_reorder(disease, num_pat_exp)) %>%
+    plot_ly(x = ~year_pat_expires, 
+          y = ~disease, 
+          color = ~disease, 
+          type = "scatter", 
+          mode = 'markers', 
+          marker = list(size = ~num_pat_exp*3), 
+          text = ~paste('Count: ', num_pat_exp)) %>%
+  layout(title = "Projection of Expiring Patents by Disease", xaxis = xax_3, yaxis = yax_3, showlegend = FALSE)
+  dis_pat_exp
 ```
 
 #### **Disease & Funding**
