@@ -1,21 +1,25 @@
-name: Home
+name: DSI Final Project
 output_dir: .
 navbar:
-  title: Factors Influencing Drug Prices
+  title: Home
   right:
-  - text: R Markdown
-    href: p8105_final_jmmm.html
-  - text: Shiny Dashboard
+  - text: Dashboard
     href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
+  - text: Methods
+    href: methods.html
+  - text: Analysis
+    href: analysis.html
   - text: Data
     href: data.html
+  - text: Conclusion
+    href: conclusion.html
+  - text: RMD
+    href: p8105_final_jmmm.html
   - icon: fa-github fa-lg
     href: https://github.com/josiealford14/p8105_final_jmmm.git
 output:
   html_document:
     theme: cosmo
-    toc: yes
-    toc_float: yes
     code_folding: hide
     lib_dir: site_libs
     self_contained: no

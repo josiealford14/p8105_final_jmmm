@@ -9,6 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="MeOak/Muhire/Manali/Josie" />
 
 
 <title>Factors Influencing Drug Prices</title>
@@ -232,26 +233,20 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Factors Influencing Drug Prices</h1>
+<h4 class="author"><em>MeOak/Muhire/Manali/Josie</em></h4>
+<h4 class="date"><em>12/6/2017</em></h4>
 
 </div>
 
 
-<p>High drug prices have become an increasing concern in the United States (Hancock, 2016 ; “Why Prescription Drugs…”, 2017). In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016).</p>
-<p>This project aims at exploring factors associated with US prescription drug prices. Those factors include disease research funding, drug need (prevalence), sales, and advertising.</p>
-<div id="plot-showing-trend-in-rising-price" class="section level3">
-<h3>Plot showing trend in rising price</h3>
-<p><img src="images/trend.png" style="width:70%"></p>
-</div>
-<div id="further-explore-how-various-factors-affect-drug-prices" class="section level3">
-<h3>Further Explore How Various Factors Affect Drug Prices</h3>
+<div id="data-wrangling" class="section level3">
+<h3><strong>Data Wrangling</strong></h3>
 <ul>
-<li><a href="data.html">Raw Datasets</a></li>
-<li>Versions of <a href="rpackage.html">R and Packages</a> used in Analysis</li>
-<li><a href="references.html">References</a></li>
+<li><p>We put all sub-datasets in long format and renamed variables as necessary.</p></li>
+<li><p>We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable. Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs.</p></li>
+<li><p>The Drug Price Excel dataset had over 5 million observations. Prices were recorded for each drug every week. To representatively condense this dataset, we obtained a yearly average drug price (avg_price). This condensed the Drug Price dataset to approximately 2.5 million observations.</p></li>
+<li><p>We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into a final dataset (final_dataset). We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).</p></li>
 </ul>
-</div>
-<div id="watch-this-video-for-a-tour-of-our-website" class="section level3">
-<h3>Watch this video for a tour of our website: <iframe width="560" height="315" src="http://www.youtube.com/embed/9bZkp7q19f0?rel=0" frameborder="0" allowfullscreen></iframe></h3>
 </div>
 
 

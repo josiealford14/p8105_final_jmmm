@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="MeOak Place" />
+
+
+<title>Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Dashboard</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="conclusion.html">Conclusion</a>
+</li>
+<li>
+  <a href="p8105_final_jmmm.html">RMD</a>
+</li>
+<li>
+  <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Analysis</h1>
+<h4 class="author"><em>MeOak Place</em></h4>
+<h4 class="date"><em>12/7/2017</em></h4>
+
+</div>
+
+
+<div id="analysis-discussion" class="section level3">
+<h3><strong>Analysis &amp; Discussion</strong></h3>
+<p>First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017. We observe a clear increasing trend in the overall average drug price. In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.</p>
+<p>We also looked at the total NIH funding for each year from 2013-2018. We see that funding increased until it leveled off in 2016 and there is a projected decrease for 2018.</p>
+<p>Then, we looked to determine whether funding correlated with drug prices. This does not really seem to be the case from the scatterplot. Along the entire range of funding amounts, most drugs still have relatively low prices. It is interesting that different drugs that treat the same disease seem to be largely clustered together.</p>
+<p>We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of cancers including kidney, pancreas, breast, and brain cancer, has an unusually high price. We think these other applications are what are influencing the price. Another unusual drug is Belviq, used to treat obesity.</p>
+<p>This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors.</p>
+<p>Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding by disease type.</p>
+<ul>
+<li>We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.</li>
+</ul>
+<p>We created a spaghetti plot of the average price per year for each drug. Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that, the drugs for Hepatitis C seem to have the highest cost.</p>
+<p>We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence). Obesity seems to have received the most funding on average and to have the highest 2015 prevalence. This may be due to Michelle Obama’s Let’s Move initiative to fight childhood obesity.</p>
+<p>We looked to explore whether there was a relationship between prevalence and funding. While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of average funding. As the prevalence increases the funding amount generally seems to be on the lower side. However, if you look more closely at which diseases are included, some interesting observations can be made.</p>
+<p>Many of the diseases with high funding are cancers, which have a low prevalence. Most cancers have large subgroups with no good treatment options, so it makes sense that there is a lot of research focused on cancer and new drug development. Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.</p>
+<div id="pharmaceutical-companies-and-top-drugs" class="section level4">
+<h4><strong>Pharmaceutical Companies and Top Drugs</strong></h4>
+<p>Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.</p>
+<p>AstraZeneca is currently the largest patent holder. Keryx Pharmaceuticals has the most number of patents expiring overall. Keryx’s 11 patents expiring in 2024 cover chronic kidney disease allowing generics to enter the kidney disease markt.</p>
+<p>The following two plots explore the number of patents currently held by each specfic disease followed by a projection of expiring patents for that condition.</p>
+<p>The disease with the most patents expiring over the next several years chronic kidney disease.</p>
+</div>
+<div id="disease-funding" class="section level4">
+<h4><strong>Disease &amp; Funding</strong></h4>
+<ul>
+<li><p>Does funding differ by disease?</p></li>
+<li><p>There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer’s Disease has the third highest mean funding of $646 million per year. Paget’s Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received the lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget’s Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer’s Disease are chronic conditions.</p></li>
+</ul>
+</div>
+<div id="acute-vs.chronic-disease" class="section level4">
+<h4><strong>Acute vs. Chronic Disease</strong></h4>
+<div id="funding" class="section level5">
+<h5>Funding</h5>
+<div id="is-there-a-difference-in-funding-between-acute-conditions-and-chronic-diseases" class="section level6">
+<h6>Is there a difference in funding between acute conditions and chronic diseases?</h6>
+<ul>
+<li><p>Based on the boxplots below, we see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed.</p></li>
+<li><p>Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for chronic conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding. `</p></li>
+</ul>
+</div>
+<div id="is-there-a-statistically-significant-difference-in-funding-between-acute-and-chronic-diseases" class="section level6">
+<h6>Is there a statistically significant difference in funding between acute and chronic diseases?</h6>
+<ul>
+<li><p>If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.</p></li>
+<li><p>The Wilcoxon Rank-Sum Test comparing median funding of the disease types rejects the null hypothesis that the median fundings of acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median funding of acute funding is statistically different from the median funding of chronic diseases.</p></li>
+<li><p>For curiosity’s sake, let’s say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It’s important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test’s conclusion aligns with the Wilcoxon Rank-Sum Test.</p>
+<ul>
+<li>At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.</li>
+</ul></li>
+<li><p>In conclusion, we can conclude that the mean/median of chronic funding of $323.68 million/year is statistically different from the mean/median of acute funding of $184.51 million/year.</p></li>
+</ul>
+</div>
+</div>
+<div id="pricing" class="section level5">
+<h5>Pricing</h5>
+<div id="is-there-a-difference-in-pricing-between-acute-conditions-and-chronic-diseases" class="section level6">
+<h6>Is there a difference in pricing between acute conditions and chronic diseases?</h6>
+<ul>
+<li>Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have more outliers in pricing. Acute has a larger IQR for pricing, while chronic has a wider range in pricing. The average price of drugs that treat chronic diseases ranges from $0.03 to $1,096.67. The average price of drugs that threat chronic diseases ranges from $0.11 to $462.03.</li>
+</ul>
+</div>
+<div id="is-there-a-statistically-significant-difference-in-pricing-of-drugs-that-treat-either-acute-or-chronic-diseases" class="section level6">
+<h6>Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases?</h6>
+<pre><code>  + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, average price is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median average price for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
+
+  + The Wilcoxon Rank-Sum Test comparing median average price of the disease types rejects the null hypothesis that the median average prices of drugs that treat acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median average price of acute funding is statistically different from the median funding of chronic diseases.
+
+  + For curiosity&#39;s sake, let&#39;s say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It&#39;s important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test&#39;s conclusion aligns with the Wilcoxon Rank-Sum Test. 
+
+      +  At the 0.05 significance level, we reject the null hypothesis that the true difference of mean &quot;average price&quot; between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+
+  + In conclusion, we can conclude that the mean/median average price of drugs that treat acute diseases is statistically different from the mean/median average price of drugs that treat chronic diseases.
+    + Drugs that treat acute conditions have a mean &quot;average price&quot; of $173.43 per dose and chronic diseases have a mean &quot;average price&quot; of $125.39 per dose.  </code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="case-study" class="section level3">
+<h3><strong>Case Study</strong></h3>
+<ul>
+<li>We are interested in conducting a case study on pharmaceutical drugs that receive the highest advertisement spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture.</li>
+</ul>
+<div id="most-advertised-by-spending" class="section level5">
+<h5>Most Advertised (by spending)</h5>
+<ul>
+<li><p>First we examined the most advertised drugs in 2016 (top twenty).</p>
+<ul>
+<li><p>In 2016, Humira had the highest advertising spending of $344 million.</p></li>
+<li><p>Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), had the highest mean average price per dose of $45.70.</p></li>
+<li><p>Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditions), had the lowest mean yearly price per dose of $5.29.</p></li>
+<li><p>Of the twenty drugs with highest advertising spending, six drugs were found within the final dataset.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="most-prescribed-by-sales" class="section level5">
+<h5>Most Prescribed (by sales)</h5>
+<ul>
+<li>Second, we examined the most prescribed drugs as defined by US sales.
+<ul>
+<li><p>Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn’s Disease.</p></li>
+<li><p>Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.</p></li>
+<li><p>Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="most-abused" class="section level5">
+<h5>Most Abused</h5>
+<ul>
+<li><p>Now, let’s take a look at the most abused drugs in America</p>
+<ul>
+<li><p>This list of drugs involves drugs that are over prescribed, highly addictive, and/or frequently used as illicit street drugs</p></li>
+<li><p>Benzodiazepines</p></li>
+<li><p>Central nervous system depressants</p>
+<ul>
+<li><p>Nembutal</p></li>
+<li><p>Valium: used to treat anxiety disorders, abused along with alcohol or other depressants</p></li>
+<li><p>Xanax: frequently referenced in “trap music”</p></li>
+<li><p>Suboxone: a popular street drug, most popular illicit drug bought and sold in jails and prisons–often smuggled</p></li>
+</ul></li>
+<li><p>Stimulants</p>
+<ul>
+<li><p>Dexedrine</p></li>
+<li><p>Ritalin: commonly abused by college students</p></li>
+<li><p>Concerta</p></li>
+<li><p>Adderall: commonly abused by college students</p></li>
+</ul></li>
+</ul></li>
+<li><p>Opioids</p>
+<ul>
+<li><p>Duragesic</p>
+<ul>
+<li>Fentanyl is Heroin’s synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is a popular street drug driving heroin overdose deaths in the US.</li>
+</ul></li>
+<li><p>Vicodin</p></li>
+<li><p>OxyContin</p></li>
+<li><p>Opana</p></li>
+<li><p>Darvon</p></li>
+<li><p>Dilaudid</p></li>
+<li><p>Demerol</p></li>
+<li><p>Lomotil</p></li>
+<li><p>Percocet: crushed into power and snorted (like cocaine) for a high. commonly referenced in trap music</p></li>
+<li><p>Important Facts &amp; Figures about Opioid Epidemic</p></li>
+<li><p>Public Health threat.</p></li>
+<li><p>2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)</p></li>
+<li><p>Causes of Epidemic: Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.</p></li>
+<li>259 million opioid prescriptions in 2012, according to the CDC. An increase in 400% since 1999.</li>
+<li><p>Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin</p></li>
+<li><p>Four in five Heroin Users used prescription opioids before heroin.</p></li>
+<li><p>Highly addictive. Other opioids include morphine, codeine cough syrup (know as “lean”, “purple drank”, “Sizzurp”, and “syrup”.</p></li>
+</ul></li>
+<li><p>Something to think about</p>
+<ul>
+<li><p>The pop legends Michael Jackson, Whitney Houston and Prince each died with with opioids (painkillers) and/or benzodiazepines (anti anxiety) in their systems.</p></li>
+<li><p>“The gods of pop music, indestructible in song, died taking the same drugs that everyone takes.” Chris Richards of The Washington Post</p></li>
+</ul></li>
+<li><p>References</p>
+<ul>
+<li><p><a href="https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines" class="uri">https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines</a></p></li>
+<li><p><a href="https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs" class="uri">https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs</a></p></li>
+<li><p><a href="https://newlifehouse.com/top-10-commonly-abused-prescription-medications/" class="uri">https://newlifehouse.com/top-10-commonly-abused-prescription-medications/</a></p></li>
+<li><a href="https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/" class="uri">https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/</a></li>
+<li><p><a href="https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term" class="uri">https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term</a></p></li>
+</ul></li>
+</ul>
+</div>
+<div id="anecdotal-or-commonly-discussed-in-popular-culture" class="section level5">
+<h5>Anecdotal or Commonly Discussed in Popular Culture</h5>
+<ul>
+<li><p>Finally, we investigate “popular” drugs: pharmaceutical drugs that people we know use, ones that we see commercials for, and/or commonly discussed in popular culture</p></li>
+<li>The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.</li>
+<li><p>Zocor (simvastatin): cholesterol lowering drug</p></li>
+<li><p>Relationship between “pill-pop” and American music</p>
+<ul>
+<li><a href="https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html" class="uri">https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html</a></li>
+</ul></li>
+<li><p>Reference: <a href="https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f" class="uri">https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f</a></p></li>
+</ul>
+</div>
+<div id="comparing-mean-average-price-per-tablet-for-each-drug-group" class="section level5">
+<h5>Comparing Mean Average Price per Tablet for each Drug Group</h5>
+<ul>
+<li><p>We compared pricing of the drugs classified in each category.</p></li>
+<li><p>The Most Abused Drugs had the lowest mean of average price per tablet of $5.22.</p></li>
+<li><p>The Most Advertised and the Most Popular Drugs have similar means of average price per tablet of $25.78 and $22.86, respectively.</p></li>
+<li><p>The Most Prescribed Drugs have the highest mean of average price per tablet of $259.26.</p></li>
+<li><p>These results are particularly interesting.</p>
+<ul>
+<li><p>The most abused drugs are relatively inexpensive compared to others. This gives patients greater access to highly addictive prescriptions, including painkillers. This may be a driving force of prescription drug abuse; cheap and highly addictive are fatal combinations for drug dependence.</p></li>
+<li><p>The most prescribed drugs are notably more expensive. The mean is skewed by the Hepatitis C drug, Harvoni. Harvoni has a median average price of $1,093.83. Excluding Harvoni results in a mean of average price per tablet of $21.71 for most prescribed drugs, which is on-par with most popular and most advertised drugs.</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="the-distribution-of-average-price-for-most-advertised-drugs-ordered-by-descending-advertising-spending" class="section level5">
+<h5>The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending</h5>
+<ul>
+<li><p>Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28.</p></li>
+<li><p>Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.</p></li>
+</ul>
+</div>
+<div id="the-distribution-of-average-price-for-most-popular-drugs" class="section level5">
+<h5>The Distribution of Average Price for Most Popular Drugs</h5>
+<ul>
+<li><p>Viagra, which treats erectile dysfunction (acute), had the highest median of average price of $35.47.</p></li>
+<li><p>Xanax, which treats anxiety and panic attack (acute), had the lowest median of average price of $3.41.</p></li>
+<li><p>There is no clear trend between disease type (acute vs. chronic) and disease condition (i.e: psychiatric drugs vs. cardiovascular).</p></li>
+</ul>
+</div>
+<div id="the-distribution-of-average-price-for-most-abused-drugs" class="section level5">
+<h5>The Distribution of Average Price for Most Abused Drugs</h5>
+<ul>
+<li>Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price of $0.97 each.</li>
+</ul>
+</div>
+<div id="the-distribution-of-average-price-for-most-prescribed-drugs-ordered-by-descending-prescription-rates" class="section level5">
+<h5>The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates</h5>
+<ul>
+<li><p>Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?</p></li>
+<li><p>Some explanation from <a href="https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a">HuffPost</a>: “There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them.”</p>
+<ul>
+<li>Influences of pricing <a href="https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp">Investopedia</a>: uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives.</li>
+</ul></li>
+<li><p>If we exclude Harvoni, we can better see the box plots of the other drugs.</p>
+<ul>
+<li>As prescription rates decrease, average drug price per tablet does not display any discernible trend.</li>
+</ul></li>
+</ul>
+</div>
+<div id="limitations" class="section level4">
+<h4><strong>Limitations</strong></h4>
+<p>There are a couple of important limitations of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.</p>
+</div>
+</div>
+<div id="conclusion" class="section level3">
+<h3><strong>Conclusion</strong></h3>
+<p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price. However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.</p>
+<p>For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit. For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

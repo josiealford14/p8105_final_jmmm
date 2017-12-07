@@ -1,0 +1,267 @@
+---
+title: "Analysis"
+author: "MeOak Place"
+date: "12/7/2017"
+output: html_document
+---
+
+### **Analysis & Discussion**
+
+First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
+
+We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled off in 2016 and there is a projected decrease for 2018.
+
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.
+
+We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of cancers including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  
+
+This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
+
+Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding by disease type.
+
+
+
+* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
+
+
+We created a spaghetti plot of the average price per year for each drug. Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that, the drugs for Hepatitis C seem to have the highest cost.
+
+We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence). Obesity seems to have received the most funding on average and to have the highest 2015 prevalence.  This may be due to Michelle Obama's Let's Move initiative to fight childhood obesity.
+
+We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. 
+
+Many of the diseases with high funding are cancers, which have a low prevalence.  Most cancers have large subgroups with no good treatment options, so it makes sense that there is a lot of research focused on cancer and new drug development.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+
+#### **Pharmaceutical Companies and Top Drugs**
+
+Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.
+
+AstraZeneca is currently the largest patent holder.
+Keryx Pharmaceuticals has the most number of patents expiring overall.  Keryx's 11 patents expiring in 2024 cover chronic kidney disease allowing generics to enter the kidney disease markt.
+
+
+The following two plots explore the number of patents currently held by each specfic disease followed by a projection of expiring patents for that condition.
+
+The disease with the most patents expiring over the next several years chronic kidney disease.
+
+#### **Disease & Funding**
+
+* Does funding differ by disease? 
+
+  + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received the lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. 
+
+#### **Acute vs. Chronic Disease**
+##### Funding
+
+###### Is there a difference in funding between acute conditions and chronic diseases?
+  + Based on the boxplots below, we see that acute conditions have a wider interquartile range compared to chronic conditions: there is greater variability in acute condition funding compared to chronic. 25% of acute conditions have a funding of $18 million or less. 25% of acute conditions receive funding of more than $313 million or more. The median funding for acute conditions is $50 million per year. Acute funding is right skewed. 
+  
+  + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for chronic conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
+  `
+
+###### Is there a statistically significant difference in funding between acute and chronic diseases?
+
+  + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, funding is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median funding for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
+  
+  + The Wilcoxon Rank-Sum Test comparing median funding of the disease types rejects the null hypothesis that the median fundings of acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median funding of acute funding is statistically different from the median funding of chronic diseases.
+  
+  + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
+  
+      + At the 0.05 significance level, we reject the null hypothesis that the true difference of mean funding between disease types is zero. We are 95% confident that chronic diseases receive between $125 million to $153 million more dollars in mean funding per year compared to acute diseases.
+  
+  + In conclusion, we can conclude that the mean/median of chronic funding of $323.68 million/year is statistically different from the mean/median of acute funding of $184.51 million/year. 
+  
+
+##### Pricing
+
+###### Is there a difference in pricing between acute conditions and chronic diseases? 
+  + Acute conditions have greater variability in pricing compared to chronic diseases, while chronic diseases have more outliers in pricing. Acute has a larger IQR for pricing, while chronic has a wider range in pricing. The average price of drugs that treat chronic diseases ranges from $0.03 to $1,096.67. The average price of drugs that threat chronic diseases ranges from $0.11 to $462.03. 
+ 
+###### Is there a statistically significant difference in pricing of drugs that treat either acute or chronic diseases? 
+  
+      + If we assume that the two samples are normally distributed, we would perform a two-sample t-test for Independent Samples. However, average price is highly skewed and does not meet the normality assumptions. We will instead conduct a Wilcoxon Rank-Sum Test (non-parametric), which is the non-parametric equivalent of the Two-Sample Independent t-test. If the median average price for acute diseases is different from that of chronic diseases, one disease type should tend to have larger values than the other.
+  
+      + The Wilcoxon Rank-Sum Test comparing median average price of the disease types rejects the null hypothesis that the median average prices of drugs that treat acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median average price of acute funding is statistically different from the median funding of chronic diseases.
+  
+      + For curiosity's sake, let's say we assumed that the two samples are normally distributed, independent and have equal variances. Therefore, we would conduct the two sample independent t-test. It's important to note that the validity of this test may be compromised because the funding variable violates the normality assumption. This test's conclusion aligns with the Wilcoxon Rank-Sum Test. 
+  
+          +  At the 0.05 significance level, we reject the null hypothesis that the true difference of mean "average price" between drugs that treat acute or chronic diseases is zero. We are 95% confident that drugs that treat acute conditions are priced between $43.87 and $52.22 more per dose than drugs that treat chronic conditions. 
+  
+      + In conclusion, we can conclude that the mean/median average price of drugs that treat acute diseases is statistically different from the mean/median average price of drugs that treat chronic diseases.
+        + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose.  
+
+### **Case Study** 
+* We are interested in conducting a case study on pharmaceutical drugs that receive the highest advertisement spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture.
+
+##### Most Advertised (by spending)
+
+  + First we examined the most advertised drugs in 2016 (top twenty).
+  
+    + In 2016, Humira had the highest advertising spending of $344 million.
+  
+    + Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), had the highest mean average price per dose of $45.70. 
+  
+    + Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditions), had the lowest mean yearly price per dose of $5.29.
+    
+      + Of the twenty drugs with highest advertising spending, six drugs were found within the final dataset.
+  
+##### Most Prescribed (by sales)
+
+  + Second, we examined the most prescribed drugs as defined by US sales. 
+      + Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn's Disease.
+      
+      + Harvoni was the second most prescribed drug for 2016, according to US sales. Americans bought $10 billion dollars of Harvoni, a antiviral medication that treats adults with Hepatitis C.
+      
+      + Enbrel was the third most prescribed drug for 2016, according to US sales. Americans bought $3.6 billion dollars of Enbrel, a antiviral medication that treats adults with Hepatitis C.
+
+##### Most Abused
+ + Now, let's take a look at the most abused drugs in America
+  
+    + This list of drugs involves drugs that are over prescribed, highly addictive, and/or frequently used as illicit street drugs
+    
+      + Benzodiazepines
+    
+      + Central nervous system depressants
+    
+         + Nembutal
+      
+          + Valium: used to treat anxiety disorders, abused along with alcohol or other depressants
+      
+          + Xanax: frequently referenced in "trap music"
+      
+         + Suboxone: a popular street drug, most popular illicit drug bought and sold in jails and prisons--often smuggled
+    
+      + Stimulants
+    
+        + Dexedrine
+      
+        + Ritalin: commonly abused by college students
+      
+        + Concerta
+      
+        + Adderall: commonly abused by college students
+  
+  + Opioids
+    
+       + Duragesic
+      
+          + Fentanyl is Heroin's synthetic cousin. Synthetic Fentanyl (combined with heroin) is more addictive and deadlier than heroin. According to the CDC, 100 times more potent than morphine. Synthetic Fentanyl is a popular street drug driving heroin overdose deaths in the US.
+        
+      + Vicodin
+      
+      + OxyContin
+      
+      + Opana
+      
+      + Darvon
+      
+      + Dilaudid
+      
+      + Demerol 
+      
+      + Lomotil
+      
+      + Percocet: crushed into power and snorted (like cocaine) for a high. commonly referenced in trap music
+      
+    + Important Facts & Figures about Opioid Epidemic
+  
+      + Public Health threat. 
+    
+      + 2 million Americans abused or dependent, 1000+ ER visits daily. 78 deaths daily. (2014)
+      
+      + Causes of Epidemic: Practitioners were urged to treat pain aggressively (without the tools and training), pharmaceutical companies marketing prescription opioids to doctors.
+      
+      + 259 million opioid prescriptions in 2012, according to the CDC. An increase in 400% since 1999.
+      + Prescription opioids account for 1/2 of opioid deaths. Considered gateway drugs for heroin
+      
+      + Four in five Heroin Users used prescription opioids before heroin.
+      
+      + Highly addictive. Other opioids include morphine, codeine cough syrup (know as "lean", "purple drank", "Sizzurp", and "syrup".
+      
+  + Something to think about
+  
+    + The pop legends Michael Jackson, Whitney Houston and Prince each died with with opioids (painkillers) and/or benzodiazepines (anti anxiety) in their systems. 
+    
+    + "The gods of pop music, indestructible in song, died taking the same drugs that everyone takes." Chris Richards of The Washington Post
+      
+  + References
+  
+    + https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
+    
+    + https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
+    
+    + https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
+    
+    + https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+    + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term
+    
+##### Anecdotal or Commonly Discussed in Popular Culture
+
+ + Finally, we investigate "popular" drugs: pharmaceutical drugs that people we know use, ones that we see commercials for, and/or commonly discussed in popular culture
+  
+  + The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
+  + Zocor (simvastatin): cholesterol lowering drug
+
+  + Relationship between "pill-pop" and American music
+  
+    + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html
+    
+  + Reference: https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
+
+##### Comparing Mean Average Price per Tablet for each Drug Group
+  + We compared pricing of the drugs classified in each category.
+  
+  + The Most Abused Drugs had the lowest mean of average price per tablet of $5.22.
+  
+  + The Most Advertised and the Most Popular Drugs have similar means of average price per tablet of $25.78 and $22.86, respectively. 
+  
+  + The Most Prescribed Drugs have the highest mean of average price per tablet of $259.26. 
+  
+  + These results are particularly interesting. 
+  
+      + The most abused drugs are relatively inexpensive compared to others. This gives patients greater access to highly addictive prescriptions, including painkillers. This may be a driving force of prescription drug abuse; cheap and highly addictive are fatal combinations for drug dependence.
+      
+      + The most prescribed drugs are notably more expensive. The mean is skewed by the Hepatitis C drug, Harvoni. Harvoni has a median average price of $1,093.83. Excluding Harvoni results in a mean of average price per tablet of $21.71 for most prescribed drugs, which is on-par with most popular and most advertised drugs. 
+      
+
+##### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
+
+  + Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28. 
+  
+  + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
+
+##### The Distribution of Average Price for Most Popular Drugs
+
+  + Viagra, which treats erectile dysfunction (acute), had the highest median of average price of $35.47. 
+  
+  + Xanax, which treats anxiety and panic attack (acute), had the lowest median of average price of $3.41.
+  
+  + There is no clear trend between disease type (acute vs. chronic) and disease condition (i.e: psychiatric drugs vs. cardiovascular).
+
+##### The Distribution of Average Price for Most Abused Drugs 
+
+  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price of $0.97 each. 
+
+##### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
+
+  + Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
+  
+  + Some explanation from [HuffPost](https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a): "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
+  
+    + Influences of pricing [Investopedia](https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp): uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
+  
+  + If we exclude Harvoni, we can better see the box plots of the other drugs.
+  
+    + As prescription rates decrease, average drug price per tablet does not display any discernible trend.
+
+#### **Limitations**
+
+There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+
+### **Conclusion**
+
+Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding,  drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.  However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.
+
+For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+

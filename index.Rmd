@@ -1,25 +1,22 @@
 ---
 title: "Factors Influencing Drug Prices"
 ---
-### Drug Prices Affect US All (or some other corny intro)
 
-### Informative Graphic (imbed plottly that gives overview to project)
+High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).  In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). 
 
-In 2016, 1 in 5 Americans reported taking four or more prescription drugs (“Public Opinion on Prescription…”, 2016). Also, high drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017). This project aims at  exploring some of the factors associated with US prescription drug prices including  disease research funding, drug need (prevalence), sales, and advertising. Additionally, we seek to understand the types of drugs that receive patents/exclusivity.
+This project aims at  exploring factors associated with US prescription drug prices.  Those factors include disease research funding, drug need (prevalence), sales, and advertising. 
 
+
+### Plot showing trend in rising price
+
+<img src="images/trend.png" style="width:70%">
 
 ### Further Explore How Various Factors Affect Drug Prices
-* [Data Wrangling](datawrangling.html)
-  * [Raw Datasets](data.html)
-* [Analysis](analysis.html)
-  + [Manali](manali.html)
-  + [Muhire](muhire.html)
-  + [MeOak](meoak.html)
-  + [Chronic vs. Acute Diseases](chronic_acute.html)
-  + [Overview of Case Study](case_study.html)
-    + [Most Advertised](most_advertised.html)
-    + [Most Abused](most_abused.html)
-    + [Most Prescribed](most_prescribed.html) 
-    + [Most Popular](most_popular.html)
+
+* [Raw Datasets](data.html)
 * Versions of [R and Packages](rpackage.html) used in Analysis
 * [References](references.html)
+
+### Watch this video for a tour of our website:  <iframe width="560" height="315" src="http://www.youtube.com/embed/9bZkp7q19f0?rel=0" frameborder="0" allowfullscreen></iframe>
+
+
