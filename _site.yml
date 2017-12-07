@@ -1,37 +1,14 @@
-name: What Drives Drug Prices?
+name: Home
 output_dir: .
 navbar:
-  title: The Real Cost of Drugs
+  title: Factors Influencing Drug Prices
   right:
-  - text: Data
-    href: data.html
-  - text: Data Wrangling
-    href: datawrangling.html
-  - text: Analysis
-    href: analysis.html
-    menu:
-    - text: General Analysis
-    - text: Manali
-      href: manali.html
-    - text: Muhire
-      href: muhire.html
-    - text: MeOak
-      href: meoak.html
-    - text: '---------'
-    - text: Advertising
-      href: most_advertised.html
-    - text: Prescription Sales
-      href: most_prescribed.html
-    - text: '---------'
-    - text: Disease Type
-    - text: Overview
-      href: chronic_acute.html
-    - text: Most Advertised & Most Prescribed
-      href: case_study.html
   - text: R Markdown
     href: p8105_final_jmmm.html
   - text: Shiny Dashboard
     href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
+  - text: Data
+    href: data.html
   - icon: fa-github fa-lg
     href: https://github.com/josiealford14/p8105_final_jmmm.git
 output:

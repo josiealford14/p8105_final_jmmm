@@ -730,12 +730,17 @@ final_dataset %>%
 #Patent Cleaning
 patents = final_dataset %>%
   ungroup() %>% 
-  select(appfull, patent_num, year_pat_expires, disease, approval_year, year_excl_expires) %>% 
+  select(appfull, disease, avg_price, patent_num, year_pat_expires, approval_year, year_excl_expires) %>% 
   filter(!duplicated(patent_num)) %>%
   filter(!is.na(disease)) %>%
   filter(year_pat_expires > 2017) %>% 
   mutate(
     year_pat_expires = as.factor(year_pat_expires), 
+    disease = str_replace(disease, "Clostridium Difficile-Associated Diarrhea", "Diarrhea_nosocomial"),
+    disease = str_replace(disease, "Chronic Diarrhea", "Diarrhea (chronic)"),
+    disease = str_replace(disease, "Chronic Kidney Disease", "Kidney Disease (chronic)"),
+    disease = str_replace(disease, "Chronic Myeloid Leukemia", "Myeloid Leukemia"),
+    disease = str_replace(disease, "Thyroid Disease", "Thyroid Disorders"),
     #appfull = str_replace(appfull, "-", " "),
     appfull = str_replace(appfull, " Ab", ""),
     appfull = str_replace(appfull, " And", ""),
@@ -800,6 +805,21 @@ yax_1 = list(
 
 Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.
 ```{r}
+#Avg Drug Prices by Company for each Disease
+pharma_charge = patents %>% 
+  group_by(disease, appfull) %>%
+  summarize(comp_avg_price = mean(avg_price)) 
+
+pharma_charge %>% 
+  plot_ly(x = ~comp_avg_price, y = ~disease, type = "scatter",  text = ~paste('Company: ', appfull, '<br> Disease', disease), color = "red") %>% 
+  layout(title = "Avg Drug Price By Disease", 
+         yaxis = list(
+           title = "",
+           zeroline = FALSE,
+           showline = FALSE,
+           showticklabels = TRUE,
+           showgrid = TRUE))
+
 #No. of Patents Currently Held by Pharma Company
 patents %>%
   group_by(appfull) %>%
