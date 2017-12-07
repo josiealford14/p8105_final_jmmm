@@ -1,0 +1,29 @@
+---
+title: "Conclusion"
+---
+### Illustrative Picture
+
+### **Conclusion And Limitations**
+
+High drug prices have become an increasing concern in the United States (Hancock, 2016 ; "Why Prescription Drugs...”, 2017).
+We observe a clear increasing trend in overall average drug price from 2013 to 2017 with a notable increase between 2014 and 2015, possibly due to ACA implementation in 2015.
+We explored some of the factors associated with US prescription drug prices including disease research funding, drug need (prevalence), sales, and advertising.  
+We observe that drugs that receive the most prescriptions have the highest mean average price per tablet.
+Additionally, we observe that the most abused drugs have the lowest mean average price per tablet.
+We observe that chronic diseases receive more funding than acute conditions; further, we observe that drugs that treat acute conditions have higher mean average prices per tablet than drugs that treat chronic diseases. 
+
+We see that cancers in particular seem to receive very high funding despite having a lower need as defined by prevalence.
+
+### Informative Graphic (imbed plottly that gives overview to project)
+
+#### Future Research
+For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.
+
+**Additionally, we seek to understand the types of drugs that receive patents/exclusivity.**
+
+#### Limitations
+There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+In the future, for a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+
+
+### Picture related to Drug Prices (pills, someone looking stressed bc gotta pay bills)

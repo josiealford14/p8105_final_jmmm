@@ -18,21 +18,16 @@ navbar:
     - text: MeOak
       href: meoak.html
     - text: '---------'
-    - text: Disease Type Analysis
-    - text: Chronic vs. Acute
-      href: chronic_acute.html
-    - text: '---------'
-    - text: Case Study
-    - text: Overview
-      href: case_study.html
-    - text: Most Advertised
+    - text: Advertising
       href: most_advertised.html
-    - text: Most Abused
-      href: most_abused.html
-    - text: Most Prescribed
+    - text: Prescription Sales
       href: most_prescribed.html
-    - text: Most Popular
-      href: most_popular.html
+    - text: '---------'
+    - text: Disease Type
+    - text: Overview
+      href: chronic_acute.html
+    - text: Most Advertised & Most Prescribed
+      href: case_study.html
   - text: R Markdown
     href: p8105_final_jmmm.html
   - text: Shiny Dashboard
