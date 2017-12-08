@@ -1,0 +1,56 @@
+---
+title: "Most Advertised Drugs & Pricing"
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidytext)
+
+library(broom)
+library(dplyr)
+library(forcats)
+library(httr)
+library(janitor)
+library(knitr)
+library(plotly)
+library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
+#plotly formatting
+f = list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+trade_name_axis = list(
+  title = "Trade Name",
+  titlefont = f
+)
+avg_price_axis = list(
+  title = "Average Drug Price",
+  titlefont = f
+)
+top_advertising_cost = c("Humira", "Lyrica", "Eliquis", "Xeljanz", "Cialis", "Invokana", "Breo", "Latuda", "Victoza", "Viagra")
+```
+##### The Distribution of Average Price for Most Advertised Drugs, Ordered by Descending Advertising Spending
+
+  + Elliquis had the highest advertising spending of $174 million, yet had the lowest median of average drug price of $5.28. 
+  
+  + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
+  
+```{r Most Advertised plots, warning = FALSE, message = FALSE}
+#shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
+#another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_advertising_cost) %>%
+  ungroup() %>%
+  mutate(trade_name = factor(trade_name)) %>%
+  mutate(trade_name_new = fct_relevel(trade_name, c("Eliquis", "Xeljanz", "Cialis", "Invokana", "Latuda","Viagra"))) %>%
+   group_by(trade_name) %>% 
+  plot_ly(x = ~trade_name_new, y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Advertised Drugs, 
+         Ordered by Descending Advertising Spending", xaxis = trade_name_axis, yaxis = avg_price_axis)
+```
+**We see a weak trend: The less advertising, the higher the price**

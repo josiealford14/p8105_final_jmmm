@@ -1,0 +1,70 @@
+---
+title: "Most Prescribed Drugs & Pricing"
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidytext)
+
+library(broom)
+library(dplyr)
+library(forcats)
+library(httr)
+library(janitor)
+library(knitr)
+library(plotly)
+library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
+#plotly formatting
+f = list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+trade_name_axis = list(
+  title = "Trade Name",
+  titlefont = f
+)
+avg_price_axis = list(
+  title = "Average Drug Price",
+  titlefont = f
+)
+top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort")
+```
+##### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
+
+  + Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
+  
+  + Some explanation from [HuffPost](https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a): "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
+  
+    + Influences of pricing [Investopedia](https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp): uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
+  
+  + If we exclude Harvoni, we can better see the box plots of the other drugs.
+  
+    + **As prescription rates decrease, average drug price per tablet does not display any discernible trend.**
+    
+```{r, warning = FALSE, message = FALSE}
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_prescribed_drugs_sales) %>%
+  ungroup() %>%
+  mutate(trade_name = factor(trade_name)) %>%
+  mutate(trade_name_presc = fct_relevel(trade_name, c("Harvoni", "Januvia", "Crestor","Xarelto","Eliquis", "Truvada"))) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name_presc, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Prescribed Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
+
+
+final_dataset %>% #without harvoni
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% top_prescribed_drugs_sales) %>%
+  filter(trade_name != "Harvoni") %>%
+  ungroup() %>%
+  mutate(trade_name = factor(trade_name)) %>%
+  mutate(trade_name_presc = fct_relevel(trade_name, c("Januvia", "Crestor","Xarelto","Eliquis", "Truvada"))) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name_presc, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Prescribed Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
+```

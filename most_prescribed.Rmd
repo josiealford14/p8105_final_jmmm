@@ -1,11 +1,13 @@
 ---
-title: "Most Prescribed"
+title: "The Most Prescribed Drugs based on U.S. Sales"
 ---
-[<img src="images/doctor.jpg" style="width:70%">](case_study.html)
+<div style="text-align:center"><img src= "https://blogs-images.forbes.com/sarahhedgecock/files/2016/10/Threats-Drugs-Cover-V1.gif?" height="400"/></div>
 
-  + Second, we examined the most prescribed drugs by US sales. 
+  + We examined the most prescribed drugs by US sales. 
   
-  + We accessed this dataset for this part of the Case Study Analysis: [Top 20 prescription drugs based on U.S. sales in 2016 (in billion U.S. dollars)](https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/).
+  + Dataset: [Top 20 prescription drugs based on U.S. sales in 2016 (in billion U.S. dollars)](https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/).
+  
+  + "Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort"
   
     + Humira, Harvoni, Enbrel, Lantus Solostar, Remicade, Januvia, Advair Diskus, Lyrica, Crestor, Neulasta, Copaxone, Rituxan, Tecfidera, Xarelto, Lantus, Eliquis, Truvada, Vyvanse, Avastin, Symbicort
   

@@ -11,7 +11,7 @@
 
 
 
-<title>Data Wrangling</title>
+<title>Version of R and Packages</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -282,16 +282,29 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Wrangling</h1>
+<h1 class="title toc-ignore">Version of R and Packages</h1>
 
 </div>
 
 
 <ul>
-<li><p>We put all sub-datasets in long format and renamed variables as necessary.</p></li>
-<li><p>We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable. Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs.</p></li>
-<li><p>The Drug Price Excel dataset had over 5 million observations. Prices were recorded for each drug every week. To representatively condense this dataset, we obtained a yearly average drug price (avg_price). This condensed the Drug Price dataset to approximately 2.5 million observations.</p></li>
-<li><p>We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into a final dataset (final_dataset). We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).</p></li>
+<li><p>We used <code>R</code> 1.0153 for our analysis</p></li>
+<li><p>The following packages were used</p>
+<ul>
+<li><code>tidyverse</code> 1.1.1</li>
+<li><code>tidytext</code> 0.1.4</li>
+<li><code>broom</code> 0.4.3</li>
+<li><code>dplyr</code> 0.7.4</li>
+<li><code>forcats</code> 0.2.0</li>
+<li><code>httr</code> 1.3.1</li>
+<li><code>janitor</code> 0.3.0</li>
+<li><code>knitr</code> 1.17</li>
+<li><code>plotly</code>4.7.1</li>
+<li><code>readxl</code> 1.0.0</li>
+<li><code>rvest</code> 0.3.2</li>
+<li><code>stringr</code> 1.2.0</li>
+<li><code>viridis</code> 0.2.0</li>
+</ul></li>
 </ul>
 
 

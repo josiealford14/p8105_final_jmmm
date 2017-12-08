@@ -11,7 +11,7 @@
 
 
 
-<title>Data Wrangling</title>
+<title>Drugs Commonly Discussed in Popular Culture</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -282,16 +282,22 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Wrangling</h1>
+<h1 class="title toc-ignore">Drugs Commonly Discussed in Popular Culture</h1>
 
 </div>
 
 
 <ul>
-<li><p>We put all sub-datasets in long format and renamed variables as necessary.</p></li>
-<li><p>We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable. Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs.</p></li>
-<li><p>The Drug Price Excel dataset had over 5 million observations. Prices were recorded for each drug every week. To representatively condense this dataset, we obtained a yearly average drug price (avg_price). This condensed the Drug Price dataset to approximately 2.5 million observations.</p></li>
-<li><p>We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into a final dataset (final_dataset). We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).</p></li>
+<li><p>We investigate “popular” drugs: pharmaceutical drugs that people we know use, ones that we see commercials for, and/or commonly discussed in popular culture</p></li>
+<li><p>“Viagra”, “Lipitor”, “Xanax”, “Celebrex”, “Prozac”, “Crestor”, “Nexium”, “Lisinopril”, “Zoloft”, “Abilify”, “Prilosec”, “Percocet”, “Vicodin”, “Zocor”</p></li>
+<li>For example, The main protagonist on House, M.D. was addicted to Vicodin. FDA is considering banning the drug. 400 people overdose and die each year. People take it as a strong Tylenol or pain-killer.
+<div style="text-align:center">
+<img src= "https://i.makeagif.com/media/3-23-2015/oV4VU3.gif">
+</div></li>
+<li><p>Relationship between “pill-pop” and American music</p>
+<ul>
+<li><a href="https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html" class="uri">https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html</a></li>
+</ul></li>
 </ul>
 
 

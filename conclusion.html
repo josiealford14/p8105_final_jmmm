@@ -9,7 +9,6 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="MeOak Place" />
 
 
 <title>Conclusion</title>
@@ -22,8 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -33,12 +32,10 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
 }
 </script>
 
@@ -184,7 +181,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">Factors Influencing Drug Prices</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -194,14 +191,67 @@ $(document).ready(function () {
         <li>
   <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Dashboard</a>
 </li>
-<li>
-  <a href="methods.html">Methods</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data.html">Data</a>
+    </li>
+    <li>
+      <a href="methods.html">Data Wrangling</a>
+    </li>
+    <li>
+      <a href="rpackage.html">R Packages</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Categories of Drugs for Analysis</li>
+    <li>
+      <a href="most_prescribed.html">Most Prescribed</a>
+    </li>
+    <li>
+      <a href="most_advertised.html">Most Advertised</a>
+    </li>
+    <li>
+      <a href="most_popular.html">Most Popular</a>
+    </li>
+    <li>
+      <a href="most_abused.html">Most Abused</a>
+    </li>
+  </ul>
 </li>
-<li>
-  <a href="analysis.html">Analysis</a>
-</li>
-<li>
-  <a href="data.html">Data</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analysis.html">General Overview</a>
+    </li>
+    <li>
+      <a href="funding.html">Funding</a>
+    </li>
+    <li>
+      <a href="chronic_acute.html">Chronic vs. Acute Analysis</a>
+    </li>
+    <li>
+      <a href="patents.html">Patents of Pharmaceutical Companies</a>
+    </li>
+    <li>
+      <a href="advertising_analysis.html">Advertising Analysis</a>
+    </li>
+    <li>
+      <a href="most_prescribed_analysis.html">Prescription/Sales Analysis</a>
+    </li>
+    <li>
+      <a href="abused_popular_analysis.html">Most Abused &amp; Most Popular</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="conclusion.html">Conclusion</a>
@@ -233,14 +283,32 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Conclusion</h1>
-<h4 class="author"><em>MeOak Place</em></h4>
-<h4 class="date"><em>12/7/2017</em></h4>
 
 </div>
 
 
-<p>Conclusion</p>
-<p>Further Research</p>
+<p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price. However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.</p>
+<p>There are a couple of important limitations of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.</p>
+<div style="text-align:center">
+<img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/>
+</div>
+<p>For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit. For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
+<div id="references" class="section level3">
+<h3>References</h3>
+<ul>
+<li><p><a href="https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines" class="uri">https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines</a></p></li>
+<li><p><a href="https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs" class="uri">https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs</a></p></li>
+<li><p><a href="https://newlifehouse.com/top-10-commonly-abused-prescription-medications/" class="uri">https://newlifehouse.com/top-10-commonly-abused-prescription-medications/</a></p></li>
+<li><p><a href="https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/" class="uri">https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/</a></p></li>
+<li><p><a href="https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term" class="uri">https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term</a></p></li>
+<li><p><a href="https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html" class="uri">https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html</a></p></li>
+<li><p><a href="https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f" class="uri">https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f</a></p></li>
+<li><p><a href="https://www.statista.com/statistics/639356/tv-advertise-drugs-usa/" class="uri">https://www.statista.com/statistics/639356/tv-advertise-drugs-usa/</a></p></li>
+<li><p><a href="https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/" class="uri">https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/</a></p></li>
+<li><p><a href="https://www.nytimes.com/2017/09/23/sunday-review/prescription-drugs-prices.html" class="uri">https://www.nytimes.com/2017/09/23/sunday-review/prescription-drugs-prices.html</a></p></li>
+<li><p><a href="https://www.kff.org/slideshow/public-opinion-on-prescription-drugs-and-their-prices/" class="uri">https://www.kff.org/slideshow/public-opinion-on-prescription-drugs-and-their-prices/</a></p></li>
+</ul>
+</div>
 
 
 

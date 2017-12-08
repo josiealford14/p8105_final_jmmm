@@ -11,7 +11,7 @@
 
 
 
-<title>Data Wrangling</title>
+<title>Drugs with Highest Advertising Spending</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -282,16 +282,24 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Data Wrangling</h1>
+<h1 class="title toc-ignore">Drugs with Highest Advertising Spending</h1>
 
 </div>
 
 
+<div style="text-align:center">
+<img src= "http://blog.inkjetwholesale.com.au/wp-content/uploads/2017/05/marketing-gifs-customers.gif" width="500" height="300"/>
+</div>
 <ul>
-<li><p>We put all sub-datasets in long format and renamed variables as necessary.</p></li>
-<li><p>We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable. Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs.</p></li>
-<li><p>The Drug Price Excel dataset had over 5 million observations. Prices were recorded for each drug every week. To representatively condense this dataset, we obtained a yearly average drug price (avg_price). This condensed the Drug Price dataset to approximately 2.5 million observations.</p></li>
-<li><p>We joined patents, products, exclusivity, ingredient, drug_disease_data, final_nih_funding, and drug_price and chronic_diseases_final into a final dataset (final_dataset). We used the variables ingredient, application_no, product_no, drug_type, trade_name, otc, and disease as keys for joining (inner and left).</p></li>
+<li><p>We examined the most advertised drugs in 2016 by advertising spending (top twenty).</p></li>
+<li><p>Dataset: <a href="https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/">Top 20 prescription drugs based on U.S. sales in 2016 (in billion U.S. dollars)</a>.</p></li>
+<li><p>“Humira”, “Lyrica”, “Eliquis”, “Xeljanz”, “Cialis”, “Invokana”, “Breo”, “Latuda”, “Victoza”, “Viagra”</p>
+<ul>
+<li><p>In 2016, Humira had the highest advertising spending of $344 million.</p></li>
+<li><p>Xeljanz, which treats both arthritis and rheumatoid arthritis (chronic conditions), had the highest mean average price per dose of $45.70.</p></li>
+<li><p>Eliquis, which treats atrial fibrillation, stroke, and thromboembolism (both chronic and acute conditions), had the lowest mean yearly price per dose of $5.29.</p></li>
+<li><p>Of the twenty drugs with highest advertising spending, six drugs were found within the final dataset.</p></li>
+</ul></li>
 </ul>
 
 

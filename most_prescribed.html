@@ -11,7 +11,7 @@
 
 
 
-<title>Most Prescribed</title>
+<title>The Most Prescribed Drugs based on U.S. Sales</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -21,8 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -32,12 +32,10 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
 }
 </script>
 
@@ -183,7 +181,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">Factors Influencing Drug Prices</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -193,14 +191,67 @@ $(document).ready(function () {
         <li>
   <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Dashboard</a>
 </li>
-<li>
-  <a href="methods.html">Methods</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Methods
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data.html">Data</a>
+    </li>
+    <li>
+      <a href="methods.html">Data Wrangling</a>
+    </li>
+    <li>
+      <a href="rpackage.html">R Packages</a>
+    </li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Categories of Drugs for Analysis</li>
+    <li>
+      <a href="most_prescribed.html">Most Prescribed</a>
+    </li>
+    <li>
+      <a href="most_advertised.html">Most Advertised</a>
+    </li>
+    <li>
+      <a href="most_popular.html">Most Popular</a>
+    </li>
+    <li>
+      <a href="most_abused.html">Most Abused</a>
+    </li>
+  </ul>
 </li>
-<li>
-  <a href="analysis.html">Analysis</a>
-</li>
-<li>
-  <a href="data.html">Data</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analysis.html">General Overview</a>
+    </li>
+    <li>
+      <a href="funding.html">Funding</a>
+    </li>
+    <li>
+      <a href="chronic_acute.html">Chronic vs. Acute Analysis</a>
+    </li>
+    <li>
+      <a href="patents.html">Patents of Pharmaceutical Companies</a>
+    </li>
+    <li>
+      <a href="advertising_analysis.html">Advertising Analysis</a>
+    </li>
+    <li>
+      <a href="most_prescribed_analysis.html">Prescription/Sales Analysis</a>
+    </li>
+    <li>
+      <a href="abused_popular_analysis.html">Most Abused &amp; Most Popular</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="conclusion.html">Conclusion</a>
@@ -231,15 +282,18 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Most Prescribed</h1>
+<h1 class="title toc-ignore">The Most Prescribed Drugs based on U.S. Sales</h1>
 
 </div>
 
 
-<p><a href="case_study.html"><img src="images/doctor.jpg" style="width:70%"></a></p>
+<div style="text-align:center">
+<img src= "https://blogs-images.forbes.com/sarahhedgecock/files/2016/10/Threats-Drugs-Cover-V1.gif?" height="400"/>
+</div>
 <ul>
-<li><p>Second, we examined the most prescribed drugs by US sales.</p></li>
-<li><p>We accessed this dataset for this part of the Case Study Analysis: <a href="https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/">Top 20 prescription drugs based on U.S. sales in 2016 (in billion U.S. dollars)</a>.</p>
+<li><p>We examined the most prescribed drugs by US sales.</p></li>
+<li><p>Dataset: <a href="https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/">Top 20 prescription drugs based on U.S. sales in 2016 (in billion U.S. dollars)</a>.</p></li>
+<li><p>“Humira”, “Harvoni”, “Enbrel”, “Lantus Solostar”, “Remicade”, “Januvia”, “Advair Diskus”, “Lyrica”, “Crestor”, “Neulasta”, “Copaxone”, “Rituxan”, “Tecfidera”, “Xarelto”, “Lantus”, “Eliquis”, “Truvada”, “Vyvanse”, “Avastin”, “Symbicort”</p>
 <ul>
 <li><p>Humira, Harvoni, Enbrel, Lantus Solostar, Remicade, Januvia, Advair Diskus, Lyrica, Crestor, Neulasta, Copaxone, Rituxan, Tecfidera, Xarelto, Lantus, Eliquis, Truvada, Vyvanse, Avastin, Symbicort</p></li>
 <li><p>Humira was the most prescribed drug for 2016, according to US sales. Americans bought $13.6 billion dollars of Humira, a biologic which treats adults with Rheumatoid Arthritis (RA) and moderate to severe Crohn’s Disease.</p></li>

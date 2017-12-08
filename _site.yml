@@ -1,16 +1,44 @@
-name: DSI Final Project
+name: Factors Influencing Drug Prices
 output_dir: .
 navbar:
-  title: Home
+  title: Factors Influencing Drug Prices
   right:
   - text: Dashboard
     href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
   - text: Methods
-    href: methods.html
+    menu:
+    - text: Data
+      href: data.html
+    - text: Data Wrangling
+      href: methods.html
+    - text: R Packages
+      href: rpackage.html
+    - text: '---------'
+    - text: Categories of Drugs for Analysis
+    - text: Most Prescribed
+      href: most_prescribed.html    
+    - text: Most Advertised
+      href: most_advertised.html  
+    - text: Most Popular
+      href: most_popular.html  
+    - text: Most Abused
+      href: most_abused.html          
   - text: Analysis
-    href: analysis.html
-  - text: Data
-    href: data.html
+    menu:
+    - text: General Overview
+      href: analysis.html    
+    - text: Funding
+      href: funding.html
+    - text: Chronic vs. Acute Analysis
+      href: chronic_acute.html
+    - text: Patents of Pharmaceutical Companies
+      href: patents.html      
+    - text: Advertising Analysis
+      href: advertising_analysis.html
+    - text: Prescription/Sales Analysis
+      href: most_prescribed_analysis.html
+    - text: Most Abused & Most Popular
+      href: abused_popular_analysis.html
   - text: Conclusion
     href: conclusion.html
   - text: RMD

@@ -1,0 +1,155 @@
+---
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+title: "NIH Funding & Drug Pricing"
+---
+```{r load_packages, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidytext)
+
+library(broom)
+library(dplyr)
+library(forcats)
+library(httr)
+library(janitor)
+library(knitr)
+library(plotly)
+library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
+
+ax <- list(
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+url = "https://report.nih.gov/categorical_spending.aspx"
+NIH_xml = read_html(url)
+NIH_funding = (NIH_xml %>% html_nodes(css = "table"))[[3]] %>% html_table() %>% as_tibble()
+NIH_funding = NIH_funding %>%
+  clean_names() %>%
+  mutate(US_mortality_2015 = x2015_us_mortality_19)
+
+NIH_funding$x2015_us_prevalence_standard_error_19  = recode(NIH_funding$x2015_us_prevalence_standard_error_19 , "-" = "NA")
+NIH_funding$US_mortality_2015 = recode(NIH_funding$US_mortality_2015, "-" = "NA")
+
+NIH_funding = NIH_funding %>%
+  separate(x2015_us_prevalence_standard_error_19, into = c("prevalence", "remove"), sep = "\\%") %>%
+  select(-x2015_us_mortality_19, -remove)
+NIH_funding$fy_2013actual = recode(NIH_funding$fy_2013actual, "+" = "NNA")
+NIH_funding$fy_2014actual = recode(NIH_funding$fy_2014actual, "+" = "NNA")
+NIH_funding$fy_2015actual = recode(NIH_funding$fy_2015actual, "+" = "NNA")
+NIH_funding$fy_2016actual = recode(NIH_funding$fy_2016actual, "+" = "NNA")
+
+NIH_funding = NIH_funding %>%
+  mutate(fy_2013 = as.numeric(substring(fy_2013actual, 2))) %>%
+  mutate(fy_2014 = as.numeric(substring(fy_2014actual, 2))) %>%
+  mutate(fy_2015 = as.numeric(substring(fy_2015actual, 2))) %>%
+  mutate(fy_2016 = as.numeric(substring(fy_2016actual, 2))) %>%
+  mutate(fy_2017 = as.numeric(substring(fy_2017estimated_enacted, 2))) %>%
+  mutate(fy_2018estimated = as.numeric(substring(fy_2018estimated, 2))) 
+
+NIH_funding$prevalence = as.numeric(NIH_funding$prevalence)
+NIH_funding$US_mortality_2015 = as.numeric(NIH_funding$US_mortality_2015)
+  
+NIH_funding = NIH_funding %>%
+  select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted))
+
+final_NIH_funding = NIH_funding %>%
+  rename(disease = research_disease_areas_dollars_in_millions_and_rounded, 
+         '2013' = fy_2013,
+         '2014' = fy_2014,
+         '2015' = fy_2015,
+         '2016' = fy_2016,
+         '2017' = fy_2017,
+         '2018' = fy_2018estimated) %>%
+  gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018")) %>% 
+  mutate(disease = str_replace(disease, "[0-9]", "_"),
+         disease = str_replace(disease, "\\-", ""),
+         disease = str_replace(disease, "ALS", "Amyotrophic Lateral Sclerosis"),
+         disease = str_replace(disease, "Sleep Research", "Sleep Disorders"),
+         disease = str_replace(disease, "Smoking and Health", "Smoking Cessation")) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\_") %>% 
+  select(-remove) %>% 
+  separate(disease, into = c("disease", "remove"), sep = "\\(") %>% 
+  select(-remove)
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
+```
+
+
+
+## Overview of Funding
+We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled off in 2016 and there is a projected decrease for 2018.
+
+```{r, warning = FALSE, message = FALSE}
+final_NIH_funding %>%
+  group_by(year) %>%
+  summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
+  plot_ly(x = ~ year, y = ~ total_funding, mode = "lines", type = "scatter") %>% 
+  layout(title = "Change in Total NIH Funding (millions USD) over Time")
+```
+
+
+###
+
+## Does Funding Correlate with Drug Prices?
+Then, we looked to determine whether funding correlated with drug prices.  This does not really seem to be the case from the scatterplot.  Along the entire range of funding amounts, most drugs still have relatively low prices.  It is interesting that different drugs that treat the same disease seem to be largely clustered together.
+
+We can see one breast cancer drug, Afinitor, which actually can be used to treat various types of cancers including kidney, pancreas, breast, and brain cancer, has an unusually high price.  We think these other applications are what are influencing the price.  Another unusual drug is Belviq, used to treat obesity.  
+
+This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
+
+
+```{r, warning = FALSE, message = FALSE}
+#does funding correlate with drug prices?
+
+final_dataset %>%
+  group_by(disease, trade_name) %>%
+  summarize(avg_funding = mean(funding, na.rm = TRUE), 
+            avg_price_disease = mean(avg_price, na.rm = TRUE)) %>%
+  plot_ly(x = ~ avg_funding, y = ~ avg_price_disease, type = "scatter", color = ~disease, text = ~paste('Drug: ', trade_name, '<br> Disease:', disease)) %>%
+  layout(title = "Average Funding vs Average Price", showlegend = FALSE)
+```
+
+
+###
+
+## Is there a relationship between NIH Funding and Prevalence (demand for drug)?
+We also created a scatter plot of the mean NIH funding per drug (assumed to be the same as the NIH funding for disease research) against the demand of the drug (defined as the 2015 disease prevalence). Obesity seems to have received the most funding on average and to have the highest 2015 prevalence.  This may be due to Michelle Obama's Let's Move initiative to fight childhood obesity.
+
+We looked to explore whether there was a relationship between prevalence and funding.  While the number of diseases with the required complete data was relatively small, it appears from the scatterplot that when you have a low prevalence, there is a wide range of average funding.  As the prevalence increases the funding amount generally seems to be on the lower side.  However, if you look more closely at which diseases are included, some interesting observations can be made. 
+
+Many of the diseases with high funding are cancers, which have a low prevalence.  Most cancers have large subgroups with no good treatment options, so it makes sense that there is a lot of research focused on cancer and new drug development.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
+
+
+```{r funding_demand, warning = FALSE, message = FALSE}
+final_dataset %>% 
+  filter(pricing_unit == "EA" & !is.na(funding) & !is.na(prevalence)) %>% 
+  group_by(trade_name, disease, prevalence) %>% 
+  summarize(mean_fund = mean(funding)) %>% 
+  plot_ly(x = ~prevalence, y = ~mean_fund, type = "scatter", alpha = 1, text = ~paste("Drug: ", trade_name, '<br>Disease:', disease), color = ~disease) %>%
+  layout(title = "Funding (millions USD) vs Prevalence", showlegend = FALSE)
+```
+
+## Disease & Funding
+
+* Does funding differ by disease? 
+
+  + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received the lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. 
+
+```{r Disease & Funding, warning = FALSE, message = FALSE}
+# final_dataset = read.csv("./data/final_dataset.csv")
+#shiny application: funding by disease
+final_dataset %>%
+  filter(!is.na(disease) & !is.na(funding)) %>%
+  mutate(disease = factor(disease)) %>%
+  group_by(disease) %>%
+  summarize(mean_funding = mean(funding)) %>%
+  mutate(disease = fct_reorder(disease, mean_funding)) %>%
+  plot_ly(x = ~disease, y = ~mean_funding, color = ~disease, type = "bar", colors = "Set3") %>% 
+  layout(title = "NIH Funding per Disease (millions USD)", xaxis = ax)
+```

@@ -1,10 +1,35 @@
 ---
 title: "Conclusion"
-author: "MeOak Place"
-date: "12/7/2017"
-output: html_document
 ---
+Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding,  drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.  However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.
 
-Conclusion
+There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
 
-Further Research
+<div style="text-align:center"><img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/></div>
+
+
+For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+
+
+### References 
+  + https://www.drugabuse.gov/drugs-abuse/prescription-drugs-cold-medicines
+    
+  + https://www.marylandaddictionrecovery.com/top-10-most-abused-prescription-drugs
+    
+  + https://newlifehouse.com/top-10-commonly-abused-prescription-medications/
+    
+  + https://www.cbsnews.com/news/mixing-opioids-oxycodone-and-popular-sedatives-xanax-may-be-deadly/
+  
+  + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html?utm_term
+  
+  + https://www.washingtonpost.com/lifestyle/style/soft-smooth-and-steady-how-xanax-turned-american-music-into-pill-pop/2017/04/19/535a44de-1955-11e7-bcc2-7d1a0973e7b2_story.html
+    
+ + https://www.forbes.com/2010/05/11/narcotic-painkiller-vicodin-business-healthcare-popular-drugs.html#212b328b787f
+ 
+ + https://www.statista.com/statistics/639356/tv-advertise-drugs-usa/
+ 
+ + https://www.statista.com/statistics/258010/top-branded-drugs-based-on-retail-sales-in-the-us/
+ 
+  + https://www.nytimes.com/2017/09/23/sunday-review/prescription-drugs-prices.html
+ 
+ + https://www.kff.org/slideshow/public-opinion-on-prescription-drugs-and-their-prices/

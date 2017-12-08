@@ -1,0 +1,71 @@
+---
+title: "Pricing of Most Abused & Most Popular Drugs"
+---
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(tidytext)
+
+library(broom)
+library(dplyr)
+library(forcats)
+library(httr)
+library(janitor)
+library(knitr)
+library(plotly)
+library(readxl)
+library(rvest)
+library(stringr)
+library(viridis)
+final_dataset = read_csv("./data/final_dataset_20171205.csv")
+#plotly formatting
+f = list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+trade_name_axis = list(
+  title = "Trade Name",
+  titlefont = f
+)
+avg_price_axis = list(
+  title = "Average Drug Price",
+  titlefont = f
+)
+most_popular_drugs = c("Viagra", "Lipitor", "Xanax", "Celebrex", "Prozac", "Crestor", "Nexium", "Lisinopril", "Zoloft", "Abilify", "Prilosec", "Percocet", "Vicodin", "Zocor")
+most_abused_drugs = c("Vicodin", "OxyContin", "Ritalin", "Concerta", "Focalin", "Metadate", "Ambien", "Lunesta", "Valium", "Xanax", "Duragesic", "Opana", "Darvon", "Dilaudid", "Demerol", "Lomotil", "Nembutal", "Dexedrine", "Adderall", "Percocet", "Suboxone", "Fentanyl") 
+```
+
+#
+#
+
+##### The Distribution of Average Price for Most Abused Drugs 
+
+  + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price of $0.97 each. 
+
+```{r Case Study Analysis, warning = FALSE, message = FALSE}
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_abused_drugs) %>%
+  group_by(trade_name) %>% 
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Most Abused Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
+```
+
+#
+#
+
+##### The Distribution of Average Price for Most Popular Drugs
+
+  + Viagra, which treats erectile dysfunction (acute), had the highest median of average price of $35.47. 
+  
+  + Xanax, which treats anxiety and panic attack (acute), had the lowest median of average price of $3.41.
+  
+  + There is no clear trend between disease type (acute vs. chronic) and disease condition (i.e: psychiatric drugs vs. cardiovascular).
+  
+```{r Most Popular, warning = FALSE, message = FALSE}
+final_dataset %>%
+  filter(!is.na(avg_price)) %>%
+  filter(trade_name %in% most_popular_drugs) %>%
+  plot_ly(y = ~avg_price, type = "box", color = ~trade_name, colors = "Set3") %>%
+  layout(title = "Distribution of Average Price for Popular Drugs", xaxis = trade_name_axis, yaxis = avg_price_axis)
+```
