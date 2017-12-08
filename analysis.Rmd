@@ -1,8 +1,12 @@
 ---
-title: "Analysis"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+title: "Analysis: An Overview"
 ---
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidytext)
 
@@ -42,6 +46,7 @@ drug_price =
   select(trade_name, everything()) 
 ```
 
+### Overall Trend
 First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
 ```{r, warning = FALSE, message = FALSE}
@@ -53,7 +58,8 @@ final_dataset %>%
   layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "drug price (USD)"))
 ```
 
-* We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
+### Yearly distribution of drug prices
+We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
 
 ```{r drug_price_distr, warning = FALSE, message = FALSE}
 trade_name_choice = "Zoloft"
@@ -66,6 +72,7 @@ violin_drug = drug_price %>%
 ggplotly(violin_drug)
 ```
 
+### Spaghetti plot of the average price per year
 We created a spaghetti plot of the average price per year for each drug. Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that, the drugs for Hepatitis C seem to have the highest cost.
 
 ```{r price_drug_disease, warning = FALSE, message = FALSE}
@@ -77,12 +84,11 @@ final_dataset %>%
 ```
 
 
-<div style="text-align:center"><img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/></div>
+### **How Does Drug Pricing Change among Certain Subsets of Prescription Drugs?** 
 
-### **How Does Drug Pricing Change among Subsets of Prescription Drugs?** 
 * We are interested in examining pharmaceutical drugs that receive the highest advertisement spending, are the most prescribed according to US sales, are most abused (over prescribed, highly addictive, and/or frequently used as illicit street drugs), and are commonly referenced in everyday life or in popular American culture. We investigate if advertising and/or prescription sales are related to drug prices.
 
-##### Comparing Mean Average Price per Tablet for each Drug Category
+#### Comparing Mean Average Price per Tablet for each Drug Category
   + We compared pricing of the drugs classified in each category.
   
   + The Most Abused Drugs sample dataset has the lowest mean of average price per tablet of $5.22.

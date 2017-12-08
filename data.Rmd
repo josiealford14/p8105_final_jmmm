@@ -1,5 +1,5 @@
 ---
-title: "Raw Datasets Used for Analysis"
+title: "Raw Datasets and their Variables"
 ---
 
 ### **The Data**
@@ -87,12 +87,8 @@ The variables that we retained are:
 ### Patents
 * The Patents [dataset](https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm) from the FDA Orange Book
 
-### Products
+### Products, Ingredient & Exclusivity
 * The Products [dataset](https://www.fda.gov/Drugs/InformationOnDrugs/ucm129689.htm) from the FDA Orange Book
-
-### Exclusivity
-
-### Ingredient
 
 ### Drugs By Condition
 * Scraping data on drugs per condition from [this website](https://www.centerwatch.com/drug-information/fda-approved-drugs/medical-conditions/A)

@@ -33,13 +33,13 @@ avg_price_axis = list(
 )
 top_prescribed_drugs_sales = c("Humira", "Harvoni", "Enbrel", "Lantus Solostar", "Remicade", "Januvia", "Advair Diskus", "Lyrica", "Crestor", "Neulasta", "Copaxone", "Rituxan", "Tecfidera", "Xarelto", "Lantus", "Eliquis", "Truvada", "Vyvanse", "Avastin", "Symbicort")
 ```
-##### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
+### The Distribution of Average Price for Most Prescribed Drugs Ordered by Descending Prescription Rates
 
-  + Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
+#### Harvoni in the most expensive of the most prescribed drugs. Why is a drug that treats Hepatitis C so expensive?
   
   + Some explanation from [HuffPost](https://www.huffingtonpost.com/entry/why-hepatitis-c-drugs-are-expensive_us_5642840be4b08cda34868c8a): "There are an estimated three million Americans with hepatitis C; most of them boomer-aged, and most of them don’t know they have it. For 75 to 85 percent of those people, infection will lead to chronic hepatitis-related diseases like liver cancer, cirrhosis or liver disease. In fact, hepatitis C is the most common reason people have liver transplants in the U.S. And the new, better medications that could cure them of this potentially fatal disease are so expensive that government safety nets and private insurance companies are struggling to provide coverage to as many people who need them." 
   
-    + Influences of pricing [Investopedia](https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp): uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
+    + Influences of pricing from [Investopedia](https://www.investopedia.com/articles/investing/020316/how-pharmaceutical-companies-price-their-drugs.asp): uniqueness of the drug, how many other drugs are already available that treat the same condition, competition, have the potential to change the current practice of medicine used to treat the conditions the drugs target, extend or even save lives. 
   
   + If we exclude Harvoni, we can better see the box plots of the other drugs.
   

@@ -47,7 +47,6 @@ wilcox_results_price = wilcox.test(acute$avg_price, chronic$avg_price, alternati
 t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, paired = FALSE)
 ```
 
- 
 ### Is there a statistically significant difference in pricing?
   
   + The Wilcoxon Rank-Sum Test comparing median average price of the disease types rejects the null hypothesis that the median average prices of drugs that treat acute and chronic diseases are equal. Therefore we conclude that at the 0.05 significance level, the median average price of acute funding is statistically different from the median funding of chronic diseases.
@@ -61,10 +60,15 @@ t_test_results = t.test(acute$avg_price, chronic$avg_price, var.equal = TRUE, pa
   + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose.  
 
 #### ***We conclude that there is a relationship between disease type and drug pricing.***
-#
+
+
+
+
 <div style="text-align:center"><img src= "http://s1.r29static.com//bin/entry/9ae/x/1385148/image.gif"/></div>
-#
-#
+
+
+
+
 ## Funding
 
 ### Is there a difference in funding between acute conditions and chronic diseases?
