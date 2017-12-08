@@ -3,12 +3,14 @@ title: "Conclusion"
 ---
 Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding,  drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.  However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.
 
-There are a couple of important limitations of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+There are a couple of important **limitations** of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+
+**Please note**: we attempted to complete Shiny as our final product but encountered technical difficulties, even when subsetting our data. We subsetted to 5000 observations for both the final dataset and the drug price data set. Here is the [proposed Shiny Dashboard](https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/) and the associated [Github repo](https://github.com/josiealford14/p8105_final_jmmm_shiny).
 
 <div style="text-align:center"><img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/></div>
 
 
-For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+For **future research**, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
 
 
 ### References 

@@ -189,7 +189,7 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Dashboard</a>
+  <a href="https://josiealford14.github.io/dashboard_pharma/dashboard_pharma.html">Dashboard</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -253,8 +253,29 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
-<li>
-  <a href="conclusion.html">Conclusion</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Final Thoughts &amp; Resources
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="conclusion.html">Conclusion</a>
+    </li>
+    <li>
+      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
+    </li>
+    <li>
+      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
+    </li>
+    <li>
+      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
+    </li>
+    <li>
+      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="p8105_final_jmmm.html">RMD</a>
@@ -288,11 +309,12 @@ $(document).ready(function () {
 
 
 <p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price. However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.</p>
-<p>There are a couple of important limitations of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.</p>
+<p>There are a couple of important <strong>limitations</strong> of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.</p>
+<p><strong>Please note</strong>: we attempted to complete Shiny as our final product but encountered technical difficulties, even when subsetting our data. We subsetted to 5000 observations for both the final dataset and the drug price data set. Here is the <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">proposed Shiny Dashboard</a> and the associated <a href="https://github.com/josiealford14/p8105_final_jmmm_shiny">Github repo</a>.</p>
 <div style="text-align:center">
 <img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/>
 </div>
-<p>For future research, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit. For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
+<p>For <strong>future research</strong>, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit. For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
 <div id="references" class="section level3">
 <h3>References</h3>
 <ul>
