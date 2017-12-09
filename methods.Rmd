@@ -1,13 +1,6 @@
 ---
-title: ""
-output: 
-  html_document:
-    code_folding: null
+title: "Data Wrangling"
 ---
-#
-#
-### **Data Wrangling**
-
   + We put all sub-datasets in long format and renamed variables as necessary. 
  
   + We restricted our final dataset to contain only non-solution drugs. The pricing units of these drugs are described as “each” or “per gram.” We omitted all solution-type drugs because the Drug Price dataset did not specify if liquid drugs were drinkable solutions or injectable.  Also all drugs were measured by two different units: milliliters and grams. Therefore, we could not compare between solution and per gram/each type of drugs. 

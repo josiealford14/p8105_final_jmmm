@@ -2,11 +2,9 @@
 author: "MeOak/Muhire/Manali/Josie"
 date: "12/6/2017"
 output:
-  html_document:
+  html_document: 
     code_folding: hide
-    toc: yes
-    toc_float: yes
-title: "Analysis: An Overview"
+title: "Factors Influencing Drug Prices"
 ---
 ### **Introduction**
 
@@ -1329,7 +1327,6 @@ final_dataset %>% #without harvoni
 ```
 
 ### Project Website And Shiny Application
-**Please note**: we attempted to complete Shiny as our final product but encountered technical difficulties, even when subsetting our data. We subsetted to 5000 observations for both the final dataset and the drug price data set. Here is the [proposed Shiny Dashboard](https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/) and the associated [Github repo](https://github.com/josiealford14/p8105_final_jmmm_shiny).
 ```{r project_website, warning = FALSE, message = FALSE}
 #https://josiealford14.github.io/p8105_final_jmmm/
 #https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
