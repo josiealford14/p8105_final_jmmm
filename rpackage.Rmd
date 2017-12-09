@@ -1,9 +1,12 @@
 ---
-title: "Version of R and Packages"
+title: ""
 output: 
   html_document:
     code_folding: null
 ---
+#
+#
+### **Version of R and Packages**
 
   + We used `R` 1.0153 for our analysis
   

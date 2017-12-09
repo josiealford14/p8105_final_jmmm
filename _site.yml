@@ -10,7 +10,7 @@ navbar:
     - text: Data
       href: data.html
     - text: Data Wrangling
-      href: method.html
+      href: methods.html
     - text: R Packages
       href: rpackage.html
   - text: Analysis

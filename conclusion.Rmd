@@ -1,21 +1,21 @@
 ---
-title: "Conclusion"
+title: ""
 output: 
   html_document:
     code_folding: null
 ---
 
-## *Conclusion*
+**Conclusion**
 
   In summary, we observed a clear increasing trend in the overall average drug price, and, in particular, we observed a notable increase between 2014 and 2015. We suspect that this increase is related to the implementation of the Affordable Care Act (ACA) in 2015. 
   
   However, our exploration of potential variables contributing to prescription drug prices only told us that we would have to narrow our scope.  In other words, a more detailed analysis of a single potential contributing factor would likely yield more promising analyses.
 
 
-*Future Research*
+**Future Research**
 
-  While no observable relationship was found between prescription drug price and NIH funding, we did notice that funding had been trending upward up until 2016 then leveled off just before decreasing.
-
+  While no observable relationship was found between prescription drug price and NIH funding, we did notice that, while on an upward trend up until 2016, NIH funding for disease research has been declining since.
+  
   Another facet of funding that could be investigated further is its relationship to disease prevalence.  It may be assumed that an increase in funding for a particular disease would be reflective of an increased prevalence of that disease.  However, this was not the case in our exploratory analysis.  We found neither a direct nor inverse relationship between funding and prevalence.  
 
   Now, while a relationship was not observed, this is not to say that one does not exist.  We suspect that various public health initiatives propelled funding for specific diseases such as obesity and cancer.

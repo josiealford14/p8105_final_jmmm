@@ -1,12 +1,14 @@
 ---
 title: ""
-output:
-  html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
-
 #
+#
+### **Analysis**
 
-```{r load_packages, echo = FALSE, esults = FALSE, warning = FALSE, message = FALSE}
+```{r load_packages, echo = FALSE, results = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidytext)
 
@@ -422,11 +424,9 @@ rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chroni
 ```
 
 
-### **Analysis & Discussion**
+We initially checked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
-First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE}
 
 final_dataset %>%
   group_by(year) %>%
@@ -437,7 +437,7 @@ final_dataset %>%
 
 We also looked at the total NIH funding for each year from 2013-2018.  We see that funding increased until it leveled off in 2016 and there is a projected decrease for 2018.
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE}
 final_NIH_funding %>%
   group_by(year) %>%
   summarize(total_funding = sum(funding, na.rm = TRUE)) %>%
@@ -453,7 +453,7 @@ We can see one breast cancer drug, Afinitor, which actually can be used to treat
 
 This drug has a very low price, which we think is because of the extremely high prevalence of obesity or other factors such as competitors. 
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE}
 #does funding correlate with drug prices?
 
 final_dataset %>%
@@ -466,7 +466,7 @@ final_dataset %>%
 
 Looking at funding vs. disease for acute vs chronic diseases, we see a relatively random scatter. Therefore, we do not think there is a significant trend for funding by disease type.
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}  
+```{r, warning = FALSE, message = FALSE}  
 ax <- list(
   zeroline = FALSE,
   showline = FALSE,
@@ -485,7 +485,7 @@ final_dataset %>%
 
 * We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
 
-```{r drug_price_distr, echo = FALSE, warning = FALSE, message = FALSE}
+```{r drug_price_distr, warning = FALSE, message = FALSE}
 trade_name_choice = "Zoloft"
 violin_drug = drug_price %>%
   filter(trade_name == trade_name_choice) %>%
@@ -498,7 +498,7 @@ ggplotly(violin_drug)
 
 We created a spaghetti plot of the average price per year for each drug. Information about the disease that the drugs treat can be seen by hovering over the plot. We notice that, the drugs for Hepatitis C seem to have the highest cost.
 
-```{r price_drug_disease, echo = FALSE, warning = FALSE, message = FALSE}
+```{r price_drug_disease, warning = FALSE, message = FALSE}
 final_dataset %>% 
   #filter(disease %in% c("Obesity")) %>%
   filter(pricing_unit == "EA" & !is.na(disease)) %>% 
@@ -512,7 +512,7 @@ We looked to explore whether there was a relationship between prevalence and fun
 
 Many of the diseases with high funding are cancers, which have a low prevalence.  Most cancers have large subgroups with no good treatment options, so it makes sense that there is a lot of research focused on cancer and new drug development.  Some diseases with higher prevalence but lower funding are hypertension, migraines, ADD, and COPD, which do already have treatment options available on the market.
 
-```{r funding_demand, echo = FALSE, warning = FALSE, message = FALSE}
+```{r funding_demand, warning = FALSE, message = FALSE}
 final_dataset %>% 
   filter(pricing_unit == "EA" & !is.na(funding) & !is.na(prevalence)) %>% 
   group_by(trade_name, disease, prevalence) %>% 
@@ -604,7 +604,7 @@ yax_1 = list(
 ```
 
 Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.
-```{r, echo = FALSE, results = FALSE, warnings = FALSE, message = FALSE}
+```{r, results = FALSE, warnings = FALSE, message = FALSE}
 #Avg Drug Prices by Company for each Disease
 pharma_charge = patents %>% 
   group_by(disease, appfull) %>%
@@ -617,7 +617,7 @@ pat_exp = patents %>%
 ```
 
 
-```{r, echo = FALSE, warnings = FALSE, message = FALSE}
+```{r, warnings = FALSE, message = FALSE}
 pharma_charge %>% 
   plot_ly(x = ~comp_avg_price, y = ~disease, type = "scatter",  text = ~paste('Company: ', appfull, '<br> Disease', disease), color = "red") %>% 
   layout(title = "Avg Drug Price By Disease", 
@@ -663,7 +663,7 @@ Keryx Pharmaceuticals has the most number of patents expiring overall.  Keryx's 
 
 
 The following two plots explore the number of patents currently held by each specfic disease followed by a projection of expiring patents for that condition.
-```{r, echo = FALSE, warnings = FALSE, message = FALSE}
+```{r, warnings = FALSE, message = FALSE}
 #No. of Patents Currently Held by Disease
 patents %>%
   group_by(disease) %>%
@@ -708,7 +708,7 @@ The disease with the most patents expiring over the next several years chronic k
 
   + There are 27 unique diseases in our dataset. Obesity has the highest mean funding of $906.2 million a year. Breast cancer has the second highest mean funding of $675.98 million per year. Alzheimer's Disease has the third highest mean funding of $646 million per year. Paget's Disease, a disease that disrupts the replacement of old bone tissue with new bone tissue, received the lowest mean funding of $1 million per year. Other diseases that received the lowest mean funding are Psoriasis ($16.7 million/year) and Migraines ($19.2 million/year). Obesity, Paget's Disease, Psoriasis and Migraines are acute conditions, while Breast cancer and Alzheimer's Disease are chronic conditions. 
 
-```{r Disease & Funding, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Disease & Funding, warning = FALSE, message = FALSE}
 # final_dataset = read.csv("./data/final_dataset.csv")
 #shiny application: funding by disease
 final_dataset %>%
@@ -749,7 +749,7 @@ final_dataset %>%
   + Comparatively, chronic conditions have a lower variability in funding, but have more outliers. 25% of chronic conditions have a funding of $224 million or less. 25% of chronic conditions receive funding of more than $272.5 million or more. The median funding for chronic conditions is $253 million per year. Chronic funding has an approximately normal distribution in funding.
   
 
-```{r Acute vs. Chronic, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Acute vs. Chronic, warning = FALSE, message = FALSE}
 #acute vs. chronic (boxplot)
 #Funding by disease status
 final_dataset %>%
@@ -807,7 +807,7 @@ t_test_results
       + In conclusion, we can conclude that the mean/median average price of drugs that treat acute diseases is statistically different from the mean/median average price of drugs that treat chronic diseases.
         + Drugs that treat acute conditions have a mean "average price" of $173.43 per dose and chronic diseases have a mean "average price" of $125.39 per dose.  
     
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE}
 #Pricing by disease status (boxplot)
 final_dataset %>%
   filter(!is.na(disease) & !is.na(avg_price)) %>%
@@ -1037,7 +1037,7 @@ avg_price_axis = list(
   
   + Xeljanz had the highest median of average drug price of $43.14, among this group. Also, Xeljanz had the most variability in this group.
   
-```{r Most Advertised plots, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Most Advertised plots, warning = FALSE, message = FALSE}
 #shiny application : most advertised (by spending) vs. most abused vs. most prescribed (by sales)
 #another shiny application: give list of all "most" drugs and can see boxplot for that specific drug
 final_dataset %>%
@@ -1060,7 +1060,7 @@ final_dataset %>%
   
   + There is no clear trend between disease type (acute vs. chronic) and disease condition (i.e: psychiatric drugs vs. cardiovascular).
   
-```{r Most Popular, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Most Popular, warning = FALSE, message = FALSE}
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% most_popular_drugs) %>%
@@ -1072,7 +1072,7 @@ final_dataset %>%
 
   + Ambien and Lunesta, which both treat sleep disorders, have the highest median of average drug price of $13.45 and $11.94 respectively. Focalin and Ritalin, which both treat ADHD, have the lowest median of average drug price of $0.97 each. 
   
-```{r Case Study Analysis, echo = FALSE, warning = FALSE, message = FALSE}
+```{r Case Study Analysis, warning = FALSE, message = FALSE}
 final_dataset %>%
   filter(!is.na(avg_price)) %>%
   filter(trade_name %in% most_abused_drugs) %>%
@@ -1106,3 +1106,5 @@ A number of limitations affected our exploratory analysis.
 2.  Additionally, the dataset used to classify diseases as either acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. 
 
 3.  Lastly, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+
+For our complete code, click [here](https://github.com/josiealford14/p8105_final_jmmm.git)
