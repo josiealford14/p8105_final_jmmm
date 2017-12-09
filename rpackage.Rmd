@@ -1,5 +1,8 @@
 ---
 title: "Version of R and Packages"
+output: 
+  html_document:
+    code_folding: null
 ---
 
   + We used `R` 1.0153 for our analysis

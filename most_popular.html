@@ -21,8 +21,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -32,10 +32,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -202,83 +204,18 @@ $(document).ready(function () {
       <a href="data.html">Data</a>
     </li>
     <li>
-      <a href="methods.html">Data Wrangling</a>
+      <a href="method.html">Data Wrangling</a>
     </li>
     <li>
       <a href="rpackage.html">R Packages</a>
     </li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Categories of Drugs for Analysis</li>
-    <li>
-      <a href="most_prescribed.html">Most Prescribed</a>
-    </li>
-    <li>
-      <a href="most_advertised.html">Most Advertised</a>
-    </li>
-    <li>
-      <a href="most_popular.html">Most Popular</a>
-    </li>
-    <li>
-      <a href="most_abused.html">Most Abused</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="analysis.html">General Overview</a>
-    </li>
-    <li>
-      <a href="funding.html">Funding</a>
-    </li>
-    <li>
-      <a href="chronic_acute.html">Chronic vs. Acute Analysis</a>
-    </li>
-    <li>
-      <a href="patents.html">Patents of Pharmaceutical Companies</a>
-    </li>
-    <li>
-      <a href="advertising_analysis.html">Advertising Analysis</a>
-    </li>
-    <li>
-      <a href="most_prescribed_analysis.html">Prescription/Sales Analysis</a>
-    </li>
-    <li>
-      <a href="abused_popular_analysis.html">Most Abused &amp; Most Popular</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Final Thoughts &amp; Resources
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="conclusion.html">Conclusion</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
-    </li>
   </ul>
 </li>
 <li>
-  <a href="p8105_final_jmmm.html">RMD</a>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="conclusion.html">Conclusion</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">

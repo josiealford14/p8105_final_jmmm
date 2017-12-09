@@ -20,9 +20,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -32,10 +31,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -159,14 +160,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 
@@ -202,83 +195,18 @@ $(document).ready(function () {
       <a href="data.html">Data</a>
     </li>
     <li>
-      <a href="methods.html">Data Wrangling</a>
+      <a href="method.html">Data Wrangling</a>
     </li>
     <li>
       <a href="rpackage.html">R Packages</a>
     </li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Categories of Drugs for Analysis</li>
-    <li>
-      <a href="most_prescribed.html">Most Prescribed</a>
-    </li>
-    <li>
-      <a href="most_advertised.html">Most Advertised</a>
-    </li>
-    <li>
-      <a href="most_popular.html">Most Popular</a>
-    </li>
-    <li>
-      <a href="most_abused.html">Most Abused</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="analysis.html">General Overview</a>
-    </li>
-    <li>
-      <a href="funding.html">Funding</a>
-    </li>
-    <li>
-      <a href="chronic_acute.html">Chronic vs. Acute Analysis</a>
-    </li>
-    <li>
-      <a href="patents.html">Patents of Pharmaceutical Companies</a>
-    </li>
-    <li>
-      <a href="advertising_analysis.html">Advertising Analysis</a>
-    </li>
-    <li>
-      <a href="most_prescribed_analysis.html">Prescription/Sales Analysis</a>
-    </li>
-    <li>
-      <a href="abused_popular_analysis.html">Most Abused &amp; Most Popular</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Final Thoughts &amp; Resources
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="conclusion.html">Conclusion</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
-    </li>
   </ul>
 </li>
 <li>
-  <a href="p8105_final_jmmm.html">RMD</a>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="conclusion.html">Conclusion</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
@@ -293,14 +221,6 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
-
 
 
 <h1 class="title toc-ignore">Conclusion</h1>
@@ -308,13 +228,23 @@ $(document).ready(function () {
 </div>
 
 
-<p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price. However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.</p>
-<p>There are a couple of important <strong>limitations</strong> of our analysis. Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings. Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.</p>
-<p><strong>Please note</strong>: we attempted to complete Shiny as our final product but encountered technical difficulties, even when subsetting our data. We subsetted to 5000 observations for both the final dataset and the drug price data set. Here is the <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">proposed Shiny Dashboard</a> and the associated <a href="https://github.com/josiealford14/p8105_final_jmmm_shiny">Github repo</a>.</p>
-<div style="text-align:center">
-<img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/>
+<div id="conclusion" class="section level2">
+<h2><em>Conclusion</em></h2>
+<p>In summary, we observed a clear increasing trend in the overall average drug price, and, in particular, we observed a notable increase between 2014 and 2015. We suspect that this increase is related to the implementation of the Affordable Care Act (ACA) in 2015.</p>
+<p>However, our exploration of potential variables contributing to prescription drug prices only told us that we would have to narrow our scope. In other words, a more detailed analysis of a single potential contributing factor would likely yield more promising analyses.</p>
+<p><em>Future Research</em></p>
+<p>While no observable relationship was found between prescription drug price and NIH funding, we did notice that funding had been trending upward up until 2016 then leveled off just before decreasing.</p>
+<p>Another facet of funding that could be investigated further is its relationship to disease prevalence. It may be assumed that an increase in funding for a particular disease would be reflective of an increased prevalence of that disease. However, this was not the case in our exploratory analysis. We found neither a direct nor inverse relationship between funding and prevalence.</p>
+<p>Now, while a relationship was not observed, this is not to say that one does not exist. We suspect that various public health initiatives propelled funding for specific diseases such as obesity and cancer.</p>
+<p>Additional avenues for future research include:</p>
+<ul>
+<li><p>the influence of popular culture in prescription drug abuse;</p></li>
+<li><p>the relationship between pricing of opioids and benzodiazepines and addiction rates; and</p></li>
+<li><p>analysis similar to ours that includes drugs in solution form.</p></li>
+</ul>
+<div style="text-align:right">
+<img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="300" height="200"/>
 </div>
-<p>For <strong>future research</strong>, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit. For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.</p>
 <div id="references" class="section level3">
 <h3>References</h3>
 <ul>
@@ -330,6 +260,7 @@ $(document).ready(function () {
 <li><p><a href="https://www.nytimes.com/2017/09/23/sunday-review/prescription-drugs-prices.html" class="uri">https://www.nytimes.com/2017/09/23/sunday-review/prescription-drugs-prices.html</a></p></li>
 <li><p><a href="https://www.kff.org/slideshow/public-opinion-on-prescription-drugs-and-their-prices/" class="uri">https://www.kff.org/slideshow/public-opinion-on-prescription-drugs-and-their-prices/</a></p></li>
 </ul>
+</div>
 </div>
 
 
