@@ -20,8 +20,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -31,10 +31,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -198,20 +200,6 @@ $(document).ready(function () {
     <li>
       <a href="rpackage.html">R Packages</a>
     </li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Categories of Drugs for Analysis</li>
-    <li>
-      <a href="most_prescribed.html">Most Prescribed</a>
-    </li>
-    <li>
-      <a href="most_advertised.html">Most Advertised</a>
-    </li>
-    <li>
-      <a href="most_popular.html">Most Popular</a>
-    </li>
-    <li>
-      <a href="most_abused.html">Most Abused</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -244,32 +232,8 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Final Thoughts &amp; Resources
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="conclusion.html">Conclusion</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
-    </li>
-  </ul>
-</li>
 <li>
-  <a href="p8105_final_jmmm.html">RMD</a>
+  <a href="conclusion.html">Conclusion</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
@@ -292,22 +256,15 @@ $(document).ready(function () {
 
 <div id="section" class="section level1">
 <h1></h1>
-</div>
-<div id="section-1" class="section level1">
-<h1></h1>
+<p><strong>High drug prices have become an increasing concern in the United States.</strong> In 2016, <strong>1 in 5</strong> Americans reported taking four or more prescription drugs. This project aims to explore factors associated with US prescription drug prices. Those factors include disease research funding, drug need (prevalence), sales, and advertising.</p>
 <div style="text-align:center">
-<h3 id="high-drug-prices-have-become-an-increasing-concern-in-the-united-states."><strong>High drug prices have become an increasing concern in the United States.</strong></h3>
+<img src ="images/trend.png" style="width:60%" />
 </div>
-<p>In 2016, <strong>1 in 5</strong> Americans reported taking four or more prescription drugs. This project aims to explore factors associated with US prescription drug prices. Those factors include disease research funding, drug need (prevalence), sales, and advertising.</p>
-<div style="text-align:center">
-<img src ="images/trend.png" style="width:70%" />
-</div>
-<p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price. However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.</p>
+<p>Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding, drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.</p>
 <div id="watch-this-video-for-a-tour-of-our-website" class="section level5">
 <h5>Watch this video for a tour of our website:</h5>
 <div style="text-align:center">
-<iframe width="460" height="230" src="https://www.youtube.com/embed/97Qchphgl3Y" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen>
-</iframe>
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/_dYqz8tAmIg" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe></p>
 </div>
 </div>
 

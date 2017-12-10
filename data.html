@@ -11,7 +11,7 @@
 
 
 
-<title>Raw Datasets and their Variables</title>
+<title></title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,9 +20,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -32,10 +31,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -159,14 +160,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 
@@ -207,20 +200,6 @@ $(document).ready(function () {
     <li>
       <a href="rpackage.html">R Packages</a>
     </li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Categories of Drugs for Analysis</li>
-    <li>
-      <a href="most_prescribed.html">Most Prescribed</a>
-    </li>
-    <li>
-      <a href="most_advertised.html">Most Advertised</a>
-    </li>
-    <li>
-      <a href="most_popular.html">Most Popular</a>
-    </li>
-    <li>
-      <a href="most_abused.html">Most Abused</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -253,32 +232,8 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Final Thoughts &amp; Resources
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="conclusion.html">Conclusion</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
-    </li>
-  </ul>
-</li>
 <li>
-  <a href="p8105_final_jmmm.html">RMD</a>
+  <a href="conclusion.html">Conclusion</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
@@ -293,21 +248,17 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Raw Datasets and their Variables</h1>
 
 </div>
 
 
+<div id="section" class="section level1">
+<h1></h1>
+</div>
+<div id="section-1" class="section level1">
+<h1></h1>
 <div id="the-data" class="section level3">
 <h3><strong>The Data</strong></h3>
 <p><strong>FDA Orange Book</strong>: This contained 4 datasets: patents, exclusivity, ingredients, and products.</p>
@@ -320,38 +271,11 @@ $(document).ready(function () {
 <p><strong>Drug Price</strong>: This dataset contained the prices paid by pharmacies to acquire the drug.</p>
 <p><strong>NIH Funding</strong>: Contained the NIH finding for disease research areas for 2013 to 2018 (estimated) and the prevalence of the disease.</p>
 <p><strong>Drug Disease</strong>: Dataset linking drugs was the disease that they treat.</p>
-<p>The variables that we retained are:</p>
-<ul>
-<li><p>trade_name: the trade name of the drug</p></li>
-<li><p>drug_type: the drug type (B: Brand or G: Generic)</p></li>
-<li><p>otc: over the counter drug (Yes or No)</p></li>
-<li><p>pricing_unit: EA for each, GM for gram, and ML for milliliters</p></li>
-<li><p>year: the funding and pricing year</p></li>
-<li><p>avg_price: the average price for the particular year</p></li>
-<li><p>dose_form: the dose form (tablet, solution, solution injectable)</p></li>
-<li><p>route: route of administration (oral or IV)</p></li>
-<li><p>strength: the strength of the dose</p></li>
-<li><p>application_no: the FDA assigned number to the drug application.</p></li>
-<li><p>product_no: The FDA assigned number to identify the application products; used for joining datasets.</p></li>
-<li><p>approval_year: the year the patent was approved</p></li>
-<li><p>app_full: the full name of the company that developed the drug</p></li>
-<li><p>active_ingredient: the active ingredient</p></li>
-<li><p>ingredient: the active ingredients in a wide format; used for joining datasets</p></li>
-<li><p>patent_num: the patent number</p></li>
-<li><p>pediatric_exclusivity_granted: yes or no</p></li>
-<li><p>year_pat_expires: the patent expiration year</p></li>
-<li><p>year_excl_expires: the exclusivity expiration year</p></li>
-<li><p>disease: the disease the drug treats</p></li>
-<li><p>prevalence: the disease prevalence for 2015</p></li>
-<li><p>US_mortality_2015: the disease mortality rate</p></li>
-<li><p>funding: the NIH funding for disease research in millions</p></li>
-<li><p>disease_type: the type disease (acute or chronic)</p></li>
-</ul>
 </div>
 <div id="drug-price" class="section level3">
 <h3>Drug Price</h3>
 <ul>
-<li>Found <a href="https://data.medicaid.gov/resource/tau9-gfwr.cs">here</a></li>
+<li>Found <a href="https://data.medicaid.gov/resource/tau9-gfwr.csv">here</a></li>
 <li>It contains weekly drug prices from November 2013 to October 2017 recorded.</li>
 </ul>
 </div>
@@ -391,6 +315,36 @@ $(document).ready(function () {
 <li><a href="https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Chronic-Conditions/CC_Main.html">Third</a></li>
 </ul></li>
 </ul>
+</div>
+<div id="the-variables" class="section level3">
+<h3><strong>The Variables</strong></h3>
+<ul>
+<li><p>trade_name: the trade name of the drug</p></li>
+<li><p>drug_type: the drug type (B: Brand or G: Generic)</p></li>
+<li><p>otc: over the counter drug (Yes or No)</p></li>
+<li><p>pricing_unit: EA for each, GM for gram, and ML for milliliters</p></li>
+<li><p>year: the funding and pricing year</p></li>
+<li><p>avg_price: the average price for the particular year</p></li>
+<li><p>dose_form: the dose form (tablet, solution, solution injectable)</p></li>
+<li><p>route: route of administration (oral or IV)</p></li>
+<li><p>strength: the strength of the dose</p></li>
+<li><p>application_no: the FDA assigned number to the drug application.</p></li>
+<li><p>product_no: The FDA assigned number to identify the application products; used for joining datasets.</p></li>
+<li><p>approval_year: the year the patent was approved</p></li>
+<li><p>app_full: the full name of the company that developed the drug</p></li>
+<li><p>active_ingredient: the active ingredient</p></li>
+<li><p>ingredient: the active ingredients in a wide format; used for joining datasets</p></li>
+<li><p>patent_num: the patent number</p></li>
+<li><p>pediatric_exclusivity_granted: yes or no</p></li>
+<li><p>year_pat_expires: the patent expiration year</p></li>
+<li><p>year_excl_expires: the exclusivity expiration year</p></li>
+<li><p>disease: the disease the drug treats</p></li>
+<li><p>prevalence: the disease prevalence for 2015</p></li>
+<li><p>US_mortality_2015: the disease mortality rate</p></li>
+<li><p>funding: the NIH funding for disease research in millions</p></li>
+<li><p>disease_type: the type disease (acute or chronic)</p></li>
+</ul>
+</div>
 </div>
 
 

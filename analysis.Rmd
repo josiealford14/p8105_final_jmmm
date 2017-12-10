@@ -1,12 +1,15 @@
 ---
-output:
+title: ""
+output: 
   html_document:
+    code_folding: hide
     toc: yes
     toc_float: yes
-title: "Analysis: An Overview"
 ---
 
-```{r, warning = FALSE, message = FALSE}
+### **Analysis**
+
+```{r load_packages, echo = FALSE, results = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidytext)
 
@@ -16,41 +19,28 @@ library(forcats)
 library(httr)
 library(janitor)
 library(knitr)
+library(magrittr)
 library(plotly)
 library(readxl)
 library(rvest)
 library(stringr)
 library(viridis)
-final_dataset = read_csv("./data/final_dataset_20171205.csv")
-drug_price =
-  read_csv("../data/drug_price.csv") %>%
-  clean_names()
-drug_price = 
-  drug_price %>%
-  rename(trade_name = ndc_description,
-         drug_type = classification_for_rate_setting,
-         unit_price = nadac_per_unit) %>%
-  mutate(trade_name = str_replace(trade_name, "[0-9]", "_"),
-         trade_name = str_to_title(trade_name),
-         otc = recode(otc, "Y" = "yes", "N" = "no"),
-         otc = str_to_title(otc),
-         otc = as.factor(otc)) %>% 
-  separate(trade_name, into = c("trade_name", "remove"), sep = "_") %>% 
-  separate(effective_date, into = c("year", "month", "date")) %>%
-  select(-c(date, x1, remove)) %>%
-  mutate(trade_name = trimws(trade_name, which = c("both"))) %>% 
-  separate(trade_name, into = c("trade_name", "remove"), sep = " ") %>% 
-  filter(is.na(remove)) %>%
-  select(-remove) %>% 
-  filter(pricing_unit == "GM" | pricing_unit == "EA") %>% 
-  select(trade_name, everything()) 
 ```
+
+
+```{r load_data, echo = FALSE, results = FALSE, warning = FALSE, message = FALSE}
+final_dataset = read_csv("./data/final_dataset_20171205.csv") 
+
+final_NIH_funding = read_csv("./data/final_NIH_funding.csv") 
+
+drug_price = read_csv("../data/drug_price.csv") 
+```
+
 
 ### Overall Trend
 First, we looked to see if there was an overall trend in the average price of all drugs from 2013 to 2017.  We observe a clear increasing trend in the overall average drug price.  In particular, we observe a notable increase between 2014 and 2015. We think this may be related to the full implementation of the Affordable Care Act (ACA) in 2015.
 
 ```{r, warning = FALSE, message = FALSE}
-
 final_dataset %>%
   group_by(year) %>%
   summarize(avg_all_drugs_price = mean(avg_price)) %>%
@@ -58,18 +48,20 @@ final_dataset %>%
   layout(title = "Trend in Overall Average Drug Price", yaxis = list(title = "drug price (USD)"))
 ```
 
-### Yearly distribution of drug prices
-We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
+
 
 ```{r drug_price_distr, warning = FALSE, message = FALSE}
-trade_name_choice = "Zoloft"
-violin_drug = drug_price %>%
-  filter(trade_name == trade_name_choice) %>%
-  ggplot(aes(x = year, y = unit_price, fill = year)) + 
-  geom_violin() +
-  ggtitle(paste0("Distribution of Prices (USD) for ", trade_name_choice), subtitle = NULL)
-
-ggplotly(violin_drug)
+# 
+# ### Yearly distribution of drug prices
+# We look at the yearly distribution of drug prices for a few drugs. Some drugs have skewed price distributions. Zoloft, a drug that treats panic disorders, seems to have almost doubled in price from 2013 to 2017.
+# # trade_name_choice = "Zoloft"
+# violin_drug = drug_price %>%
+#   filter(trade_name == trade_name_choice) %>%
+#   ggplot(aes(x = year, y = unit_price, fill = year)) + 
+#   geom_violin() +
+#   ggtitle(paste0("Distribution of Prices (USD) for ", trade_name_choice), subtitle = NULL)
+# 
+# ggplotly(violin_drug)
 ```
 
 ### Spaghetti plot of the average price per year

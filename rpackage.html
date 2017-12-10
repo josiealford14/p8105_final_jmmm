@@ -11,7 +11,7 @@
 
 
 
-<title>Version of R and Packages</title>
+<title></title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,9 +20,8 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -32,10 +31,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -159,14 +160,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 
@@ -207,20 +200,6 @@ $(document).ready(function () {
     <li>
       <a href="rpackage.html">R Packages</a>
     </li>
-    <li class="divider"></li>
-    <li class="dropdown-header">Categories of Drugs for Analysis</li>
-    <li>
-      <a href="most_prescribed.html">Most Prescribed</a>
-    </li>
-    <li>
-      <a href="most_advertised.html">Most Advertised</a>
-    </li>
-    <li>
-      <a href="most_popular.html">Most Popular</a>
-    </li>
-    <li>
-      <a href="most_abused.html">Most Abused</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -253,32 +232,8 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Final Thoughts &amp; Resources
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="conclusion.html">Conclusion</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/p8105_final_jmmm.git">Proposed Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/">Access Shiny Dashboard</a>
-    </li>
-    <li>
-      <a href="https://josiealford14.github.io/dashboard_pharma/">Flex Dashboard Website</a>
-    </li>
-    <li>
-      <a href="https://github.com/josiealford14/dashboard_pharma">Flex Dashboard Repo</a>
-    </li>
-  </ul>
-</li>
 <li>
-  <a href="p8105_final_jmmm.html">RMD</a>
+  <a href="conclusion.html">Conclusion</a>
 </li>
 <li>
   <a href="https://github.com/josiealford14/p8105_final_jmmm.git">
@@ -293,21 +248,19 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-<div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Version of R and Packages</h1>
 
 </div>
 
 
+<div id="section" class="section level1">
+<h1></h1>
+</div>
+<div id="section-1" class="section level1">
+<h1></h1>
+<div id="version-of-r-and-packages" class="section level3">
+<h3><strong>Version of R and Packages</strong></h3>
 <ul>
 <li><p>We used <code>R</code> 1.0153 for our analysis</p></li>
 <li><p>The following packages were used</p>
@@ -327,6 +280,8 @@ $(document).ready(function () {
 <li><code>viridis</code> 0.2.0</li>
 </ul></li>
 </ul>
+</div>
+</div>
 
 
 

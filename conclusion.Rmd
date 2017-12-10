@@ -1,16 +1,35 @@
 ---
-title: "Conclusion"
+title: ""
+output: 
+  html_document:
+    code_folding: null
 ---
-Based on our exploratory analyses, the overall average drug price has increased from 2013 to 2017. We explored NIH funding,  drug need (prevalence), sales, and advertising and found that none of these factors influenced average drug price.  However, there were other factors such as the number of currently effective treatment options for the condition and the public health significance.
 
-There are a couple of important **limitations** of our analysis.  Because of the way subsetted/joined the datasets, there was a substantial amount of lost data, which could impact our findings.  Additionally, the dataset used classify diseases as acute or chronic may not have been comprehensive which may have resulted in misclassification of disease type. Also, the validity of the two sample independent t-tests may be compromised because the average price variable violates the normality assumption.
+**Conclusion**
 
-**Please note**: we attempted to complete Shiny as our final product but encountered technical difficulties, even when subsetting our data. We subsetted to 5000 observations for both the final dataset and the drug price data set. Here is the [proposed Shiny Dashboard](https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/) and the associated [Github repo](https://github.com/josiealford14/p8105_final_jmmm_shiny).
+  In summary, we observed a clear increasing trend in the overall average drug price, and, in particular, we observed a notable increase between 2014 and 2015. We suspect that this increase is related to the implementation of the Affordable Care Act (ACA) in 2015. 
+  
+  However, our exploration of potential variables contributing to prescription drug prices only told us that we would have to narrow our scope.  In other words, a more detailed analysis of a single potential contributing factor would likely yield more promising analyses.
 
-<div style="text-align:center"><img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="600" height="400"/></div>
 
+**Future Research**
 
-For **future research**, we would like to explore how various cultural shifts in American popular culture influence the abuse of highly addictive prescription drugs such as Xanax and Percoset. Additionally, examining how pricing of opioids and benzodiazepines affect addiction and dependence rates is a potentially informative research pursuit.  For a similar analysis, we suggest including drugs in solution form in the analysis and finding a better way to join the dataset to avoid as much loss of data.
+  While no observable relationship was found between prescription drug price and NIH funding, we did notice that, while on an upward trend up until 2016, NIH funding for disease research has been declining since.
+  
+  Another facet of funding that could be investigated further is its relationship to disease prevalence.  It may be assumed that an increase in funding for a particular disease would be reflective of an increased prevalence of that disease.  However, this was not the case in our exploratory analysis.  We found neither a direct nor inverse relationship between funding and prevalence.  
+
+  Now, while a relationship was not observed, this is not to say that one does not exist.  We suspect that various public health initiatives propelled funding for specific diseases such as obesity and cancer.
+
+Additional avenues for future research include:
+
+ + the influence of popular culture in prescription drug abuse;
+ 
+ + the relationship between pricing of opioids and benzodiazepines and addiction rates; and
+ 
+ + analysis similar to ours that includes drugs in solution form.
+ 
+ 
+<div style="text-align:right"><img src= "https://media.giphy.com/media/5SWGOoYJ5svfi/giphy.gif"width="300" height="200"/></div>
 
 
 ### References 

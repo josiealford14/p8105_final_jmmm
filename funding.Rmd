@@ -1,11 +1,15 @@
 ---
+title: "NIH Funding & Drug Pricing"
 output:
   html_document:
     toc: yes
     toc_float: yes
-title: "NIH Funding & Drug Pricing"
+    code_folding: hide
 ---
-```{r load_packages, warning = FALSE, message = FALSE}
+
+
+
+```{r load_packages, echo = FALSE, results = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(tidytext)
 
@@ -15,11 +19,18 @@ library(forcats)
 library(httr)
 library(janitor)
 library(knitr)
+library(magrittr)
 library(plotly)
 library(readxl)
 library(rvest)
 library(stringr)
 library(viridis)
+```
+
+```{r load_data, echo = FALSE, results = FALSE, warning = FALSE, message = FALSE}
+final_dataset = read_csv("./data/final_dataset_20171205.csv") 
+final_NIH_funding = read_csv("./data/final_NIH_funding.csv") 
+drug_price = read_csv("../data/drug_price.csv") 
 
 ax <- list(
   zeroline = FALSE,
@@ -27,59 +38,7 @@ ax <- list(
   showticklabels = FALSE,
   showgrid = FALSE
 )
-url = "https://report.nih.gov/categorical_spending.aspx"
-NIH_xml = read_html(url)
-NIH_funding = (NIH_xml %>% html_nodes(css = "table"))[[3]] %>% html_table() %>% as_tibble()
-NIH_funding = NIH_funding %>%
-  clean_names() %>%
-  mutate(US_mortality_2015 = x2015_us_mortality_19)
-
-NIH_funding$x2015_us_prevalence_standard_error_19  = recode(NIH_funding$x2015_us_prevalence_standard_error_19 , "-" = "NA")
-NIH_funding$US_mortality_2015 = recode(NIH_funding$US_mortality_2015, "-" = "NA")
-
-NIH_funding = NIH_funding %>%
-  separate(x2015_us_prevalence_standard_error_19, into = c("prevalence", "remove"), sep = "\\%") %>%
-  select(-x2015_us_mortality_19, -remove)
-NIH_funding$fy_2013actual = recode(NIH_funding$fy_2013actual, "+" = "NNA")
-NIH_funding$fy_2014actual = recode(NIH_funding$fy_2014actual, "+" = "NNA")
-NIH_funding$fy_2015actual = recode(NIH_funding$fy_2015actual, "+" = "NNA")
-NIH_funding$fy_2016actual = recode(NIH_funding$fy_2016actual, "+" = "NNA")
-
-NIH_funding = NIH_funding %>%
-  mutate(fy_2013 = as.numeric(substring(fy_2013actual, 2))) %>%
-  mutate(fy_2014 = as.numeric(substring(fy_2014actual, 2))) %>%
-  mutate(fy_2015 = as.numeric(substring(fy_2015actual, 2))) %>%
-  mutate(fy_2016 = as.numeric(substring(fy_2016actual, 2))) %>%
-  mutate(fy_2017 = as.numeric(substring(fy_2017estimated_enacted, 2))) %>%
-  mutate(fy_2018estimated = as.numeric(substring(fy_2018estimated, 2))) 
-
-NIH_funding$prevalence = as.numeric(NIH_funding$prevalence)
-NIH_funding$US_mortality_2015 = as.numeric(NIH_funding$US_mortality_2015)
-  
-NIH_funding = NIH_funding %>%
-  select(-c(fy_2013actual, fy_2014actual, fy_2015actual, fy_2016actual, fy_2017estimated_enacted))
-
-final_NIH_funding = NIH_funding %>%
-  rename(disease = research_disease_areas_dollars_in_millions_and_rounded, 
-         '2013' = fy_2013,
-         '2014' = fy_2014,
-         '2015' = fy_2015,
-         '2016' = fy_2016,
-         '2017' = fy_2017,
-         '2018' = fy_2018estimated) %>%
-  gather(key = "year", value = funding, c("2013", "2014", "2015", "2016", "2017", "2018")) %>% 
-  mutate(disease = str_replace(disease, "[0-9]", "_"),
-         disease = str_replace(disease, "\\-", ""),
-         disease = str_replace(disease, "ALS", "Amyotrophic Lateral Sclerosis"),
-         disease = str_replace(disease, "Sleep Research", "Sleep Disorders"),
-         disease = str_replace(disease, "Smoking and Health", "Smoking Cessation")) %>% 
-  separate(disease, into = c("disease", "remove"), sep = "\\_") %>% 
-  select(-remove) %>% 
-  separate(disease, into = c("disease", "remove"), sep = "\\(") %>% 
-  select(-remove)
-final_dataset = read_csv("./data/final_dataset_20171205.csv")
 ```
-
 
 
 ## Overview of Funding

@@ -13,16 +13,6 @@ navbar:
       href: methods.html
     - text: R Packages
       href: rpackage.html
-    - text: '---------'
-    - text: Categories of Drugs for Analysis
-    - text: Most Prescribed
-      href: most_prescribed.html    
-    - text: Most Advertised
-      href: most_advertised.html  
-    - text: Most Popular
-      href: most_popular.html  
-    - text: Most Abused
-      href: most_abused.html          
   - text: Analysis
     menu:
     - text: General Overview
@@ -39,20 +29,8 @@ navbar:
       href: most_prescribed_analysis.html
     - text: Most Abused & Most Popular
       href: abused_popular_analysis.html
-  - text: Final Thoughts & Resources
-    menu:
-    - text: Conclusion
-      href: conclusion.html  
-    - text: Proposed Shiny Dashboard
-      href: https://github.com/josiealford14/p8105_final_jmmm.git
-    - text: Access Shiny Dashboard 
-      href: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
-    - text: Flex Dashboard Website
-      href: https://josiealford14.github.io/dashboard_pharma/
-    - text: Flex Dashboard Repo
-      href: https://github.com/josiealford14/dashboard_pharma
-  - text: RMD
-    href: p8105_final_jmmm.html
+  - text: Conclusion
+    href: conclusion.html
   - icon: fa-github fa-lg
     href: https://github.com/josiealford14/p8105_final_jmmm.git
 
