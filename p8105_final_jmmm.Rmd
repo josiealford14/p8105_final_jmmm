@@ -113,7 +113,7 @@ library(viridis)
 
 #### **Dataset 1: Drug Prices**
 
-* Scrapping and Saving as CSV the Drug Price to speed up run-time.
+* Scrapping and Saving the Drug Price  as csv to speed up run-time. The csv cannot be pushed to GitHub, but can obtained from [this link](https://drive.google.com/file/d/1UqALegGpkkAWMhAWgFUiqJZTVLAfb8ci/view?usp=sharing). The drug price was placed in a data folder outside the code repository.
 ```{r tidy_drug_price, warning = FALSE, message = FALSE}
 # # API code
 # url = "https://data.medicaid.gov/resource/tau9-gfwr.csv"
@@ -122,7 +122,7 @@ library(viridis)
 #   content("parsed") %>%
 #   clean_names()
 
-# # CSV code
+# CSV code
 drug_price =
   read_csv("../data/drug_price.csv") %>%
   clean_names()
@@ -492,11 +492,11 @@ chronic_diseases$disease[71] = "COPD"
 #A: join datasets by ingredient for ingredient and products (left join)
 #products = longer dataset + ingredient
 product_ingredient = left_join(products, ingredient, by = "ingredient")
-product_ingredient
+# product_ingredient
 
 #B: exclusivity and patents left join (more~less)
 patent_exclusivity = left_join(patents, exclusivity, by = c("appl_no", "product_no", "drug_type"))
-patent_exclusivity
+# patent_exclusivity
 
 #C: join A and B left join: "Orange Book." Thursday: meet to eliminate variables (inner join: only commonalities are preserved) #eliminate drugs that do not match
 orange_book = left_join(product_ingredient, patent_exclusivity, by = c("appl_no", "product_no", "drug_type"))
@@ -511,7 +511,7 @@ orange_book = orange_book %>%
          appfull = str_to_title(appfull),
          singredient = str_to_title(singredient),
          strength = str_to_title(strength))
-orange_book
+# orange_book
 
 # final goal: disease, funding, drug prices, and Orange Book
 
@@ -619,6 +619,8 @@ final_dataset = final_dataset %>%
          disease = str_to_title(disease))
 
 rm(chronic_diseases, indicator_chronic_disease, cancer_chronic, hepatitis_chronic, hiv_aids_chronic, chronic_diseases_1, chronic_diseases_2, chronic_diseases_3, chronic_diseases_1_html, chronic_diseases_2_html, chronic_diseases_3_html, chronic_diseases_final, patent_exclusivity, product_ingredient) #clean up workspace
+
+final_dataset
 ```
 
 
@@ -723,7 +725,7 @@ final_dataset %>%
 
 
 #### **Pharmaceutical Companies and Top Drugs**
-```{r}
+```{r, warning = FALSE, message = FALSE}
 # write_csv(final_dataset, path = "./data/final_dataset_20171205.csv")
 # final_dataset = read_csv("./data/final_dataset_20171205.csv")
 
@@ -770,7 +772,7 @@ patents = final_dataset %>%
     appfull = str_replace(appfull, "Pfizers", "Pfizer"),
     appfull = str_replace(appfull, "Wyeths Wholly Owned Sub Pfizer Inc", "Pfizer")) %>%
   arrange(appfull)
-patents
+# patents
 
 #Labeling Axes
 xax_pharma = list(
@@ -804,7 +806,7 @@ yax_1 = list(
 ```
 
 Below we explore the number of patents currently held by pharmaceutical companies followed by a projection of expiring patents by company.
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #Avg Drug Prices by Company for each Disease
 pharma_charge = patents %>% 
   group_by(disease, appfull) %>%
@@ -859,7 +861,7 @@ Keryx Pharmaceuticals has the most number of patents expiring overall.  Keryx's 
 
 
 The following two plots explore the number of patents currently held by each specfic disease followed by a projection of expiring patents for that condition.
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #No. of Patents Currently Held by Disease
 patents %>%
   group_by(disease) %>%
@@ -897,7 +899,7 @@ patents %>%
 Based on the plot above, the disease covered by the most patents is chronic diarrhea.
 The disease with the most patents expiring over the next several years chronic kidney disease.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 #Projection of Expiring Patents
 # patents %>%
 #   group_by(appfull, disease, year_pat_expires) %>%
@@ -1328,9 +1330,9 @@ final_dataset %>% #without harvoni
 
 ### Project Website And Shiny Application
 ```{r project_website, warning = FALSE, message = FALSE}
-#https://josiealford14.github.io/p8105_final_jmmm/
-#https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
-#GitHubRepo: https://github.com/josiealford14/p8105_final_jmmm.git
+# Website: https://josiealford14.github.io/p8105_final_jmmm/
+# Shiny repository: https://josiealford14.shinyapps.io/p8105_final_jmmm_shiny/
+# GitHub Repo: https://github.com/josiealford14/p8105_final_jmmm.git
 ```
 
 #### **Limitations**
